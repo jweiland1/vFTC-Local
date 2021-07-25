@@ -64,8 +64,10 @@
             font-weight: bold;
             text-decoration: none;
             display: inline-block;
-            font-size: 26px;
-            margin: 20px 20px;
+            /* font-size: 26px;
+            margin: 20px 20px; */
+            font-size: 18px;
+            margin: 10px 10px;
             transition-duration: 0.4s;
             cursor: pointer;
             padding: 10px;
@@ -97,6 +99,14 @@
         <a href="local.html"><button class="button1">Autonomous</button></a>
         <a href="multiplayer.html"><button class="button1">TeleOp</button></a>
     </div>
+    <div class="center-horizontal">
+        <button class="button1" onclick="quitApp();">Quit</button>
+    </div>
+    <script>
+        function quitApp() {
+            window.close();
+        }
+    </script>
 </body>
 
 </html>

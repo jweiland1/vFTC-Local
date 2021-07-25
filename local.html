@@ -82,8 +82,10 @@
       font-weight: bold;
       text-decoration: none;
       display: inline-block;
-      font-size: 26px;
-      margin: 20px 20px;
+      /* font-size: 26px;
+      margin: 20px 20px; */
+      font-size: 18px;
+      margin: 10px 10px;
       transition-duration: 0.4s;
       cursor: pointer;
       padding: 10px;
@@ -141,7 +143,8 @@
 
     .dropdown-select {
       font-family: Jura;
-      font-size: 26px;
+      /* font-size: 26px; */
+      font-size: 18px;
       position: relative;
       font-weight: bold;
       padding: 10px;
@@ -190,9 +193,25 @@
   <script src="./blocks/blockly/msg/js/en.js"></script>
   <script src="./blocks/interpreter/acorn_interpreter.js"></script>
   <script src="./blocks/blockly/javascript_compressed.js"></script>
+
   <script src="./codemirror/lib/codemirror.js"></script>
   <link rel="stylesheet" href="./codemirror/lib/codemirror.css">
-  <script src="./codemirror/mode/javascript/javascript.js"></script>
+  <link rel="stylesheet" href="./codemirror/theme/darcula.css">
+
+  <script src="./codemirror/addon/edit/closebrackets.js"></script>
+  <script src="./codemirror/addon/comment/comment.js"></script>
+  <script src="./codemirror/addon/fold/foldcode.js"></script>
+  <script src="./codemirror/addon/fold/foldgutter.js"></script>
+  <script src="./codemirror/addon/fold/brace-fold.js"></script>
+  <script src="./codemirror/addon/fold/comment-fold.js"></script>
+  <script src="./codemirror/addon/fold/indent-fold.js"></script>
+
+  <link rel="stylesheet" href="./codemirror/addon/hint/show-hint.css">
+  <script src="./codemirror/addon/hint/show-hint.js"></script>
+  <script src="./codemirror/mode/clike/clike.js"></script>
+  <script src="./codemirror/lib/util/formatting.js"></script>
+
+
 
   <div style="display: flex;">
     <a href="homepage.html" id="backButton"><span class="chevron left"></span></a>
@@ -201,8 +220,8 @@
 
   <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
     <div id="blocklyDiv" style="width: 50%; border:1px solid white;"></div>
-    <div id="onBotJavaDiv" style="width: 50%; border:1px solid white;" hidden>
-      <h1 id="loadingOBJText">Loading OnBotJava</h1>
+    <div id="onBotJavaDiv" style="width: 50%;border:1px solid white;" hidden>
+      <h1 id="loadingOBJText">HI</h1>
     </div>
     <div style="width: 50%; background-color: #242424; padding-left: 10px;">
       <div id="controlPanel" style="height: 50%; background-color: #242424; border:1px solid white;">
@@ -215,8 +234,8 @@
         <div class="center-horizontal">
           <button class="button1" onclick="startProgram()">Start Program</button>
           <button class="button1" onclick="stopProgram()">Stop Program</button>
-        </div>
-        <div class="center-horizontal">
+        <!-- </div>
+        <div class="center-horizontal"> -->
           <button class="button1" onclick="prepareUiToSaveProgram()">Save Program</button>
           <div class="dropdown dropdown-dark">
             <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
@@ -234,8 +253,7 @@
         </div>
       </div>
       <div id="fieldView" style="height: 50%; margin-top: 10px; background-color: #000000;">
-        <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
-          hidden></iframe>
+        <iframe scrolling="yes" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0" hidden></iframe>
         <div class="center" id="loadingTextDiv">
           <h1 id="loadingText">Loading Field</h1>
         </div>
@@ -247,9 +265,84 @@
 
   <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
     <category name="Actuators" colour="#f58a42" toolboxitemid="motorCategory">
-      <block type="setMotorPower"></block>
-      <block type="getMotorEncoders"></block>
+      <category name="DcMotor">
+        <block type="getMotorData">
+          <field name="motorOption">["TargetPosition","targetPosition"]</field>
+        </block>
+
+        <block type="setMotorDirection">
+          <value name="motorOption2">
+            <shadow type="directionInput"></shadow>
+          </value>
+        </block>
+
+        <block type="getMotorDirection"></block>
+
+        <block type="setMotorRunMode">
+          <value name="runMode">
+            <shadow type="runModeOptions"></shadow>
+          </value>
+        </block>
+
+        <block type="setMotorInput"></block>
+
+        <block type="setMotorZeroPowerBehavior">
+          <value name="motorOption2">
+            <shadow type="zeroPowerBehaviorOptions"></shadow>
+          </value>
+        </block>
+
+        <block type="isMotorBusy"></block>
+        <block type="telemetryUpdate"></block>
+
+        <!--Creation of the subcategory for the dual DC Motor block-->
+        <category name="Dual" toolboxitemid="motorCategory2">
+          <block type="setMotorInputDual">
+            <value name="input1">
+              <shadow type="math_number"></shadow>
+            </value>
+            <value name="input2">
+              <shadow type="math_number"></shadow>
+            </value>
+          </block>
+
+          <block type="setMotorRunModeDual">
+            <value name="input1">
+              <shadow type="runModeOptions"></shadow>
+            </value>
+            <value name="input2">
+              <shadow type="runModeOptions"></shadow>
+            </value>
+          </block>
+
+          <block type="setMotorZeroPowerBehaviorDual">
+            <value name="input1">
+              <shadow type="zeroPowerBehaviorOptions"></shadow>
+            </value>
+            <value name="input2">
+              <shadow type="zeroPowerBehaviorOptions"></shadow>
+            </value>
+          </block>
+        </category>
+
+        <category name="Extended">
+          <block type="setMotorVelocity">
+            <value name="input1">
+              <shadow type="math_number"></shadow>
+            </value>
+            <value name="input2">
+              <shadow type="setVelocityAngleUnitInput"></shadow>
+            </value>
+          </block>
+
+          <block type="setMotorEnable"></block>
+          <block type="setMotorDisable"></block>
+        </category>
+      </category>
     </category>
+
+    <!--Category to hold the dual motor run blocks-->
+
     <category name="Logic" colour="210" toolboxitemid="logicCategory">
       <block type="controls_if"></block>
       <block type="controls_ifelse"></block>
@@ -313,6 +406,7 @@
     </category>
   </xml>
 
+
   <script>
     var isUsingBlocks = true;
     var delayTime = 0;
@@ -325,6 +419,7 @@
     var counterForLoadingText = 1;
     document.getElementById('controlPanel').style.height = screen.height / 2 - 27 + "px";
     document.getElementById('fieldView').style.height = screen.height / 2 - 27 + "px";
+    document.getElementById('onBotJavaDiv').style.height = screen.height - 44 + "px";
 
     setTimeout(function () {
       shouldBeUpdatingLoadingText = false;
@@ -364,19 +459,40 @@
       isUsingBlocks = false;
       setUpOnBotJava();
     }
-
+    var editor;
     function setUpOnBotJava() {
-      var myCodeMirror = CodeMirror(function (elt) {
+      editor = CodeMirror(function (elt) {
         document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('loadingOBJText'));
       }, {
-        value: "function myScript(){return 100;}\n",
-        mode: "javascript",
-        // theme: "3024-night",
+        value: "public class MyOpMode extends LinearOpMode {\n@Override\npublic void runOpMode() {\n// move in circles forever\nwhile (opModeIsActive()) {\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\n}\n}\n}\n",
+        mode: "text/x-java",
+        lineNumbers: true,
+        theme: "darcula",
+        scrollbarStyle: null,
+        autocorrect: true,
+        autoCloseBrackets: true,
       });
+      autoFormatSelection();
+    }
+
+    function getSelectedRange() {
+      return { from: editor.getCursor(true), to: editor.getCursor(false) };
+    }
+
+    function autoFormatSelection() {
+      var cursor = editor.getCursor();
+      CodeMirror.commands["selectAll"](editor);
+      var range = getSelectedRange();
+      editor.autoFormatRange(range.from, range.to);
+      editor.setCursor(cursor);
     }
 
     function prepareUiToSaveProgram() {
-      document.getElementById("saveProgramDiv").style = null;
+      if (document.getElementById("saveProgramDiv").style.length > 0) {
+        document.getElementById("saveProgramDiv").style = null;
+      } else {
+        document.getElementById("saveProgramDiv").style = "display: none;";
+      }
     }
 
     function prepareUiToLoadProgram() {
@@ -420,7 +536,7 @@
       motorPowers = { "m1": 0.0, "m2": 0.0, "m3": 0.0, "m4": 0.0 };
       var code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
       var myInterpreter = new Interpreter(code);
-      myInterpreter.run();
+      // myInterpreter.run();
       // nextStep();
     }
 
@@ -440,19 +556,7 @@
       return 'Started Program';
     };
 
-    Blockly.JavaScript['moveInDirection'] = function (block) {
-      var value = block.getFieldValue('angleToMoveAt');
-      var value2 = block.getFieldValue('power');
-      return 'Move In Direction Called';
-    };
-
-    Blockly.JavaScript['moveInDirectionWithEncoders'] = function (block) {
-      // var value = block.getFieldValue('angleToMoveAt');
-      // var value2 = block.getFieldValue('time');
-      return 'Move In Direction Called';
-    };
-
-    Blockly.JavaScript['setMotorPower'] = function (block) {
+    Blockly.JavaScript['setMotorInput'] = function (block) {
       var value = block.getFieldValue('motorName');
       var value2 = block.getFieldValue('power');
 
@@ -469,6 +573,25 @@
       console.log(JSON.stringify(motorPowers));
       localStorage.setItem('motorPowers', JSON.stringify(motorPowers));
       return 'Move In Direction Called';
+    };
+
+    Blockly.JavaScript['getMotorData'] = function (block) {
+      var value = block.getFieldValue('motorName');
+      motorEncoders = JSON.parse(localStorage.getItem('motorEncoders'));
+
+      encoderValue = 0;
+      if (value == "frontLeft") {
+        encoderValue = motorEncoders[Object.keys(motorEncoders)[0]];
+      } else if (value == "frontRight") {
+        encoderValue = motorEncoders[Object.keys(motorEncoders)[1]];
+      } else if (value == "backLeft") {
+        encoderValue = motorEncoders[Object.keys(motorEncoders)[2]];
+      } else if (value == "backRight") {
+        encoderValue = motorEncoders[Object.keys(motorEncoders)[3]];
+      }
+      alert(encoderValue);
+      // return [encoderValue, Blockly.JavaScript.ORDER_MEMBER];
+      return encoderValue;
     };
 
     Blockly.JavaScript['pause'] = function (block) {
@@ -496,7 +619,8 @@
             "toolboxBackgroundColour": "#333",
             "scrollbarColour": "#424242",
             "toolboxForegroundColour": "#FFFFFF",
-            "flyoutBackgroundColour": "#424242"
+            "flyoutBackgroundColour": "#424242",
+            "markerColour": "#FFFFFF"
           }
         },
         grid: {
@@ -516,6 +640,7 @@
         },
 
       });
+
     Blockly.defineBlocksWithJsonArray([
       {
         "type": "onOpmodeStart",
@@ -541,10 +666,14 @@
           }
         ]
       },
+      // Define the parameters for how the physical blocks will look and function in the program
+
+
+      // Experimental block for incorporating both the set power and set target position blocks in one block
       {
-        "type": "setMotorPower",
-        "message0": "set power of %1 to %2",
-        "tooltip": "Sets the power of a given motor from -1 to 1",
+        "type": "setMotorInput",
+        "message0": "set %1 . %2 to %3",
+        "tooltip": "Sets the targetPosition or Power of a given motor",
         "colour": "#f58a42",
         "nextStatement": null,
         "previousStatement": null,
@@ -557,6 +686,21 @@
               ["frontRight", "frontRight"],
               ["backLeft", "backLeft"],
               ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Power", "power"],
+              ["MaxSpeed", "maxSpeed"],
+              ["TargetPosition", "targetPosition"],
+              ["TargetPositionTolerance", "targetPositionTolerance"],
+              ["Velocity", "velocity"]
             ]
           },
           {
@@ -568,26 +712,643 @@
             "precision": 0.001
           }
         ]
+
       },
+
       {
-        "type": "getMotorEncoders",
-        "message0": "encoder value of %1",
-        "tooltip": "Reads the encoder value of a given motor",
+        "type": "setMotorInputDual",
+        "message0": "set %1 %2 %3 to %4 %5 to %6",
+        "tooltip": "Set the motor inputs for two motors at once",
         "colour": "#f58a42",
-        "output": "Number",
+        "nextStatement": null,
+        "previousStatement": null,
         "args0": [
           {
             "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Power", "power"],
+              ["MaxSpeed", "maxSpeed"],
+              ["TargetPosition", "targetPosition"],
+              ["TargetPositionTolerance", "targetPositionTolerance"],
+              ["Velocity", "velocity"]
+            ]
+          },
+          {
+            "type": "input_dummy"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName1",
             "options": [
               ["frontLeft", "frontLeft"],
               ["frontRight", "frontRight"],
               ["backLeft", "backLeft"],
               ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input1",
+            "align": "RIGHT"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName2",
+            "options": [
+              ["frontRight", "frontRight"],
+              ["frontLeft", "frontLeft"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input2",
+            "align": "RIGHT"
+          }
+        ]
+
+      },
+
+
+      {
+        "type": "getMotorData",
+        "message0": "%1 . %2",
+        "tooltip": "Sets the targetPosition or Power of a given motor",
+        "colour": "#f58a42",
+        "output": "Number",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["CurrentPosition", "currentPosition"],
+              ["MaxSpeed", "maxSpeed"],
+              ["Power", "Power"],
+              ["TargetPosition", "targetPosition"],
+              ["TargetPositionTolerance", "targetPositionTolerance"],
+              ["Velocity", "Velocity"]
             ]
           }
         ]
-      }
+
+      },
+
+      // Get the direction of the selected motor
+      {
+        "type": "getMotorDirection",
+        "message0": "%1 . %2",
+        "tooltip": "Get the direction of the selected motor",
+        "colour": "#f58a42",
+        "output": "Number",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Direction", "direction"]
+            ]
+          }
+        ]
+
+      },
+
+      {
+        "type": "isMotorBusy",
+        "message0": "call %1 . %2",
+        "tooltip": "Checks to see if the selected motor is rnning",
+        "colour": "#985ba5",
+        "output": "boolean",
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_input",
+            "name": "motorOption",
+            "text": "isBusy"
+          }
+        ]
+
+      },
+
+      {
+        "type": "setMotorEnable",
+        "message0": "call %1 . %2",
+        "tooltip": "Enables the motor called",
+        "colour": "#985ba5",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_input",
+            "name": "enableMotor",
+            "text": "setMotorEnable"
+          }
+        ]
+
+      },
+
+      {
+        "type": "setMotorDisable",
+        "message0": "call %1 . %2",
+        "tooltip": "Disables the motor called",
+        "colour": "#985ba5",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_input",
+            "name": "enableMotor",
+            "text": "setMotorDisable"
+          }
+        ]
+
+      },
+
+
+      // Set the run mode for the motors
+      {
+        "type": "setMotorRunMode",
+        "message0": "set %1 . %2 to %3",
+        "tooltip": "Sets the run mode of a given motor",
+        "colour": "#f58a42",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Mode", "mode"]
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "runMode",
+          }
+        ]
+
+      },
+
+      {
+        "type": "setMotorRunModeDual",
+        "message0": "set %1 %2 %3 to %4 %5 to %6",
+        "tooltip": "Set the motor run mode for two motors at once",
+        "colour": "#f58a42",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Mode", "mode"]
+            ]
+          },
+          {
+            "type": "input_dummy"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName1",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input1",
+            "align": "RIGHT"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName2",
+            "options": [
+              ["frontRight", "frontRight"],
+              ["frontLeft", "frontLeft"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input2",
+            "align": "RIGHT"
+          }
+        ]
+
+      },
+
+
+
+      {
+        "type": "runModeOptions",
+        "message0": "%1 . %2",
+        "tooltip": "Creates the shadow block for the run mode of a given motor",
+        "colour": "#f58a42",
+        "output": "string",
+        "args0": [
+          {
+            "type": "field_input",
+            "name": "text1",
+            "text": "RunMode"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "runMode",
+            "options": [
+              ["RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER"],
+              ["RUN_USING_ENCODER", "RUN_USING_ENCODER"],
+              ["RUN_TO_POSITION", "RUN_TO_POSITION"],
+              ["STOP_AND_RESET_ENCODER", "STOP_AND_RESET_ENCODER"]
+            ]
+          }
+        ]
+
+      },
+
+      // Sets the Zero Power Behavior of the selected motor
+      {
+        "type": "setMotorZeroPowerBehavior",
+        "message0": "set %1 . %2 to %3",
+        "tooltip": "Sets the zero power behavior of a given motor",
+        "colour": "#f58a42",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["ZeroPowerBehavior", "zeroPowerBehavior"]
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "motorOption2",
+          }
+        ]
+
+      },
+
+      {
+        "type": "setMotorZeroPowerBehaviorDual",
+        "message0": "set %1 %2 %3 to %4 %5 to %6",
+        "tooltip": "Set the motor zero power behavior for two motors at once",
+        "colour": "#f58a42",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["ZeroPowerBehavior", "mode"]
+            ]
+          },
+          {
+            "type": "input_dummy"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName1",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input1",
+            "align": "RIGHT"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorName2",
+            "options": [
+              ["frontRight", "frontRight"],
+              ["frontLeft", "frontLeft"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "input2",
+            "align": "RIGHT"
+          }
+        ]
+
+      },
+
+      {
+        "type": "zeroPowerBehaviorOptions",
+        "message0": "%1 . %2",
+        "tooltip": "Shadow block for the set zero power behavior block",
+        "colour": "#f58a42",
+        "output": "Number",
+        "args0": [
+          {
+            "type": "field_input",
+            "name": "text1",
+            "text": "ZeroPowerBehavior"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "runMode",
+            "options": [
+              ["BRAKE", "brake"],
+              ["FLOAT", "float"]
+            ]
+          }
+        ]
+
+      },
+
+      {
+        "type": "setMotorVelocity",
+        "message0": "call %1 . %2 %3 angularRate %4 angleUnit %5",
+        "tooltip": "Set the motor inputs for two motors at once",
+        "colour": "#985ba5",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName1",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_input",
+            "name": "setVelocity",
+            "text": "setVelocity"
+          },
+          {
+            "type": "input_dummy"
+          },
+          {
+            "type": "input_value",
+            "name": "input1",
+            "align": "RIGHT"
+          },
+          {
+            "type": "input_value",
+            "name": "input2",
+            "align": "RIGHT"
+          }
+        ]
+
+      },
+
+      {
+        "type": "setVelocityAngleUnitInput",
+        "message0": "%1 . %2",
+        "tooltip": "Sets the targetPosition or Power of a given motor",
+        "colour": "#f58a42",
+        "output": "string",
+        "args0": [
+          {
+            "type": "field_input",
+            "name": "text1",
+            "text": "AngleUnity"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "degrees",
+            "options": [
+              ["DEGREES", "degrees"]
+            ]
+          }
+        ]
+
+      },
+
+
+      {
+        "type": "directionInput",
+        "message0": "%1 . %2",
+        "tooltip": "Sets the targetPosition or Power of a given motor",
+        "colour": "#f58a42",
+        "output": "string",
+        "args0": [
+          {
+            "type": "field_input",
+            "name": "text1",
+            "text": "Direction"
+          },
+          {
+            "type": "field_dropdown",
+            "name": "direction",
+            "options": [
+              ["REVERSE", "reverse"],
+              ["FORWARD", "forward"]
+            ]
+          }
+        ]
+
+      },
+
+      // This next section defines the layout of the set direction block
+      {
+        "type": "setMotorDirection",
+        "message0": "set %1 . %2 to %3",
+        "tooltip": "Sets the direction of a given motor",
+        "colour": "#f58a42",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_dropdown",
+            "name": "motorName",
+            "options": [
+              ["frontLeft", "frontLeft"],
+              ["frontRight", "frontRight"],
+              ["backLeft", "backLeft"],
+              ["backRight", "backRight"],
+              ["ringCollection", "ringCollection"],
+              ["ringLoader", "ringLoader"],
+              ["ringShooter", "ringShooter"],
+              ["wobbleActuator", "wobbleActuator"],
+            ]
+          },
+          {
+            "type": "field_dropdown",
+            "name": "motorOption",
+            "options": [
+              ["Direction", "direction"]
+            ]
+          },
+          {
+            "type": "input_value",
+            "name": "motorOption2",
+          }
+
+        ]
+      },
+
+      /**
+       * end of shadow block test section
+       * 
+       */
+
+      {
+        "type": "telemetryUpdate",
+        "message0": "call %1 . %2",
+        "tooltip": "Update all active telemetry",
+        "colour": "#985ba5",
+        "nextStatement": null,
+        "previousStatement": null,
+        "args0": [
+          {
+            "type": "field_input",
+            "name": "Telemetry",
+            "text": "Telemetry"
+          },
+          {
+            "type": "field_input",
+            "name": "update",
+            "text": "update"
+          }
+        ]
+      },
+
     ]);
+
     Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom('<xml><block type="onOpmodeStart" deletable="false" movable="true"></block></xml>'), workspace);
   </script>
 </body>
