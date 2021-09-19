@@ -315,7 +315,6 @@
   <script src="./blocks/blockly/blockly_compressed.js"></script>
   <script src="./blocks/blockly/blocks_compressed.js"></script>
   <script src="./blocks/blockly/msg/js/en.js"></script>
-  <script src="./blocks/interpreter/acorn_interpreter.js"></script>
   <script src="./blocks/blockly/javascript_compressed.js"></script>
 
   <script src="./codemirror/lib/codemirror.js"></script>
@@ -706,6 +705,7 @@
   <script src="./blocks/blocks/system.js"></script>
   <script src="./blocks/blocks/telemetry.js"></script>
   <script src="./blocks/blocks/vars.js"></script>
+  <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
     <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="30">
       <block type="linearOpMode_waitForStart"></block>
@@ -5223,6 +5223,7 @@
 
 
   <script>
+    const abortedMsg = "aborted";
     localStorage.setItem('startMatch', false);
     localStorage.setItem('stopMatch', false);
     localStorage.setItem('resetField', false);
@@ -5373,7 +5374,7 @@
       var i = blocksContent.indexOf('</xml>');
       blocksContent = blocksContent.substring(0, i + 6);
       Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
-      resetInterpreter();
+      resetProgramExecution();
       document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
       localStorage.setItem("Program Name: " + programName, blocksContent);
       prepareUiToLoadProgram();
@@ -5403,7 +5404,7 @@
           blocksContent = blocksContent.substring(0, i + 6);
           Blockly.mainWorkspace.clear();
           Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
-          resetInterpreter();
+          resetProgramExecution();
           if (sampleProgram != 'BasicOpMode')
             document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
           else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-') {
@@ -5439,7 +5440,7 @@
         document.getElementById('download').disabled = false;
         var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
         Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-        resetInterpreter();
+        resetProgramExecution();
         document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
       }
     }
@@ -5456,7 +5457,7 @@
       localStorage.removeItem("Program Name: " + programName);
       newProgram('BasicOpMode');
       prepareUiToLoadProgram();
-      resetInterpreter();
+      resetProgramExecution();
       document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
       overlay(false, 0);
     }
@@ -5469,53 +5470,55 @@
     }
 
 
-    //Custom Block JavaScript
-    function initApi(interpreter, globalObject) {
-      //LinearOpMode Blocks
-      var linearOpMode = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'linearOpMode', linearOpMode);
+    const noOp = function(){}
 
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'waitForStart', interpreter.createNativeFunction(wrapper));
+    // set up user code API environment
+    let linearOpMode = {
+      waitForStart: noOp,
+      idle: noOp,
+      sleep: async function( milliseconds ) {
 
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'idle', interpreter.createNativeFunction(wrapper));
+        // bail early if the program has been aborted already
+        if(programExecController.signal.aborted){
+          return Promise.reject( abortedErrorMsg );
+        }
 
-      var wrapper = function (millis) {
-        pauseTime = Math.max(100, Math.min(10000, millis));
-        return Math.max(100, Math.min(10000, millis));
-      };
-      interpreter.setProperty(linearOpMode, 'sleep', interpreter.createNativeFunction(wrapper));
+        let msClamped = Math.max(100, Math.min(10000, milliseconds));
+        return new Promise( (resolve,reject) => {
 
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'opModeIsActive', interpreter.createNativeFunction(wrapper));
+          // handle for the timeout, so we are able to cancel it
+          let timeout;
 
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'isStarted', interpreter.createNativeFunction(wrapper));
+          // when signal arrives, cancel the timeout and
+          // reject the promise to stop the program
+          const abortHandler = () => {
+            clearTimeout(timeout);
+            reject( abortedMsg );
+            console.log("aborting");
+          }
+          programExecController.signal.addEventListener('abort', abortHandler);
 
-      var wrapper = function () {
-        return false; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'isStopRequested', interpreter.createNativeFunction(wrapper));
+          // start the timeout
+          // clean up the event listener when it is over
+          timeout = setTimeout( 
+            ()=>{
+              resolve();
+              programExecController.signal.removeEventListener('abort', abortHandler);
+            },
+            msClamped
+          );
 
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'getRuntime', interpreter.createNativeFunction(wrapper));
+          
+        });
+      },
+      opModeIsActive: () => true,
+      isStarted: () => true,
+      isStopRequested: () => false,
+      getRuntime: () => 0,
+    }
 
-      //Gamepad Blocks
-      var gamepad = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'gamepad', gamepad);
-
-      var wrapper = function (gamepadNum, buttonId, controllerType) {
+    let gamepad = {
+      boolValue: function (gamepadNum, buttonId, controllerType) {
         if (navigator.getGamepads()[gamepadNum] != null && (controllerType == "Both" || navigator.getGamepads()[gamepadNum].id.startsWith(controllerType))) {
           if (buttonId == -1) {
             var atRest = true;
@@ -5530,49 +5533,44 @@
           return navigator.getGamepads()[gamepadNum].buttons[buttonId].pressed;
         }
         return false;
-      };
-      interpreter.setProperty(gamepad, 'boolValue', interpreter.createNativeFunction(wrapper));
+      },
+      numberValue: function (gamepadNum, buttonAxis) {
+          if (navigator.getGamepads()[gamepadNum] != null) {
+            if (buttonAxis < 4)
+              return navigator.getGamepads()[gamepadNum].axes[buttonAxis];
+            else
+              return navigator.getGamepads()[gamepadNum].buttons[buttonAxis].value;
+          }
+          return 0;
+      }
+    }
 
-      var wrapper = function (gamepadNum, buttonAxis) {
-        if (navigator.getGamepads()[gamepadNum] != null) {
-          if (buttonAxis < 4)
-            return navigator.getGamepads()[gamepadNum].axes[buttonAxis];
-          else
-            return navigator.getGamepads()[gamepadNum].buttons[buttonAxis].value;
-        }
-        return 0;
-      };
-      interpreter.setProperty(gamepad, 'numberValue', interpreter.createNativeFunction(wrapper));
-
-      //Motor Blocks
-      var motor = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'motor', motor);
-
-      var wrapper = function (motorNums, property, values) {
+    let motor = {
+      setProperty: function (motorNums, property, values) {
         var motorProperties = JSON.parse(localStorage.getItem('motor' + property + 's'));
-        for (var i = 0; i < motorNums.g.length; i++) {
+        console.log(localStorage.getItem('motor' + property + 's'));
+        for (var i = 0; i < motorNums.length; i++) {
           //Translates Power to Velocity
           if (property == 'Power') {
-            values.g[i] = Math.min(1, Math.max(values.g[i], -1));
+            values[i] = Math.min(1, Math.max(values[i], -1));
             var motorVel = JSON.parse(localStorage.getItem('motorVelocitys'));
-            motorVel[Object.keys(motorProperties)[motorNums.g[i]]] = values.g[i] * JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums.g[i]]];
+            motorVel[Object.keys(motorProperties)[motorNums[i]]] = values[i] * JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums[i]]];
             localStorage.setItem('motorVelocitys', JSON.stringify(motorVel));
           }
           //Translates Velocity to Power
           if (property == 'Velocity') {
             var motorPow = JSON.parse(localStorage.getItem('motorPowers'));
-            motorPow[Object.keys(motorProperties)[motorNums.g[i]]] = Math.min(1, Math.max(values.g[i] / JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums.g[i]]], -1));
+            motorPow[Object.keys(motorProperties)[motorNums[i]]] = Math.min(1, Math.max(values[i] / JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums[i]]], -1));
             localStorage.setItem('motorPowers', JSON.stringify(motorPow));
-            motorProperties[Object.keys(motorProperties)[motorNums.g[i]]] = Math.min(5760, Math.max(values.g[i], -5760)); //This value may change (1440 * 4)
+            motorProperties[Object.keys(motorProperties)[motorNums[i]]] = Math.min(5760, Math.max(values[i], -5760)); //This value may change (1440 * 4)
           }
           else
-            motorProperties[Object.keys(motorProperties)[motorNums.g[i]]] = values.g[i];
+            motorProperties[Object.keys(motorProperties)[motorNums[i]]] = values[i];
         }
         return localStorage.setItem('motor' + property + 's', JSON.stringify(motorProperties));
-      };
-      interpreter.setProperty(motor, 'setProperty', interpreter.createNativeFunction(wrapper));
+      },
 
-      var wrapper = function (motorNum, property) {
+      getProperty: function (motorNum, property) {
         var returnVar;
         if (property == 'PowerFloat') {
           var motorPowers = JSON.parse(localStorage.getItem('motorPowers'));
@@ -5588,10 +5586,9 @@
           returnVar = motorProperties[Object.keys(motorProperties)[motorNum]];
         }
         return returnVar;
-      };
-      interpreter.setProperty(motor, 'getProperty', interpreter.createNativeFunction(wrapper));
+      },
 
-      var wrapper = function (motorNum) {
+      isBusy: function (motorNum) {
         var motorProp = JSON.parse(localStorage.getItem('motorCurrentPositions'));
         var motorPosition = motorProp[Object.keys(motorProp)[motorNum]];
         motorProp = JSON.parse(localStorage.getItem('motorTargetPositions'));
@@ -5599,120 +5596,40 @@
         motorProp = JSON.parse(localStorage.getItem('motorTargetPositionTolerances'));
         var motorTolerance = motorProp[Object.keys(motorProp)[motorNum]];
         return (Math.abs(motorPosition - motorTarget) > motorTolerance);
-      };
-      interpreter.setProperty(motor, 'isBusy', interpreter.createNativeFunction(wrapper));
+      },
+      setMotorEnable: noOp,
+      setMotorDisable: noOp,
+      isMotorEnabled: ()=>true,
+      setVelocity_withAngleUnit: noOp,
+      getVelocity_withAngleUnit: ()=>0,
+      setPIDFCoefficients: noOp,
+      getPIDFCoefficients: ()=>0,
+      setVelocityPIDFCoefficients: noOp,
+      setPositionPIDFCoefficients: noOp,
+      getCurrent: ()=>0,
+      getCurrentAlert:()=>0,
+      setCurrentAlert: noOp,
+      isOverCurrent: ()=>false,
+    }
 
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setMotorEnable', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setMotorDisable', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'isMotorEnabled', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setVelocity_withAngleUnit', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getVelocity_withAngleUnit', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setVelocityPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setPositionPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getCurrent', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getCurrentAlert', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setCurrentAlert', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return false; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'isOverCurrent', interpreter.createNativeFunction(wrapper));
-
-      //Telemetry Blocks
-      var telemetry = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'telemetry', telemetry);
-
-      var wrapper = function (key, data) {
+    let telemetry = {
+      addData: function (key, data) {
         return (telemetryData += key + ": " + data + "\n");
-      };
-      interpreter.setProperty(telemetry, 'addData', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
+      },
+      update: function () {
         document.getElementById("telemetryText").innerText = telemetryData;
         telemetryData = "";
         return;
-      };
-      interpreter.setProperty(telemetry, 'update', interpreter.createNativeFunction(wrapper));
+      },
+      speak: noOp,
+      setDisplayFormat: noOp,
+    }
 
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(telemetry, 'speak', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(telemetry, 'setDisplayFormat', interpreter.createNativeFunction(wrapper));
-
-      //Miscellaneous Blocks
-      var misc = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'misc', misc);
-
-      var wrapper = function () {
-        return null;
-      };
-      interpreter.setProperty(misc, 'getNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (value) {
-        return null == value;
-      };
-      interpreter.setProperty(misc, 'isNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (value) {
-        return null !== value;
-      };
-      interpreter.setProperty(misc, 'isNotNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (number, precision) {
+    let misc = {
+      getNull: ()=>null,
+      isNull: (value)=> null == value,
+      isNotNull: (value) => null !== value,
+      formatNumber: function (number, precision) {
         var string = "" + Math.round((number + Number.EPSILON) * (10 ** precision)) / (10 ** precision);
         if (precision > 0) {
           if (!string.includes('.'))
@@ -5720,44 +5637,33 @@
           string += (10 ** (precision - string.split('.')[1].length)).toString().substring(1);
         }
         return string;
-      };
-      interpreter.setProperty(misc, 'formatNumber', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (number, precision) {
+      },
+      roundDecimal: function (number, precision) {
         return Math.round((number + Number.EPSILON) * (10 ** precision)) / (10 ** precision);
-      };
-      interpreter.setProperty(misc, 'roundDecimal', interpreter.createNativeFunction(wrapper));
-    }
-
-    var telemetryData = "";
-
-    var myInterpreter = null;
-    var runner;
-    var pauseTime = 0;
-
-    function resetInterpreter() {
-      telemetryData = "";
-      resetSendableMotorProperties();
-      myInterpreter = null;
-      pauseTime = 0;
-      if (runner) {
-        clearTimeout(runner);
-        runner = null;
       }
     }
 
+    var telemetryData = "";
+    var programExecController = new AbortController();
+
+    function resetProgramExecution() {
+      programExecController.abort();
+      telemetryData = "";
+      resetSendableMotorProperties();
+    }
+
     function startProgram() {
-      resetInterpreter();
+      resetProgramExecution();
       setTimeout(delayStartProgram, 100);
     }
 
     function delayStartProgram() {
       var code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-      var finalCode = "runOpMode();\n";
+      var finalCode = "";
 
       var inFunction = false;
       for (var line of code.split('\n')) {
-        if (line.startsWith('function '))
+        if (line.startsWith('async function '))
           inFunction = true;
         if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
           finalCode += line + '\n';
@@ -5767,29 +5673,40 @@
           inFunction = false;
       }
 
+      finalCode += "\nawait runOpMode();\n";
+
       console.log(finalCode);
-      localStorage.setItem('startMatch', true);
-      document.getElementById("telemetryText").innerText = "Program Started \n";
-      myInterpreter = new Interpreter(finalCode, initApi);
-      nextStep();
-      return;
+      runProgram(finalCode);
     }
 
-    function nextStep() {
-      if (myInterpreter.step()) {
-        setTimeout(nextStep, pauseTime);
-        if (pauseTime != 0) {
-          pauseTime = 0;
-        }
-      } else {
-        resetInterpreter();
-        document.getElementById("telemetryText").innerText = "Program Ended \n";
+    async function runProgram(code){
+      let AsyncFunctionCtor = Object.getPrototypeOf(async function(){}).constructor;
+      let program = new AsyncFunctionCtor( code );
+
+      //setup
+      localStorage.setItem('startMatch', true);
+      document.getElementById("telemetryText").innerText = "Program Started \n";
+
+      programExecController = new AbortController();
+      // execution
+      try{
+        await program();
       }
+      catch(err){
+        // anything other than abortedMsg is an actual error
+        if( err != abortedMsg ){
+          throw err;
+        }
+      }
+
+      // end
+      localStorage.setItem('stopMatch', true);
+      document.getElementById("telemetryText").innerText = "Program Ended \n";
     }
 
     function stopProgram() {
       localStorage.setItem('stopMatch', true);
-      resetInterpreter();
+      resetProgramExecution();
       document.getElementById("telemetryText").innerText = "Program Aborted \n";
     }
 

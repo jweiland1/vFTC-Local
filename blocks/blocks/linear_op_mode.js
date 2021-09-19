@@ -97,7 +97,7 @@ Blockly.Blocks['linearOpMode_sleep'] = {
 Blockly.JavaScript['linearOpMode_sleep'] = function(block) {
   var millis = Blockly.JavaScript.valueToCode(
       block, 'MILLISECONDS', Blockly.JavaScript.ORDER_NONE);
-  return linearOpModeIdentifierForJavaScript + '.sleep(' + millis + ');\n';
+  return 'await ' +linearOpModeIdentifierForJavaScript + '.sleep(' + millis + ');\n';
 };
 
 /*Blockly.FtcJava['linearOpMode_sleep'] = function(block) {

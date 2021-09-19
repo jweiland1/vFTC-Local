@@ -7,8 +7,7 @@
     <style>
         body {
             background-color: #242424;
-            margin-bottom: 0px;
-            overflow: hidden;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -40,6 +39,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .center-horizontal a button {
+            overflow: hidden;
+        }
+
+        @media screen and (max-width: 1175px) {
+            .center-horizontal .desc {
+                font-size: 30px;
+            }
+        }
+
+        @media screen and (max-width: 750px) {
+            .center-horizontal .desc {
+                font-size: 25px;
+            }
         }
 
         @font-face {
@@ -219,11 +234,6 @@
 
 <body>
 
-    <div style="display: flex;">
-        <span onclick="quitApp(); return false" class="xButton"></span>
-    </div>
-
-
     <div class="center-horizontal">
         <h1 style="margin-bottom: 7.5px;">Welcome to the Virtual Robot Simulator Platform</h1>
     </div>
@@ -315,8 +325,8 @@
         document.getElementById('multiplayerButton').style.backgroundImage = "url('./multiplayer.png')";
         document.getElementById('multiplayerButton').style.backgroundRepeat = "no-repeat";
 
-        document.getElementById('localButton').style.width = screen.width / 2 - 44 + "px";
-        document.getElementById('multiplayerButton').style.width = screen.width / 2 - 44 + "px";
+        // document.getElementById('localButton').style.width = screen.width / 2 - 44 + "px";
+        // document.getElementById('multiplayerButton').style.width = screen.width / 2 - 44 + "px";
 
         document.getElementById('localButton').style.height = 1.55 * (screen.height / 3 - 44) + "px";
         document.getElementById('multiplayerButton').style.height = 1.55 * (screen.height / 3 - 44) + "px";
