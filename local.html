@@ -9,10 +9,11 @@
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml">
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml"> -->
-  <title>Virtual Robot Simulator Controller</title>
+  <title>Virtual Robot Simulator: Autonomous</title>
   <style>
     body {
       background-color: #242424;
+	  overflow: hidden;
     }
 
     h1 {
@@ -52,10 +53,6 @@
 
     .textNormal:hover {
       color: white;
-    }
-
-    .textDisabled {
-      color: darkslategrey;
     }
 
     .center {
@@ -229,17 +226,27 @@
       position: relative;
     }
 
-    #videoTab {
-      display: none;
+	#middleSlider {
+	  min-width: 10px;
+	  cursor: e-resize;
+	}
+
+	#rightSlider {
+	  cursor: n-resize;
+	}
+
+	#multiSlider {
+	  cursor: move;
+	}
+
+    #scrollOverlay {
+      visibility: hidden;
       position: absolute;
-      top: 36.5px;
-      left: 50%;
-      margin-left: 6px;
-      padding: 8px;
-      padding-bottom: 10px;
-      background-color: #242424;
-      z-index: 100;
-      border: 1px solid white;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+	  z-index: 100;
     }
 
     #overlay {
@@ -338,53 +345,60 @@
 
   <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
 
-  <div style="display: flex; display: inline;">
+  <div style="display: flex; width: 100%; justify-content: space-between;">
     <a href="homepage.html" id="backButton"><span class="chevron left"></span></a>
-    <div style="width: 25px; display: inline-block;"></div>
-    <button class="button1" onclick="switchToBlocks()">Blocks</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
+    <div style="min-width: 12.5px; display: inline-block;"></div>
+    <div id="topMenu" style="white-space: nowrap; overflow: hidden;">
+	  <div style="width: 12.5px; display: inline-block;"></div>
+	  <button class="button1" onclick="switchToBlocks()">Blocks</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
 
-    <div class="divider"></div>
+	  <div class="divider"></div>
 
-    <button class="button1" onclick="overlay(true, 4)">New Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="overlay(true, 0)">Save as...</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
-      <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
-        <option value="Load Program">Load Program</option>
-      </select>
-    </div>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
+	  <button class="button1" onclick="overlay(true, 4)">New Program</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button class="button1" onclick="overlay(true, 0)">Save as...</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+	  <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
+	  	<option value="Load Program">-Load Program-</option>
+	  </select>
+	  </div>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
 
-    <div class="divider"></div>
+	  <div class="divider"></div>
 
-    <button class="button1" onclick="startProgram()">Start Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="stopProgram()">Stop Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="resetField()">Reset Field</button>
-
-
-    <button class="button1" onClick="playVideo(false)" style="position: absolute; right: 25px;">Program Stuck?</button>
+	  <button class="button1" onclick="startProgram('')">Start Program</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button class="button1" onclick="stopProgram()">Stop Program</button>
+	  <div style="width: 10px; display: inline-block;"></div>
+	  <button class="button1" onclick="resetField()">Reset Field</button>
+	  <div style="width: 12.5px; display: inline-block;"></div>
+	</div>
+    <div style="min-width: 12.5px; display: inline-block;"></div>
+    <button class="button1" onClick="playVideo(false)" style="min-width: 100px;">How to Use</button>
   </div>
 
 
   <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
-    <div id="blocklyDiv" style="width: 50%; border:1px solid white;"></div>
-    <div id="onBotJavaDiv" style="width: 50%;border:1px solid white;" hidden>
-      <h1 id="loadingOBJText">HI</h1>
-    </div>
+	<div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
+      <div id="blocklyDiv" style="width: 100%; border:1px solid white;"></div>
+      <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;" hidden>
+		<h1 id="loadingOBJText">HI</h1>
+      </div>
+	</div>
 
-    <div style="width: 50%; background-color: #242424; padding-left: 10px;">
-      <div id="controlPanel" style="height: 50%; background-color: #242424; border:1px solid white;">
-        <div style="display: flex; display: inline;" class="buttonText">
+	<div id="middleSlider" style="width: 10px;"></div>
+
+    <div id="rightScreen" style="min-width: 10px; width: 50%; background-color: #242424;">
+      <div id="controlPanel" style="min-height: 10px; height: 50%; background-color: #242424; border:1px solid white; overflow: hidden;">
+        <div id="textSelection" style="white-space: nowrap; overflow: hidden;" class="buttonText">
           <div style="width: 20px; display: inline-block;"></div>
           <div id="firstTab" style="display: inline-block;" onclick="switchTab(this, 0)">Telemetry</div>
           <div class="divider"></div>
@@ -392,19 +406,19 @@
           <div class="divider"></div>
           <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">LMS</div>
           <div class="divider"></div>
-          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textDisabled">Video
-          </div>
+          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video</div>
+		  <div style="width: 20px; display: inline-block;"></div>
         </div>
         <div style="width:100%; height: 10px; background-color: #4B4B4B; margin-top: 15px; margin-bottom: 20px;"></div>
         <div id="tabOptions" style="height: 80%;">
           <div style="height: 100%; overflow: scroll;">
             <div style="width:100%; overflow:hidden; background-color: #323232;">
-              <h2 id="telemetryText" style="font-size: 20px;">-Telemetry Output-</h2>
+              <h2 id="telemetryText" style="font-size: 20px; padding-right: 17.5px;">-Telemetry Output-</h2>
             </div>
           </div>
-          <div style="display: none;">
-            <div style="display: flex; justify-content: center;">
-              <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+          <div style="display: none; height: 100%;">
+            <div style="display: flex; justify-content: center; overflow: hidden; height: 11%">
+              <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
                 <select id="lessonSelect" class="dropdown-select" onChange="loadLesson()" style="font-size:20px;">
                   <option value=-1>Coding Lessons</option>
                   <option value=0>Drive to White Line - 2 Motors</option> <!-- Timing			-->
@@ -420,22 +434,27 @@
                 </select>
               </div>
             </div>
-            <div style="width:100%; overflow:hidden; background-color: #323232; margin-top: 10px;">
-              <h2 id="lessonText" style="font-size: 20px;">[Select a Lesson]</h2>
+            <div style="width:100%; overflow:hidden; background-color: #323232;">
+              <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">[Select a Lesson]</h2>
             </div>
-            <div id="lessonButtons" style="padding-top: 12.5px; display: none;">
-              <button class="button1" style="position: relative; left: 105px; font-size: 20px;">Show the Task</button>
-              <!-- Hello Mihir -->
+            <div id="lessonButtons" style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
+              <button class="button1" onClick="runLessonCode()" style="font-size: 20px; white-space: nowrap; height: 29.2px;">Show the Task</button>
+			  <div style="width: 17.5%; display: inline-block;"></div>
               <button class="button1" onClick="playVideo(true)"
-                style="position: absolute; right: 112.5px; font-size:20px;">Show Video Solution</button>
+                style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
           <iframe src="https://virtualftc.jasonbennett.work/courses/basic-movement-with-blocks/'" width="100%"
             height="100%" frameBorder="0" style="display: none;"></iframe>
+          <iframe src="https://www.youtube.com/embed/bKFBm2jqFpI" width="100%"
+            height="100%" frameBorder="0" style="display: none;"></iframe>
         </div>
       </div>
 
-      <div id="fieldView" style="height: 50%; margin-top: 10px; background-color: #000000;">
+	  <div id="multiSlider" style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
+	  <div id="rightSlider" style="height: 10px;"></div>
+
+      <div id="fieldView" style="height: 50%; background-color: #000000;">
         <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
           hidden></iframe>
         <div class="center" id="loadingTextDiv">
@@ -445,19 +464,7 @@
     </div>
   </div>
 
-  <div id="videoTab">
-    <div style="display: flex;">
-      <a onClick="switchTab(this, 3)" id="backButton"><span class="chevron left"></span></a>
-    </div>
-
-    <div class="container" style="display: flex; padding-top: 5px;">
-      <div style="width: 100%; background-color: #242424;">
-        <div id="videoView" style="background-color: #000000;">
-          <iframe src="" width="100%" height="100%" frameBorder="0"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="scrollOverlay"></div>
 
   <div id="overlay">
     <div id="overlayInfo">
@@ -521,24 +528,92 @@
     </div>
   </div>
 
-  <script>
+<script>
+    //Opens up File Menu
     function promptFiles() {
       document.getElementById('filePrompt').click();
     }
 
-    document.getElementById('videoView').style.height = .5 * (screen.height) - 69 + "px";
-    document.getElementById('videoTab').style.width = .5 * (document.body.clientWidth) - 24 + "px";
+	//Resize Screens
+	var xScreenSize = .5 * document.body.clientWidth;
+	document.getElementById('leftScreen').style.width = xScreenSize + "px";
+	document.getElementById('rightScreen').style.width = xScreenSize + "px";
+	var yScreenSize = window.innerHeight / 2 - 30;
+	document.getElementById('controlPanel').style.height = yScreenSize + "px";
+	document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+    document.getElementById('fieldView').style.height = yScreenSize + "px";
+	var mouseClicked = 0;
 
+	document.getElementById('middleSlider').addEventListener('mousedown', function() {
+	  document.getElementById('scrollOverlay').style.cursor = "e-resize";
+	  document.getElementById('scrollOverlay').style.visibility = "visible";
+	  mouseClicked = 1;
+	});
+
+	document.getElementById('rightSlider').addEventListener('mousedown', function() {
+	  document.getElementById('scrollOverlay').style.cursor = "n-resize";
+	  document.getElementById('scrollOverlay').style.visibility = "visible";
+	  mouseClicked = 2;
+	});
+
+	document.getElementById('multiSlider').addEventListener('mousedown', function() {
+	  document.getElementById('scrollOverlay').style.cursor = "move";
+	  document.getElementById('scrollOverlay').style.visibility = "visible";
+	  mouseClicked = 3;
+	});
+
+	window.addEventListener('mouseup', function() {
+	  document.getElementById('scrollOverlay').style.visibility = "hidden";
+	  xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
+	  yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
+	  mouseClicked = 0;
+	});
+
+	window.addEventListener('resize', function () {
+	  //Width Consideration
+	  xScreenSize = document.getElementById('leftScreen').clientWidth;
+	  if (xScreenSize < 10) {
+		document.getElementById('leftScreen').style.width = '10px';
+		xScreenSize = 10;
+	  }
+	  document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
+	  //Height Consideration
+	  if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
+		yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+	    document.getElementById('controlPanel').style.height = yScreenSize + "px";
+	    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+	  }
+	  document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
+	});
+
+	window.addEventListener('mousemove', function(event) {
+	  if (mouseClicked != 0) {
+	    if (mouseClicked != 2) {
+	      xScreenSize += event.movementX * .8;
+		  var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
+	      document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
+		  document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
+		  Blockly.svgResize(Blockly.mainWorkspace);
+		}
+		if (mouseClicked != 1) {
+		  yScreenSize += event.movementY * .8;
+		  var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+	      document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
+	      document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
+		  document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
+		}
+		event.preventDefault();
+	  }
+	});
+
+	document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += event.deltaY * .5; });
+    document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += event.deltaY * .5; });
+
+	//Switch Tabs
     var prevTabButton = document.getElementById('firstTab');
 
     function switchTab(button, tabNum) {
-      if (tabNum == 3) {
-        if (button.className == 'textNormal')
-          document.getElementById('videoTab').style.display = "inherit";
-        else
-          document.getElementById('videoTab').style.display = "none";
-      }
-      else if (button.className == 'textNormal') {
+	  if (button.className == 'textNormal') {
         for (var i = 0; i < document.getElementById('tabOptions').children.length; i++)
           document.getElementById('tabOptions').children[i].style.display = "none";
         document.getElementById('tabOptions').children[tabNum].style.display = "inherit";
@@ -548,28 +623,10 @@
       }
     }
 
-    function playVideo(lessonVideo) {
-      link = "";
-      if (lessonVideo) {
-        switch (document.getElementById('lessonSelect').value) {
-          case "0":
-            link = "https://www.youtube.com/embed/zBjlgFOxw7A";
-            break;
-          case "1":
-            link = "https://www.youtube.com/embed/6VdMtwmT_Ms";
-            break;
-        }
-      }
-      else
-        link = 'https://www.youtube.com/embed/KXMlbdsr8fM';
-      document.getElementById('videoTab').lastElementChild.firstElementChild.firstElementChild.firstElementChild.src = link;
-      document.getElementById('videoButton').classList.remove('textDisabled');
-      document.getElementById('videoButton').classList.add('textNormal');
-      switchTab(document.getElementById('videoButton'), 3);
-    }
-
+	//Load Lessons
     function loadLesson() {
-      document.getElementById('lessonButtons').style.display = "inherit";
+      document.getElementById('lessonButtons').style.display = "flex";
+	  document.getElementById('lessonText').parentElement.style.height = '75%';
       switch (document.getElementById('lessonSelect').value) {
         case "0":
           document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
@@ -588,8 +645,8 @@
           break;
         case "3":
           document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Let's make the robot go along the path of the strongest shape: the Square! Or was it the triangle? Either way it may be useful to use loops for this program so the code looks cleaner and changes can be made faster." +
-            "\n\nYou'll Learn:\nThe Joys of Clean Code\nUsing Loop Blocks";
+            "Let's make the robot go along the path of the strongest shape: the Square! Or was it the triangle? Either way it may be useful to use loops for this program so the code looks cleaner and changes can be made faster. Maybe using a sensor for reliable rotation may be in order!" +
+            "\n\nYou'll Learn:\nThe Joys of Clean Code\nUsing Loop Blocks & the IMU Sensor";
           break;
         case "4":
           document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
@@ -603,33 +660,77 @@
           break;
         case "6":
           document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motors: 1440 Ticks per Revolution & Wheels: 4π Circumfrence." +
+            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motors: 1440 Ticks per Revolution & Wheels: 4π Inch Circumfrence." +
             "\n\nYou'll Learn:\nMotor Encoders\nVariables";
           break;
         case "7":
           document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Great, we have cracked the code for motor encoders! But... the code looks all messy and complicated and would be a pain to make sight changes to. Let's try and compact the 3 main movements into 3 functions we can call." +
+            "Great, we have cracked the code for motor encoders! But... the code looks all messy and complicated and would be a pain to make slight changes to. Let's try and compact the 3 movements the robot can make into 3 functions we can call from the main runOpMode function." +
             "\n\nYou'll Learn:\nKeeping Code Simple\nFunctions";
           break;
         case "8":
           document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Looks like the engineering team has just slapped a shooting mechanism onto your robot. Time to learn how that works. It seems they have wired in a new \"ringLoader\" and \"ringShooter\" motor. Let's get 3 rings into that Top Goal scoring +36 points." +
+            "Looks like the engineering team has just slapped a shooting mechanism onto your robot. Time to learn how that works. It seems they have wired in a new \"ringLoader\" and \"ringShooter\" motor. Maybe you could even drop off a wobble goal into one of the positions in the same program!" +
             "\n\nYou'll Learn:\nHandling Multiple Tasks\nComplex Motors";
           break;
         case "9":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous. Try and shoot at each powershot for +45 points while either rotating or strafing to change targets." +
-            "\n\nYou'll Learn:\nScoring Big in Autonomous\nHow to Code! (hopefully...)";
+          document.getElementById('lessonText').innerText = "Difficulty: Extreme!\n" +
+            "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous! Try and shoot at each powershot while either rotating or strafing to change trajectory. Get as many points as possible with *correct* wobble goal position included!" +
+            "\n\nYou'll Learn:\nScoring Big with Extra Sensors\nHow to Code! (hopefully...)";
           break;
         default:
           document.getElementById('lessonButtons').style.display = "none";
           document.getElementById('lessonText').innerText = "[Select Lesson]";
+		  document.getElementById('lessonText').parentElement.style.height = '';
           break;
       }
     }
 
+	function runLessonCode() {
+	  var lessonName = "";
+	  switch (document.getElementById('lessonSelect').value) {
+		case "0": lessonName = "WhiteLine2Motors"; break;
+		case "1": lessonName = "WhiteLine4Motors"; break;
+		case "2": lessonName = "DriveRotate90"; break;
+		case "3": lessonName = "DriveRotateSquare"; break;
+		case "4": lessonName = "DriveStrafeSquare"; break;
+		case "5": lessonName = "WobblePos1"; break;
+		case "6": lessonName = "WobblePos2"; break;
+		case "7": lessonName = "WobblePos3"; break;
+		case "8": lessonName = "ShootHighGoal"; break;
+		case "9": lessonName = "ShootPowerShots"; break;
+	  }
+	  stopProgram();
+	  resetField();
+	  //Load Lesson Code to Run
+      var client = new XMLHttpRequest();
+      client.open('GET', './blocks/lessons/' + lessonName + '.ftccode');
+      client.onreadystatechange = function () {
+		var lessonCode = client.responseText;
+		if (lessonCode !== '')
+		  startProgram(lessonCode);
+      }
+      client.send();
+	}
+
+    function playVideo(lessonVideo) {
+      link = "";
+      if (lessonVideo) {
+        switch (document.getElementById('lessonSelect').value) {
+          case "0": link = "https://www.youtube.com/embed/zBjlgFOxw7A"; break;
+          case "1": link = "https://www.youtube.com/embed/6VdMtwmT_Ms"; break;
+        }
+      }
+      else
+        link = 'https://www.youtube.com/embed/bKFBm2jqFpI';
+      document.getElementById('tabOptions').children[3].src = link;
+      switchTab(document.getElementById('videoButton'), 3);
+    }
+
+	//Prompts
     var overlayReturned = null;
 
+	//	Overrides Window.Prompt for Variable Renaming
     window.prompt = function overlayPrompt(message, placeholder) {
       overlayReturned = null;
       overlay(true, (message == "New variable name:" ? 2 : 3));
@@ -646,7 +747,6 @@
         }, 1000);
       });
     }
-
     function overlay(show, activity) {
       if (show) {
         document.getElementById('overlay').style.animation = "showOverlay .25s ease 1 normal forwards";
@@ -687,7 +787,6 @@
           overlayReturned = document.getElementById('changedVariableName').value;
       }
     }
-
   </script>
 
   <!-- FTC Copied Files w/ slight modifications -->
@@ -699,6 +798,7 @@
   <script src="./blocks/blocks/gamepad.js"></script>
   <script src="./blocks/blocks/linear_op_mode.js"></script>
   <script src="./blocks/blocks/locale.js"></script>
+  <script src="./blocks/blocks/loops.js"></script>
   <script src="./blocks/blocks/misc.js"></script>
   <script src="./blocks/blocks/navigation.js"></script>
   <script src="./blocks/blocks/orientation.js"></script>
@@ -707,7 +807,7 @@
   <script src="./blocks/blocks/vars.js"></script>
   <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
-    <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="30">
+    <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="#987654">
       <block type="linearOpMode_waitForStart"></block>
       <block type="linearOpMode_idle"></block>
       <block type="linearOpMode_sleep_Number">
@@ -5242,38 +5342,23 @@
 
     var isUsingBlocks = true;
     var delayTime = 0;
-    // var motorEncoderBaseValues = { "m1": 0.0, "m2": 0.0, "m3": 0.0, "m4": 0.0, "m5": 0.0, "m6": 0.0, "m7": 0.0, "m8": 0.0 };
-    // // TODO: THESE TWO VALUES (ENCBASE, REVERSE) NEED TO BE STORED IN LOCALSTORAGE
-    // var motorReverseValues = { "m1": 1.0, "m2": 1.0, "m3": 1.0, "m4": 1.0, "m5": 1.0, "m6": 1.0, "m7": 1.0, "m8": 1.0 };
 
     resetSendableMotorProperties();
     function resetSendableMotorProperties() {
-      var zeroValues = { "m1": 0.0, "m2": 0.0, "m3": 0.0, "m4": 0.0, "m5": 0.0, "m6": 0.0, "m7": 0.0, "m8": 0.0 };
-      var directions = { "m1": 'FORWARD', "m2": 'FORWARD', "m3": 'FORWARD', "m4": 'FORWARD', "m5": 'FORWARD', "m6": 'FORWARD', "m7": 'FORWARD', "m8": 'FORWARD' };
-      localStorage.setItem('motorDirections', JSON.stringify(directions));
-      var maxSpeeds = { "m1": 4320.0, "m2": 4320.0, "m3": 4320.0, "m4": 4320.0, "m5": 4320.0, "m6": 4320.0, "m7": 4320.0, "m8": 4320.0 }; //This may be changed (1440 * 3)
-      localStorage.setItem('motorMaxSpeeds', JSON.stringify(maxSpeeds));
-      var modes = {
-        "m1": 'RUN_WITHOUT_ENCODER', "m2": 'RUN_WITHOUT_ENCODER', "m3": 'RUN_WITHOUT_ENCODER', "m4": 'RUN_WITHOUT_ENCODER',
-        "m5": 'RUN_WITHOUT_ENCODER', "m6": 'RUN_WITHOUT_ENCODER', "m7": 'RUN_WITHOUT_ENCODER', "m8": 'RUN_WITHOUT_ENCODER'
-      };
-      localStorage.setItem('motorModes', JSON.stringify(modes));
-      localStorage.setItem('motorPowers', JSON.stringify(zeroValues));
-      localStorage.setItem('motorTargetPositions', JSON.stringify(zeroValues));
-      var targetPositonTolerances = { "m1": 10.0, "m2": 10.0, "m3": 10.0, "m4": 10.0, "m5": 10.0, "m6": 10.0, "m7": 10.0, "m8": 10.0 };
-      localStorage.setItem('motorTargetPositionTolerances', JSON.stringify(targetPositonTolerances));
-      localStorage.setItem('motorVelocitys', JSON.stringify(zeroValues));
-      var zeroPowerBehaviors = { "m1": 'BRAKE', "m2": 'BRAKE', "m3": 'BRAKE', "m4": 'BRAKE', "m5": 'BRAKE', "m6": 'BRAKE', "m7": 'BRAKE', "m8": 'BRAKE' };
-      localStorage.setItem('motorZeroPowerBehaviors', JSON.stringify(zeroPowerBehaviors));
+      localStorage.setItem('motorDirections', '["FORWARD", "FORWARD", "FORWARD", "FORWARD", "FORWARD", "FORWARD", "FORWARD", "FORWARD"]');
+      localStorage.setItem('motorMaxSpeeds', '[4320.0, 4320.0, 4320.0, 4320.0, 4320.0, 4320.0, 4320.0, 4320.0]');
+      localStorage.setItem('motorModes', '["RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER","RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER", "RUN_WITHOUT_ENCODER"]');
+      localStorage.setItem('motorPowers', '[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]');
+      localStorage.setItem('motorTargetPositions', '[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]');
+      localStorage.setItem('motorTargetPositionTolerances', '[10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0]');
+      localStorage.setItem('motorVelocitys', '[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]');
+      localStorage.setItem('motorZeroPowerBehaviors', '["BRAKE", "BRAKE", "BRAKE", "BRAKE", "BRAKE", "BRAKE", "BRAKE", "BRAKE"]');
     }
 
     localStorage.setItem('playMode', "Autonomous")
 
     var shouldBeUpdatingLoadingText = true;
     var counterForLoadingText = 1;
-    document.getElementById('controlPanel').style.height = screen.height / 2 - 30 + "px";
-    document.getElementById('fieldView').style.height = screen.height / 2 - 30 + "px";
-    document.getElementById('onBotJavaDiv').style.height = screen.height - 48 + "px";
 
     setTimeout(function () {
       shouldBeUpdatingLoadingText = false;
@@ -5341,12 +5426,11 @@
     }
 
     function prepareUiToLoadProgram() {
-      var keys = Object.keys(localStorage),
-        i = keys.length;
+      var keys = Object.keys(localStorage).sort();
 
       document.getElementById("programSelect").options.length = 1;
 
-      while (i--) {
+      for (var i = 0; i < keys.length; i++) {
         console.log(keys[i]);
         if (keys[i].includes("Program Name: ")) {
           var option = document.createElement("option");
@@ -5483,7 +5567,6 @@
           return Promise.reject( abortedErrorMsg );
         }
 
-        let msClamped = Math.max(100, Math.min(10000, milliseconds));
         return new Promise( (resolve,reject) => {
 
           // handle for the timeout, so we are able to cancel it
@@ -5505,7 +5588,7 @@
               resolve();
               programExecController.signal.removeEventListener('abort', abortHandler);
             },
-            msClamped
+            milliseconds
           );
 
           
@@ -5548,7 +5631,6 @@
     let motor = {
       setProperty: function (motorNums, property, values) {
         var motorProperties = JSON.parse(localStorage.getItem('motor' + property + 's'));
-        console.log(localStorage.getItem('motor' + property + 's'));
         for (var i = 0; i < motorNums.length; i++) {
           //Translates Power to Velocity
           if (property == 'Power') {
@@ -5578,7 +5660,7 @@
           returnVar = (Math.round(motorPower) != motorPower);
         }
         else if (property == 'Velocity') {
-          var motorProperties = JSON.parse(localStorage.getItem('motorReturnVelocitys'));
+          var motorProperties = JSON.parse(localStorage.getItem('motorVelocitys')); //Later this will be a constantly updated value from Unity
           returnVar = motorProperties[Object.keys(motorProperties)[motorNum]];
         }
         else {
@@ -5652,34 +5734,32 @@
       resetSendableMotorProperties();
     }
 
-    function startProgram() {
-      resetProgramExecution();
-      setTimeout(delayStartProgram, 100);
-    }
-
-    function delayStartProgram() {
-      var code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-      var finalCode = "";
-
-      var inFunction = false;
-      for (var line of code.split('\n')) {
-        if (line.startsWith('async function '))
-          inFunction = true;
-        if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
-          finalCode += line + '\n';
-        else
-          finalCode += '//' + line + '\n';
-        if (line == '}')
-          inFunction = false;
-      }
-
-      finalCode += "\nawait runOpMode();\n";
-
-      console.log(finalCode);
-      runProgram(finalCode);
+    function startProgram(code) {
+	  resetProgramExecution();
+	  if (code == "") {
+		code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
+	    var finalCode = "";
+		var inFunction = false;
+		for (var line of code.split('\n')) {
+		  if (line.startsWith('async function '))
+			inFunction = true;
+		  if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
+			finalCode += line + '\n';
+		  else
+			finalCode += '//' + line + '\n';
+		  if (line == '}')
+			inFunction = false;
+		}
+	
+		finalCode += "\nawait runOpMode();\n";
+		runProgram(finalCode);
+	  }
+	  else
+		runProgram(code);
     }
 
     async function runProgram(code){
+	  console.log(code);
       let AsyncFunctionCtor = Object.getPrototypeOf(async function(){}).constructor;
       let program = new AsyncFunctionCtor( code );
 

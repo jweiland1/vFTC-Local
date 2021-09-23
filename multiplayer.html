@@ -9,7 +9,7 @@
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml">
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml"> -->
-  <title>Virtual Robot Simulator Controller</title>
+  <title>Virtual Robot Simulator: Driver Controlled</title>
   <style>
     body {
       background-color: #242424;
@@ -153,7 +153,11 @@
     localStorage.setItem('playMode', "TeleOp");
     var shouldBeUpdatingLoadingText = true;
     var counterForLoadingText = 1;
-    document.getElementById('fieldView').style.height = screen.height - 42 + "px";
+    document.getElementById('fieldView').style.height = window.innerHeight - 42 + "px";
+
+	window.addEventListener('resize', function () {
+	  document.getElementById('fieldView').style.height = window.innerHeight - 42 + "px";
+	});
 
     setTimeout(function () {
       shouldBeUpdatingLoadingText = false;

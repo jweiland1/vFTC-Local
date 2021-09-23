@@ -50,7 +50,7 @@ var workspace;
 var projectEnabled = true;
 
 //VRS-Modified colors to panel colors
-var propertyColorLinearOpMode = 30;
+var propertyColorLinearOpMode = '#987654';
 var propertyColorGamepad = 1;
 var propertyColorDCMotor = '#f58a42';
 var propertyColorSensors = '#2E8B57';
