@@ -24,38 +24,9 @@
 // createDcMotorDropdown
 // The following are defined in vars.js:
 // createNonEditableField
-// propertyColorDCMotor
-// propertyColorDCMotor
-// propertyColorDCMotor
-
-//VRS-Implemented createDcMotorDropdowns
-function createDcMotorDropdown() {
-  var CHOICES = [
-      ['frontLeft', 'dcMotor0'],
-      ['frontRight', 'dcMotor1'],
-	  ['backLeft', 'dcMotor2'],
-      ['backRight', 'dcMotor3'],
-	  ['ringCollection', 'dcMotor4'],
-      ['ringLoader', 'dcMotor5'],
-	  ['ringShooter', 'dcMotor6'],
-      ['wobbleActuator', 'dcMotor7'],
-    ];
-  return new Blockly.FieldDropdown(CHOICES);
-}
-
-function createDcMotorExDropdown() {
-  var CHOICES = [
-      ['frontLeft', 'dcMotor0'],
-      ['frontRight', 'dcMotor1'],
-	  ['backLeft', 'dcMotor2'],
-      ['backRight', 'dcMotor3'],
-	  ['ringCollection', 'dcMotor4'],
-      ['ringLoader', 'dcMotor5'],
-	  ['ringShooter', 'dcMotor6'],
-      ['wobbleActuator', 'dcMotor7'],
-    ];
-  return new Blockly.FieldDropdown(CHOICES);
-}
+// propertyColorActuators
+// propertyColorActuators
+// propertyColorActuators
 
 Blockly.Blocks['dcMotor_setProperty'] = {
   init: function() {
@@ -77,7 +48,7 @@ Blockly.Blocks['dcMotor_setProperty'] = {
         .appendField('to');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -142,7 +113,7 @@ Blockly.Blocks['dcMotor_setProperty_Direction'] = {
         .appendField('to');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -183,7 +154,7 @@ Blockly.Blocks['dcMotor_setProperty_Number'] = {
         .appendField('to');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -243,7 +214,7 @@ Blockly.Blocks['dcMotor_setProperty_RunMode'] = {
         .appendField('to');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -280,7 +251,7 @@ Blockly.Blocks['dcMotor_setProperty_ZeroPowerBehavior'] = {
         .appendField('to');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -323,7 +294,7 @@ Blockly.Blocks['dcMotor_getProperty'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -386,7 +357,7 @@ Blockly.Blocks['dcMotor_getProperty_Direction'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -420,7 +391,7 @@ Blockly.Blocks['dcMotor_getProperty_Boolean'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -459,7 +430,7 @@ Blockly.Blocks['dcMotor_getProperty_Number'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -515,7 +486,7 @@ Blockly.Blocks['dcMotor_getProperty_RunMode'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -549,7 +520,7 @@ Blockly.Blocks['dcMotor_getProperty_ZeroPowerBehavior'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(PROPERTY_CHOICES), 'PROP');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -599,7 +570,7 @@ Blockly.Blocks['dcMotor_setDualProperty'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -681,7 +652,7 @@ Blockly.Blocks['dcMotor_setDualProperty_Number'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -747,7 +718,7 @@ Blockly.Blocks['dcMotor_setDualProperty_RunMode'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -789,7 +760,7 @@ Blockly.Blocks['dcMotor_setDualProperty_ZeroPowerBehavior'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -847,7 +818,7 @@ Blockly.Blocks['dcMotor_setQuadProperty'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -920,7 +891,7 @@ Blockly.Blocks['dcMotor_setQuadProperty_Number'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -990,7 +961,7 @@ Blockly.Blocks['dcMotor_setQuadProperty_RunMode'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1037,7 +1008,7 @@ Blockly.Blocks['dcMotor_setQuadProperty_ZeroPowerBehavior'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1073,7 +1044,7 @@ Blockly.Blocks['dcMotor_enum_runMode'] = {
         .appendField(createNonEditableField('RunMode'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(RUN_MODE_CHOICES), 'RUN_MODE');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1118,7 +1089,7 @@ Blockly.Blocks['dcMotor_typedEnum_runMode'] = {
         .appendField(createNonEditableField('RunMode'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(RUN_MODE_CHOICES), 'RUN_MODE');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1156,7 +1127,7 @@ Blockly.Blocks['dcMotor_enum_direction'] = {
         .appendField(createNonEditableField('Direction'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(DIRECTION_CHOICES), 'DIRECTION');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1197,7 +1168,7 @@ Blockly.Blocks['dcMotor_typedEnum_direction'] = {
         .appendField(createNonEditableField('Direction'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(DIRECTION_CHOICES), 'DIRECTION');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1233,7 +1204,7 @@ Blockly.Blocks['dcMotor_enum_zeroPowerBehavior'] = {
         .appendField(createNonEditableField('ZeroPowerBehavior'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(ZERO_POWER_BEHAVIOR_CHOICES), 'ZERO_POWER_BEHAVIOR');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1274,7 +1245,7 @@ Blockly.Blocks['dcMotor_typedEnum_zeroPowerBehavior'] = {
         .appendField(createNonEditableField('ZeroPowerBehavior'))
         .appendField('.')
         .appendField(new Blockly.FieldDropdown(ZERO_POWER_BEHAVIOR_CHOICES), 'ZERO_POWER_BEHAVIOR');
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     // Assign 'this' to a variable for use in the tooltip closure below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -1309,7 +1280,7 @@ Blockly.Blocks['dcMotor_isBusy'] = {
         .appendField(createDcMotorDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(createNonEditableField('isBusy'));
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns true if the motor is currently advancing or retreating to a target position.');
   }
 };
@@ -1335,7 +1306,7 @@ Blockly.Blocks['dcMotor_setMotorEnable'] = {
         .appendField(createNonEditableField('setMotorEnable'));
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Individually energizes this particular motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
@@ -1362,7 +1333,7 @@ Blockly.Blocks['dcMotor_setMotorDisable'] = {
         .appendField(createNonEditableField('setMotorDisable'));
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Individually de-energizes this particular motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
@@ -1388,7 +1359,7 @@ Blockly.Blocks['dcMotor_isMotorEnabled'] = {
         .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(createNonEditableField('isMotorEnabled'));
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns true if the motor is energized. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
@@ -1423,7 +1394,7 @@ Blockly.Blocks['dcMotor_setVelocity_withAngleUnit'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Sets the velocity of the motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
@@ -1467,7 +1438,7 @@ Blockly.Blocks['dcMotor_getVelocity_withAngleUnit'] = {
     this.appendValueInput('ANGLE_UNIT').setCheck('AngleUnit')
         .appendField('angleUnit')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current velocity of the motor, in angular units per second. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
@@ -1509,7 +1480,7 @@ Blockly.Blocks['dcMotor_setPIDFCoefficients'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Sets the PIDF control coefficients for one of the PIDF modes of this motor. ' +
         'Note that in some controller implementations, setting the PIDF coefficients for one ' +
         'mode on a motor might affect other modes on that motor, or might affect the PIDF ' +
@@ -1551,7 +1522,7 @@ Blockly.Blocks['dcMotor_getPIDFCoefficients'] = {
     this.appendValueInput('RUN_MODE').setCheck('DcMotor.RunMode')
         .appendField('runMode')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns the PIDF control coefficients used when running in the indicated mode ' +
         'on this motor. The runMode value can be either RUN_USING_ENCODER or RUN_TO_POSITION. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
@@ -1597,7 +1568,7 @@ Blockly.Blocks['dcMotor_setVelocityPIDFCoefficients'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('A shorthand for setting the PIDF coefficients for the RUN_USING_ENCODER mode. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
@@ -1653,7 +1624,7 @@ Blockly.Blocks['dcMotor_setPositionPIDFCoefficients'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('A shorthand for setting the PIDF coefficients for the RUN_TO_POSITION mode. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
@@ -1693,7 +1664,7 @@ Blockly.Blocks['dcMotor_getCurrent'] = {
     this.appendValueInput('CURRENT_UNIT').setCheck('CurrentUnit')
         .appendField('currentUnit')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current consumed by this motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
@@ -1731,7 +1702,7 @@ Blockly.Blocks['dcMotor_getCurrentAlert'] = {
     this.appendValueInput('CURRENT_UNIT').setCheck('CurrentUnit')
         .appendField('currentUnit')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current alert for this motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
@@ -1773,7 +1744,7 @@ Blockly.Blocks['dcMotor_setCurrentAlert'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Sets the current alert for this motor. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
@@ -1814,7 +1785,7 @@ Blockly.Blocks['dcMotor_isOverCurrent'] = {
         .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
         .appendField('.')
         .appendField(createNonEditableField('isOverCurrent'));
-    this.setColour(propertyColorDCMotor);
+    this.setColour(propertyColorActuators);
     this.setTooltip('Returns true if the current consumption of this motor exceeds the alert threshold. ' +
         'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }

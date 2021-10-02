@@ -37,14 +37,6 @@
 */
 
 
-//VRS-Added createBNO055IMUDropdown
-function createBNO055IMUDropdown() {
-  var CHOICES = [
-	['imu', 'imuAsBNO055IMU'],
-  ];
-  return new Blockly.FieldDropdown(CHOICES);
-}
-
 //VRS-Put property in call
 Blockly.JavaScript['bno055imu_setProperty'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');

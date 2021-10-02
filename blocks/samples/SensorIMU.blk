@@ -66,7 +66,7 @@
 <field name="COMMENT">Initialize IMU.</field>
 <next>
 <block type="bno055imu_initialize" id="L)mUPf_*~9K0lQKKU{7k">
-<field name="IDENTIFIER">imuAsBNO055IMU</field>
+<field name="IDENTIFIER">imu0</field>
 <data>{"IDENTIFIER":"imu"}</data>
 <value name="PARAMETERS">
 <block type="variables_get" id="gi_FUMi?IOZAHjgYL|n!">
@@ -117,7 +117,7 @@
 <field name="VAR" id="~LUL9~Z;enziZiH||`!?">angles</field>
 <value name="VALUE">
 <block type="bno055imu_getAngularOrientation" id="*~!pw]|@:UffO+DP~Oth">
-<field name="IDENTIFIER">imuAsBNO055IMU</field>
+<field name="IDENTIFIER">imu0</field>
 <data>{"IDENTIFIER":"imu"}</data>
 <value name="AXES_REFERENCE">
 <shadow type="navigation_typedEnum_axesReference" id="!uSPH#9gEQjmYd!!L*Zu">
@@ -141,7 +141,7 @@
 <field name="VAR" id="#]v^/7$}[x}*;PPYGOk(">gravity</field>
 <value name="VALUE">
 <block type="bno055imu_getProperty_Acceleration" id="sI7xC=zc);0tA95zW([5">
-<field name="IDENTIFIER">imuAsBNO055IMU</field>
+<field name="IDENTIFIER">imu0</field>
 <field name="PROP">Gravity</field>
 <data>{"IDENTIFIER":"imu"}</data>
 </block>

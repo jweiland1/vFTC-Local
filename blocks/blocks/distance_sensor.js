@@ -15,14 +15,6 @@
       interpreter.setProperty(globalObject, 'distanceSensor', distSensor);
 */
 
-//VRS-Added createDistanceSensorDropdown
-function createDistanceSensorDropdown() {
-  var CHOICES = [
-	['frontDistSensor', 'distanceSensor0'],
-  ];
-  return new Blockly.FieldDropdown(CHOICES);
-}
-
 Blockly.Blocks['distanceSensor_getDistance'] = {
   init: function() {
     this.setOutput(true, 'Number');
