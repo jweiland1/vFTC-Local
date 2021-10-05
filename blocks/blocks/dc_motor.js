@@ -84,7 +84,7 @@ Blockly.JavaScript['dcMotor_setProperty'] = function(block) {
   return 'motor.setProperty([' + identifier.substring(identifier.length - 1) + '], \'' + property + '\', [' + value + ']);\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setProperty'] = function(block) {
+Blockly.FtcJava['dcMotor_setProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   if (property == 'MaxSpeed') {
     return '';
@@ -98,7 +98,7 @@ Blockly.JavaScript['dcMotor_setProperty'] = function(block) {
   } else {
     return identifier + '.set' + property + '(' + value + ');\n';
   }
-};*/
+};
 
 Blockly.Blocks['dcMotor_setProperty_Direction'] = {
   init: function() {
@@ -134,8 +134,8 @@ Blockly.Blocks['dcMotor_setProperty_Direction'] = {
 Blockly.JavaScript['dcMotor_setProperty_Direction'] =
     Blockly.JavaScript['dcMotor_setProperty'];
 
-/*Blockly.FtcJava['dcMotor_setProperty_Direction'] =
-    Blockly.FtcJava['dcMotor_setProperty'];*/
+Blockly.FtcJava['dcMotor_setProperty_Direction'] =
+    Blockly.FtcJava['dcMotor_setProperty'];
 
 Blockly.Blocks['dcMotor_setProperty_Number'] = {
   init: function() {
@@ -198,8 +198,8 @@ Blockly.Blocks['dcMotor_setProperty_Number'] = {
 Blockly.JavaScript['dcMotor_setProperty_Number'] =
     Blockly.JavaScript['dcMotor_setProperty'];
 
-/*Blockly.FtcJava['dcMotor_setProperty_Number'] =
-    Blockly.FtcJava['dcMotor_setProperty'];*/
+Blockly.FtcJava['dcMotor_setProperty_Number'] =
+    Blockly.FtcJava['dcMotor_setProperty'];
 
 Blockly.Blocks['dcMotor_setProperty_RunMode'] = {
   init: function() {
@@ -235,8 +235,8 @@ Blockly.Blocks['dcMotor_setProperty_RunMode'] = {
 Blockly.JavaScript['dcMotor_setProperty_RunMode'] =
     Blockly.JavaScript['dcMotor_setProperty'];
 
-/*Blockly.FtcJava['dcMotor_setProperty_RunMode'] =
-    Blockly.FtcJava['dcMotor_setProperty'];*/
+Blockly.FtcJava['dcMotor_setProperty_RunMode'] =
+    Blockly.FtcJava['dcMotor_setProperty'];
 
 Blockly.Blocks['dcMotor_setProperty_ZeroPowerBehavior'] = {
   init: function() {
@@ -272,8 +272,8 @@ Blockly.Blocks['dcMotor_setProperty_ZeroPowerBehavior'] = {
 Blockly.JavaScript['dcMotor_setProperty_ZeroPowerBehavior'] =
     Blockly.JavaScript['dcMotor_setProperty'];
 
-/*Blockly.FtcJava['dcMotor_setProperty_ZeroPowerBehavior'] =
-    Blockly.FtcJava['dcMotor_setProperty'];*/
+Blockly.FtcJava['dcMotor_setProperty_ZeroPowerBehavior'] =
+    Blockly.FtcJava['dcMotor_setProperty'];
 
 Blockly.Blocks['dcMotor_getProperty'] = {
   init: function() {
@@ -330,7 +330,7 @@ Blockly.JavaScript['dcMotor_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_getProperty'] = function(block) {
+Blockly.FtcJava['dcMotor_getProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   if (property == 'MaxSpeed') {
     return ['0', Blockly.FtcJava.ORDER_ATOMIC];
@@ -345,7 +345,7 @@ Blockly.JavaScript['dcMotor_getProperty'] = function(block) {
     code = identifier + '.get' + property + '()';
   }
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_getProperty_Direction'] = {
   init: function() {
@@ -378,8 +378,8 @@ Blockly.Blocks['dcMotor_getProperty_Direction'] = {
 Blockly.JavaScript['dcMotor_getProperty_Direction'] =
     Blockly.JavaScript['dcMotor_getProperty'];
 
-/*Blockly.FtcJava['dcMotor_getProperty_Direction'] =
-    Blockly.FtcJava['dcMotor_getProperty'];*/
+Blockly.FtcJava['dcMotor_getProperty_Direction'] =
+    Blockly.FtcJava['dcMotor_getProperty'];
 
 Blockly.Blocks['dcMotor_getProperty_Boolean'] = {
   init: function() {
@@ -412,8 +412,8 @@ Blockly.Blocks['dcMotor_getProperty_Boolean'] = {
 Blockly.JavaScript['dcMotor_getProperty_Boolean'] =
     Blockly.JavaScript['dcMotor_getProperty'];
 
-/*Blockly.FtcJava['dcMotor_getProperty_Boolean'] =
-    Blockly.FtcJava['dcMotor_getProperty'];*/
+Blockly.FtcJava['dcMotor_getProperty_Boolean'] =
+    Blockly.FtcJava['dcMotor_getProperty'];
 
 Blockly.Blocks['dcMotor_getProperty_Number'] = {
   init: function() {
@@ -473,8 +473,8 @@ Blockly.Blocks['dcMotor_getProperty_Number'] = {
 Blockly.JavaScript['dcMotor_getProperty_Number'] =
     Blockly.JavaScript['dcMotor_getProperty'];
 
-/*Blockly.FtcJava['dcMotor_getProperty_Number'] =
-    Blockly.FtcJava['dcMotor_getProperty'];*/
+Blockly.FtcJava['dcMotor_getProperty_Number'] =
+    Blockly.FtcJava['dcMotor_getProperty'];
 
 Blockly.Blocks['dcMotor_getProperty_RunMode'] = {
   init: function() {
@@ -507,8 +507,8 @@ Blockly.Blocks['dcMotor_getProperty_RunMode'] = {
 Blockly.JavaScript['dcMotor_getProperty_RunMode'] =
     Blockly.JavaScript['dcMotor_getProperty'];
 
-/*Blockly.FtcJava['dcMotor_getProperty_RunMode'] =
-    Blockly.FtcJava['dcMotor_getProperty'];*/
+Blockly.FtcJava['dcMotor_getProperty_RunMode'] =
+    Blockly.FtcJava['dcMotor_getProperty'];
 
 Blockly.Blocks['dcMotor_getProperty_ZeroPowerBehavior'] = {
   init: function() {
@@ -541,8 +541,8 @@ Blockly.Blocks['dcMotor_getProperty_ZeroPowerBehavior'] = {
 Blockly.JavaScript['dcMotor_getProperty_ZeroPowerBehavior'] =
     Blockly.JavaScript['dcMotor_getProperty'];
 
-/*Blockly.FtcJava['dcMotor_getProperty_ZeroPowerBehavior'] =
-    Blockly.FtcJava['dcMotor_getProperty'];*/
+Blockly.FtcJava['dcMotor_getProperty_ZeroPowerBehavior'] =
+    Blockly.FtcJava['dcMotor_getProperty'];
 
 // Dual property setters
 
@@ -608,7 +608,7 @@ Blockly.JavaScript['dcMotor_setDualProperty'] = function(block) {
   return 'motor.setProperty([' + identifier1.substring(identifier1.length - 1) + ', ' + identifier2.substring(identifier2.length - 1) + '], \'' + property + '\', [' + value1 + ', ' + value2 + ']);\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setDualProperty'] = function(block) {
+Blockly.FtcJava['dcMotor_setDualProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   if (property == 'MaxSpeed') {
     return '';
@@ -628,7 +628,7 @@ Blockly.JavaScript['dcMotor_setDualProperty'] = function(block) {
     return identifier1 + '.set' + property + '(' + value1 + ');\n' +
         identifier2 + '.set' + property + '(' + value2 + ');\n';
   }
-};*/
+};
 
 Blockly.Blocks['dcMotor_setDualProperty_Number'] = {
   init: function() {
@@ -696,8 +696,8 @@ Blockly.Blocks['dcMotor_setDualProperty_Number'] = {
 Blockly.JavaScript['dcMotor_setDualProperty_Number'] =
     Blockly.JavaScript['dcMotor_setDualProperty'];
 
-/*Blockly.FtcJava['dcMotor_setDualProperty_Number'] =
-    Blockly.FtcJava['dcMotor_setDualProperty'];*/
+Blockly.FtcJava['dcMotor_setDualProperty_Number'] =
+    Blockly.FtcJava['dcMotor_setDualProperty'];
 
 
 Blockly.Blocks['dcMotor_setDualProperty_RunMode'] = {
@@ -739,8 +739,8 @@ Blockly.Blocks['dcMotor_setDualProperty_RunMode'] = {
 Blockly.JavaScript['dcMotor_setDualProperty_RunMode'] =
     Blockly.JavaScript['dcMotor_setDualProperty'];
 
-/*Blockly.FtcJava['dcMotor_setDualProperty_RunMode'] =
-    Blockly.FtcJava['dcMotor_setDualProperty'];*/
+Blockly.FtcJava['dcMotor_setDualProperty_RunMode'] =
+    Blockly.FtcJava['dcMotor_setDualProperty'];
 
 Blockly.Blocks['dcMotor_setDualProperty_ZeroPowerBehavior'] = {
   init: function() {
@@ -781,8 +781,8 @@ Blockly.Blocks['dcMotor_setDualProperty_ZeroPowerBehavior'] = {
 Blockly.JavaScript['dcMotor_setDualProperty_ZeroPowerBehavior'] =
     Blockly.JavaScript['dcMotor_setDualProperty'];
 
-/*Blockly.FtcJava['dcMotor_setDualProperty_ZeroPowerBehavior'] =
-    Blockly.FtcJava['dcMotor_setDualProperty'];*/
+Blockly.FtcJava['dcMotor_setDualProperty_ZeroPowerBehavior'] =
+    Blockly.FtcJava['dcMotor_setDualProperty'];
 
 //VRS-Quad Property Set
 
@@ -861,6 +861,38 @@ Blockly.JavaScript['dcMotor_setQuadProperty'] = function(block) {
   return code;
 };
 
+Blockly.FtcJava['dcMotor_setQuadProperty'] = function(block) {
+  var property = block.getFieldValue('PROP');
+  if (property == 'MaxSpeed') {
+    return '';
+  }
+  var identifier1 = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER1', 'DcMotor');
+  var identifier2 = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER2', 'DcMotor');
+  var identifier3 = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER3', 'DcMotor');
+  var identifier4 = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER4', 'DcMotor');
+  var value1 = Blockly.FtcJava.valueToCode(
+      block, 'VALUE1', Blockly.FtcJava.ORDER_COMMA);
+  var value2 = Blockly.FtcJava.valueToCode(
+      block, 'VALUE2', Blockly.FtcJava.ORDER_COMMA);
+  var value3 = Blockly.FtcJava.valueToCode(
+      block, 'VALUE3', Blockly.FtcJava.ORDER_COMMA);
+  var value4 = Blockly.FtcJava.valueToCode(
+      block, 'VALUE4', Blockly.FtcJava.ORDER_COMMA);
+  if (property == 'TargetPositionTolerance' || property == 'Velocity') {
+    // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
+    Blockly.FtcJava.generateImport_('DcMotorEx');
+    return '((DcMotorEx) ' + identifier1 + ').set' + property + '(' + value1 + ');\n' +
+        '((DcMotorEx) ' + identifier2 + ').set' + property + '(' + value2 + ');\n' + 
+		'((DcMotorEx) ' + identifier3 + ').set' + property + '(' + value3 + ');\n' + 
+		'((DcMotorEx) ' + identifier4 + ').set' + property + '(' + value4 + ');\n';
+  } else {
+    return identifier1 + '.set' + property + '(' + value1 + ');\n' +
+        identifier2 + '.set' + property + '(' + value2 + ');\n' + 
+		identifier3 + '.set' + property + '(' + value3 + ');\n' + 
+		identifier4 + '.set' + property + '(' + value4 + ');\n';
+  }
+};
+
 Blockly.Blocks['dcMotor_setQuadProperty_Number'] = {
   init: function() {
     var PROPERTY_CHOICES = [
@@ -934,6 +966,9 @@ Blockly.Blocks['dcMotor_setQuadProperty_Number'] = {
 
 Blockly.JavaScript['dcMotor_setQuadProperty_Number'] =
     Blockly.JavaScript['dcMotor_setQuadProperty'];
+	
+Blockly.FtcJava['dcMotor_setQuadProperty_Number'] =
+    Blockly.FtcJava['dcMotor_setQuadProperty'];
 
 Blockly.Blocks['dcMotor_setQuadProperty_RunMode'] = {
   init: function() {
@@ -982,6 +1017,9 @@ Blockly.Blocks['dcMotor_setQuadProperty_RunMode'] = {
 Blockly.JavaScript['dcMotor_setQuadProperty_RunMode'] =
     Blockly.JavaScript['dcMotor_setQuadProperty'];
 
+Blockly.FtcJava['dcMotor_setQuadProperty_RunMode'] =
+    Blockly.FtcJava['dcMotor_setQuadProperty'];
+
 Blockly.Blocks['dcMotor_setQuadProperty_ZeroPowerBehavior'] = {
   init: function() {
     var PROPERTY_CHOICES = [
@@ -1028,6 +1066,9 @@ Blockly.Blocks['dcMotor_setQuadProperty_ZeroPowerBehavior'] = {
 
 Blockly.JavaScript['dcMotor_setQuadProperty_ZeroPowerBehavior'] =
     Blockly.JavaScript['dcMotor_setQuadProperty'];
+	
+Blockly.FtcJava['dcMotor_setQuadProperty_ZeroPowerBehavior'] =
+    Blockly.FtcJava['dcMotor_setQuadProperty'];
 
 // Enums
 
@@ -1070,11 +1111,11 @@ Blockly.JavaScript['dcMotor_enum_runMode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['dcMotor_enum_runMode'] = function(block) {
+Blockly.FtcJava['dcMotor_enum_runMode'] = function(block) {
   var code = 'DcMotor.RunMode.' + block.getFieldValue('RUN_MODE');
   Blockly.FtcJava.generateImport_('DcMotor');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['dcMotor_typedEnum_runMode'] = {
   init: function() {
@@ -1113,8 +1154,8 @@ Blockly.Blocks['dcMotor_typedEnum_runMode'] = {
 Blockly.JavaScript['dcMotor_typedEnum_runMode'] =
     Blockly.JavaScript['dcMotor_enum_runMode'];
 
-/*Blockly.FtcJava['dcMotor_typedEnum_runMode'] =
-    Blockly.FtcJava['dcMotor_enum_runMode'];*/
+Blockly.FtcJava['dcMotor_typedEnum_runMode'] =
+    Blockly.FtcJava['dcMotor_enum_runMode'];
 
 Blockly.Blocks['dcMotor_enum_direction'] = {
   init: function() {
@@ -1151,11 +1192,11 @@ Blockly.JavaScript['dcMotor_enum_direction'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['dcMotor_enum_direction'] = function(block) {
+Blockly.FtcJava['dcMotor_enum_direction'] = function(block) {
   var code = 'DcMotorSimple.Direction.' + block.getFieldValue('DIRECTION');
   Blockly.FtcJava.generateImport_('DcMotorSimple');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['dcMotor_typedEnum_direction'] = {
   init: function() {
@@ -1190,8 +1231,8 @@ Blockly.Blocks['dcMotor_typedEnum_direction'] = {
 Blockly.JavaScript['dcMotor_typedEnum_direction'] =
     Blockly.JavaScript['dcMotor_enum_direction'];
 
-/*Blockly.FtcJava['dcMotor_typedEnum_direction'] =
-    Blockly.FtcJava['dcMotor_enum_direction'];*/
+Blockly.FtcJava['dcMotor_typedEnum_direction'] =
+    Blockly.FtcJava['dcMotor_enum_direction'];
 
 Blockly.Blocks['dcMotor_enum_zeroPowerBehavior'] = {
   init: function() {
@@ -1228,11 +1269,11 @@ Blockly.JavaScript['dcMotor_enum_zeroPowerBehavior'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['dcMotor_enum_zeroPowerBehavior'] = function(block) {
+Blockly.FtcJava['dcMotor_enum_zeroPowerBehavior'] = function(block) {
   var code = 'DcMotor.ZeroPowerBehavior.' + block.getFieldValue('ZERO_POWER_BEHAVIOR');
   Blockly.FtcJava.generateImport_('DcMotor');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['dcMotor_typedEnum_zeroPowerBehavior'] = {
   init: function() {
@@ -1267,8 +1308,8 @@ Blockly.Blocks['dcMotor_typedEnum_zeroPowerBehavior'] = {
 Blockly.JavaScript['dcMotor_typedEnum_zeroPowerBehavior'] =
     Blockly.JavaScript['dcMotor_enum_zeroPowerBehavior'];
 
-/*Blockly.FtcJava['dcMotor_typedEnum_zeroPowerBehavior'] =
-    Blockly.FtcJava['dcMotor_enum_zeroPowerBehavior'];*/
+Blockly.FtcJava['dcMotor_typedEnum_zeroPowerBehavior'] =
+    Blockly.FtcJava['dcMotor_enum_zeroPowerBehavior'];
 
 // Functions
 
@@ -1291,11 +1332,11 @@ Blockly.JavaScript['dcMotor_isBusy'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_isBusy'] = function(block) {
+Blockly.FtcJava['dcMotor_isBusy'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var code = identifier + '.isBusy()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_setMotorEnable'] = {
   init: function() {
@@ -1317,12 +1358,12 @@ Blockly.JavaScript['dcMotor_setMotorEnable'] = function(block) {
   return 'motor.setMotorEnable(' + identifier.substring(identifier.length - 1) + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setMotorEnable'] = function(block) {
+Blockly.FtcJava['dcMotor_setMotorEnable'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setMotorEnable();\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_setMotorDisable'] = {
   init: function() {
@@ -1344,12 +1385,12 @@ Blockly.JavaScript['dcMotor_setMotorDisable'] = function(block) {
   return 'motor.setMotorDisable(' + identifier.substring(identifier.length - 1) + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setMotorDisable'] = function(block) {
+Blockly.FtcJava['dcMotor_setMotorDisable'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setMotorDisable();\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_isMotorEnabled'] = {
   init: function() {
@@ -1371,13 +1412,13 @@ Blockly.JavaScript['dcMotor_isMotorEnabled'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_isMotorEnabled'] = function(block) {
+Blockly.FtcJava['dcMotor_isMotorEnabled'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').isMotorEnabled()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_setVelocity_withAngleUnit'] = {
   init: function() {
@@ -1416,7 +1457,7 @@ Blockly.JavaScript['dcMotor_setVelocity_withAngleUnit'] = function(block) {
   return 'motor.setVelocity_withAngleUnit(' + identifier.substring(identifier.length - 1) + ', ' + angularRate + ', ' + angleUnit + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setVelocity_withAngleUnit'] = function(block) {
+Blockly.FtcJava['dcMotor_setVelocity_withAngleUnit'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var angularRate = Blockly.FtcJava.valueToCode(
       block, 'ANGULAR_RATE', Blockly.FtcJava.ORDER_COMMA);
@@ -1425,7 +1466,7 @@ Blockly.JavaScript['dcMotor_setVelocity_withAngleUnit'] = function(block) {
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setVelocity(' + angularRate + ', ' + angleUnit + ');\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_getVelocity_withAngleUnit'] = {
   init: function() {
@@ -1455,7 +1496,7 @@ Blockly.JavaScript['dcMotor_getVelocity_withAngleUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_getVelocity_withAngleUnit'] = function(block) {
+Blockly.FtcJava['dcMotor_getVelocity_withAngleUnit'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var angleUnit = Blockly.FtcJava.valueToCode(
       block, 'ANGLE_UNIT', Blockly.FtcJava.ORDER_NONE);
@@ -1463,7 +1504,7 @@ Blockly.JavaScript['dcMotor_getVelocity_withAngleUnit'] = function(block) {
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').getVelocity(' + angleUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_setPIDFCoefficients'] = {
   init: function() {
@@ -1499,7 +1540,7 @@ Blockly.JavaScript['dcMotor_setPIDFCoefficients'] = function(block) {
   return 'motor.setPIDFCoefficients(' + identifier.substring(identifier.length - 1) + ', ' + runMode + ', ' + pidfCoefficients + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setPIDFCoefficients'] = function(block) {
+Blockly.FtcJava['dcMotor_setPIDFCoefficients'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var runMode = Blockly.FtcJava.valueToCode(
       block, 'RUN_MODE', Blockly.FtcJava.ORDER_COMMA);
@@ -1509,7 +1550,7 @@ Blockly.JavaScript['dcMotor_setPIDFCoefficients'] = function(block) {
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setPIDFCoefficients(' + runMode + ', ' +
       pidfCoefficients + ');\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_getPIDFCoefficients'] = {
   init: function() {
@@ -1537,7 +1578,7 @@ Blockly.JavaScript['dcMotor_getPIDFCoefficients'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_getPIDFCoefficients'] = function(block) {
+Blockly.FtcJava['dcMotor_getPIDFCoefficients'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var runMode = Blockly.FtcJava.valueToCode(
       block, 'RUN_MODE', Blockly.FtcJava.ORDER_NONE);
@@ -1545,7 +1586,7 @@ Blockly.JavaScript['dcMotor_getPIDFCoefficients'] = function(block) {
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').getPIDFCoefficients(' + runMode + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_setVelocityPIDFCoefficients'] = {
   init: function() {
@@ -1597,7 +1638,7 @@ Blockly.JavaScript['dcMotor_setVelocityPIDFCoefficients'] = function(block) {
   return 'motor.setVelocityPIDFCoefficients(' + identifier.substring(identifier.length - 1) + ', ' + p + ', ' + i + ', ' + d + ', ' + f + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setVelocityPIDFCoefficients'] = function(block) {
+Blockly.FtcJava['dcMotor_setVelocityPIDFCoefficients'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var p = Blockly.FtcJava.valueToCode(
       block, 'P', Blockly.FtcJava.ORDER_COMMA);
@@ -1610,7 +1651,7 @@ Blockly.JavaScript['dcMotor_setVelocityPIDFCoefficients'] = function(block) {
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setVelocityPIDFCoefficients(' + p + ', ' + i + ', ' + d + ', ' + f + ');\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_setPositionPIDFCoefficients'] = {
   init: function() {
@@ -1644,14 +1685,14 @@ Blockly.JavaScript['dcMotor_setPositionPIDFCoefficients'] = function(block) {
   return 'motor.setPositionPIDFCoefficients(' + identifier.substring(identifier.length - 1) + ', ' + p + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setPositionPIDFCoefficients'] = function(block) {
+Blockly.FtcJava['dcMotor_setPositionPIDFCoefficients'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var p = Blockly.FtcJava.valueToCode(
       block, 'P', Blockly.FtcJava.ORDER_NONE);
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setPositionPIDFCoefficients(' + p + ');\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_getCurrent'] = {
   init: function() {
@@ -1681,7 +1722,7 @@ Blockly.JavaScript['dcMotor_getCurrent'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_getCurrent'] = function(block) {
+Blockly.FtcJava['dcMotor_getCurrent'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var currentUnit = Blockly.FtcJava.valueToCode(
       block, 'CURRENT_UNIT', Blockly.FtcJava.ORDER_NONE);
@@ -1689,7 +1730,7 @@ Blockly.JavaScript['dcMotor_getCurrent'] = function(block) {
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').getCurrent(' + currentUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_getCurrentAlert'] = {
   init: function() {
@@ -1719,7 +1760,7 @@ Blockly.JavaScript['dcMotor_getCurrentAlert'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_getCurrentAlert'] = function(block) {
+Blockly.FtcJava['dcMotor_getCurrentAlert'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var currentUnit = Blockly.FtcJava.valueToCode(
       block, 'CURRENT_UNIT', Blockly.FtcJava.ORDER_NONE);
@@ -1727,7 +1768,7 @@ Blockly.JavaScript['dcMotor_getCurrentAlert'] = function(block) {
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').getCurrentAlert(' + currentUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['dcMotor_setCurrentAlert'] = {
   init: function() {
@@ -1766,7 +1807,7 @@ Blockly.JavaScript['dcMotor_setCurrentAlert'] = function(block) {
   return 'motor.setCurrentAlert(' + identifier.substring(identifier.length - 1) + ', ' + current + ', ' + currentUnit + ');\n';
 };
 
-/*Blockly.FtcJava['dcMotor_setCurrentAlert'] = function(block) {
+Blockly.FtcJava['dcMotor_setCurrentAlert'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   var current = Blockly.FtcJava.valueToCode(
       block, 'CURRENT', Blockly.FtcJava.ORDER_COMMA);
@@ -1775,7 +1816,7 @@ Blockly.JavaScript['dcMotor_setCurrentAlert'] = function(block) {
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setCurrentAlert(' + current + ', ' + currentUnit + ');\n';
-};*/
+};
 
 Blockly.Blocks['dcMotor_isOverCurrent'] = {
   init: function() {
@@ -1797,10 +1838,10 @@ Blockly.JavaScript['dcMotor_isOverCurrent'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['dcMotor_isOverCurrent'] = function(block) {
+Blockly.FtcJava['dcMotor_isOverCurrent'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   var code = '((DcMotorEx) ' + identifier + ').isOverCurrent()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};

@@ -44,9 +44,9 @@ Blockly.JavaScript['comment'] = function(block) {
   return '';
 };
 
-/*Blockly.FtcJava['comment'] = function(block) {
+Blockly.FtcJava['comment'] = function(block) {
   return '// ' + block.getFieldValue('COMMENT') + '\n';
-};*/
+};
 
 Blockly.Blocks['misc_null'] = {
   init: function() {
@@ -63,9 +63,9 @@ Blockly.JavaScript['misc_null'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['misc_null'] = function(block) {
+Blockly.FtcJava['misc_null'] = function(block) {
   return ['null', Blockly.FtcJava.ORDER_ATOMIC];
-};*/
+};
 
 Blockly.Blocks['misc_isNull'] = {
   init: function() {
@@ -88,12 +88,12 @@ Blockly.JavaScript['misc_isNull'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['misc_isNull'] = function(block) {
+Blockly.FtcJava['misc_isNull'] = function(block) {
   var value = Blockly.FtcJava.valueToCode(
       block, 'VALUE', Blockly.FtcJava.ORDER_EQUALITY);
   var code = value + ' == null';
   return [code, Blockly.FtcJava.ORDER_EQUALITY];
-};*/
+};
 
 Blockly.Blocks['misc_isNotNull'] = {
   init: function() {
@@ -116,12 +116,12 @@ Blockly.JavaScript['misc_isNotNull'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['misc_isNotNull'] = function(block) {
+Blockly.FtcJava['misc_isNotNull'] = function(block) {
   var value = Blockly.FtcJava.valueToCode(
       block, 'VALUE', Blockly.FtcJava.ORDER_EQUALITY);
   var code = value + ' != null';
   return [code, Blockly.FtcJava.ORDER_EQUALITY];
-};*/
+};
 
 Blockly.Blocks['misc_atan2'] = {
   init: function() {
@@ -160,14 +160,14 @@ Blockly.JavaScript['misc_atan2'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_DIVISION];
 };
 
-/*Blockly.FtcJava['misc_atan2'] = function(block) {
+Blockly.FtcJava['misc_atan2'] = function(block) {
   var y = Blockly.FtcJava.valueToCode(
       block, 'Y', Blockly.FtcJava.ORDER_COMMA);
   var x = Blockly.FtcJava.valueToCode(
       block, 'X', Blockly.FtcJava.ORDER_COMMA);
   var code = 'Math.atan2(' + y + ', ' + x + ') / Math.PI * 180';
   return [code, Blockly.FtcJava.ORDER_MULTIPLICATION];
-};*/
+};
 
 Blockly.Blocks['misc_formatNumber'] = {
   init: function() {
@@ -204,7 +204,7 @@ Blockly.JavaScript['misc_formatNumber'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['misc_formatNumber'] = function(block) {
+Blockly.FtcJava['misc_formatNumber'] = function(block) {
   var number = Blockly.FtcJava.valueToCode(
       block, 'NUMBER', Blockly.FtcJava.ORDER_COMMA);
   var precision = Blockly.FtcJava.valueToCode(
@@ -213,7 +213,7 @@ Blockly.JavaScript['misc_formatNumber'] = function(block) {
   Blockly.FtcJava.generateImport_('JavaUtil');
   var code = 'JavaUtil.formatNumber(' + number + ', ' + precision + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['misc_roundDecimal'] = {
   init: function() {
@@ -250,7 +250,7 @@ Blockly.JavaScript['misc_roundDecimal'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['misc_roundDecimal'] = function(block) {
+Blockly.FtcJava['misc_roundDecimal'] = function(block) {
   var number = Blockly.FtcJava.valueToCode(
       block, 'NUMBER', Blockly.FtcJava.ORDER_COMMA);
   var precision = Blockly.FtcJava.valueToCode(
@@ -259,7 +259,7 @@ Blockly.JavaScript['misc_roundDecimal'] = function(block) {
   Blockly.FtcJava.generateImport_('JavaUtil');
   var code = 'Double.parseDouble(JavaUtil.formatNumber(' + number + ', ' + precision + '))';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['misc_addItemToList'] = {
   init: function() {
@@ -285,16 +285,16 @@ Blockly.JavaScript['misc_addItemToList'] = function(block) {
   return list + '.push(' + item + ');\n';
 };
 
-/*Blockly.FtcJava['misc_addItemToList'] = function(block) {
+Blockly.FtcJava['misc_addItemToList'] = function(block) {
   var item = Blockly.FtcJava.valueToCode(
       block, 'ITEM', Blockly.FtcJava.ORDER_NONE);
   var list = Blockly.FtcJava.valueToCode(
       block, 'LIST', Blockly.FtcJava.ORDER_MEMBER);
   return list + '.add(' + item + ');\n';
-};*/
+};
 
-//VRS-I don't think we need this
-/*function callJava_mutationToDom(block) {
+
+function callJava_mutationToDom(block) {
   var xmlElement = Blockly.utils.xml.createElement('mutation');
   xmlElement.setAttribute('methodLookupString', block.methodLookupString_);
   xmlElement.setAttribute('parameterCount', block.parameterCount_);
@@ -691,4 +691,3 @@ Blockly.JavaScript['misc_callJava_noReturn'] = function(block) {
 Blockly.FtcJava['misc_callJava_noReturn'] = function(block) {
   return generateFtcJavaCallJava(block) + ';\n';
 };
-*/

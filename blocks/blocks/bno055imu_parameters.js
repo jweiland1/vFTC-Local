@@ -96,7 +96,7 @@ Blockly.JavaScript['bno055imuParameters_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_getProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
@@ -129,7 +129,7 @@ Blockly.JavaScript['bno055imuParameters_getProperty'] = function(block) {
   }
   code = bno055imuParameters + '.' + property;
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_getProperty_AccelUnit'] = {
   init: function() {
@@ -165,8 +165,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_AccelUnit'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_AccelUnit'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_AccelUnit'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_AccelUnit'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_AccelerationIntegrationAlgorithm'] = {
   init: function() {
@@ -202,8 +202,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_AccelerationIntegrationAlgorithm
 Blockly.JavaScript['bno055imuParameters_getProperty_AccelerationIntegrationAlgorithm'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_AccelerationIntegrationAlgorithm'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_AccelerationIntegrationAlgorithm'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_AngleUnit'] = {
   init: function() {
@@ -239,8 +239,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_AngleUnit'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_AngleUnit'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_AngleUnit'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_AngleUnit'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_String'] = {
   init: function() {
@@ -278,8 +278,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_String'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_String'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_String'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_String'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_Number'] = {
   init: function() {
@@ -327,8 +327,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_Number'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_Number'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_Number'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_Number'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_Boolean'] = {
   init: function() {
@@ -364,8 +364,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_Boolean'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_Boolean'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_Boolean'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_Boolean'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_SensorMode'] = {
   init: function() {
@@ -401,8 +401,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_SensorMode'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_SensorMode'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_SensorMode'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_SensorMode'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 Blockly.Blocks['bno055imuParameters_getProperty_TempUnit'] = {
   init: function() {
@@ -438,8 +438,8 @@ Blockly.Blocks['bno055imuParameters_getProperty_TempUnit'] = {
 Blockly.JavaScript['bno055imuParameters_getProperty_TempUnit'] =
     Blockly.JavaScript['bno055imuParameters_getProperty'];
 
-/*Blockly.FtcJava['bno055imuParameters_getProperty_TempUnit'] =
-    Blockly.FtcJava['bno055imuParameters_getProperty'];*/
+Blockly.FtcJava['bno055imuParameters_getProperty_TempUnit'] =
+    Blockly.FtcJava['bno055imuParameters_getProperty'];
 
 // Functions
 
@@ -459,11 +459,11 @@ Blockly.JavaScript['bno055imuParameters_create'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['bno055imuParameters_create'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_create'] = function(block) {
   var code = 'new BNO055IMU.Parameters()';
   Blockly.FtcJava.generateImport_('BNO055IMU');
   return [code, Blockly.FtcJava.ORDER_NEW];
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setAccelUnit'] = {
   init: function() {
@@ -494,13 +494,13 @@ Blockly.JavaScript['bno055imuParameters_setAccelUnit'] = function(block) {
       bno055imuParameters + ', ' + accelUnit + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setAccelUnit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setAccelUnit'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var accelUnit = Blockly.FtcJava.valueToCode(
       block, 'ACCEL_UNIT', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.accelUnit = ' + accelUnit + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setAccelerationIntegrationAlgorithm'] = {
   init: function() {
@@ -531,14 +531,14 @@ Blockly.JavaScript['bno055imuParameters_setAccelerationIntegrationAlgorithm'] = 
       bno055imuParameters + ', ' + accelerationIntegrationAlgorithm + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setAccelerationIntegrationAlgorithm'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setAccelerationIntegrationAlgorithm'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var accelerationIntegrationAlgorithm = Blockly.FtcJava.valueToCode(
       block, 'ACCELERATION_INTEGRATION_ALGORITHM', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.accelerationIntegrationAlgorithm = ' +
       accelerationIntegrationAlgorithm + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setAngleUnit'] = {
   init: function() {
@@ -569,7 +569,7 @@ Blockly.JavaScript['bno055imuParameters_setAngleUnit'] = function(block) {
       bno055imuParameters + ', ' + angleUnit + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setAngleUnit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setAngleUnit'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var angleUnit = Blockly.FtcJava.valueToCode(
@@ -583,7 +583,7 @@ Blockly.JavaScript['bno055imuParameters_setAngleUnit'] = function(block) {
   }
   Blockly.FtcJava.generateImport_('BNO055IMU');
   return bno055imuParameters + '.angleUnit = ' + angleUnit + ';\n';
-};*/
+};
 
 
 Blockly.Blocks['bno055imuParameters_setCalibrationDataFile'] = {
@@ -615,13 +615,13 @@ Blockly.JavaScript['bno055imuParameters_setCalibrationDataFile'] = function(bloc
       bno055imuParameters + ', ' + calibrationDataFile + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setCalibrationDataFile'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setCalibrationDataFile'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var calibrationDataFile = Blockly.FtcJava.valueToCode(
       block, 'CALIBRATION_DATA_FILE', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.calibrationDataFile = ' + calibrationDataFile + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setI2cAddress7Bit'] = {
   init: function() {
@@ -659,14 +659,14 @@ Blockly.JavaScript['bno055imuParameters_setI2cAddress7Bit'] = function(block) {
       bno055imuParameters + ', ' + i2cAddress7Bit + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setI2cAddress7Bit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setI2cAddress7Bit'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var i2cAddress7Bit = Blockly.FtcJava.valueToCode(
       block, 'I2C_ADDRESS_7_BIT', Blockly.FtcJava.ORDER_NONE);
   Blockly.FtcJava.generateImport_('I2cAddr');
   return bno055imuParameters + '.i2cAddr = I2cAddr.create7bit(' + i2cAddress7Bit + ');\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setI2cAddress8Bit'] = {
   init: function() {
@@ -704,14 +704,14 @@ Blockly.JavaScript['bno055imuParameters_setI2cAddress8Bit'] = function(block) {
       bno055imuParameters + ', ' + i2cAddress8Bit + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setI2cAddress8Bit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setI2cAddress8Bit'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var i2cAddress8Bit = Blockly.FtcJava.valueToCode(
       block, 'I2C_ADDRESS_8_BIT', Blockly.FtcJava.ORDER_NONE);
   Blockly.FtcJava.generateImport_('I2cAddr');
   return bno055imuParameters + '.i2cAddr = I2cAddr.create8bit(' + i2cAddress8Bit + ');\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setLoggingEnabled'] = {
   init: function() {
@@ -742,13 +742,13 @@ Blockly.JavaScript['bno055imuParameters_setLoggingEnabled'] = function(block) {
       bno055imuParameters + ', ' + loggingEnabled + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setLoggingEnabled'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setLoggingEnabled'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var loggingEnabled = Blockly.FtcJava.valueToCode(
       block, 'LOGGING_ENABLED', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.loggingEnabled = ' + loggingEnabled + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setLoggingTag'] = {
   init: function() {
@@ -779,13 +779,13 @@ Blockly.JavaScript['bno055imuParameters_setLoggingTag'] = function(block) {
       bno055imuParameters + ', ' + loggingTag + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setLoggingTag'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setLoggingTag'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var loggingTag = Blockly.FtcJava.valueToCode(
       block, 'LOGGING_TAG', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.loggingTag = ' + loggingTag + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setSensorMode'] = {
   init: function() {
@@ -816,13 +816,13 @@ Blockly.JavaScript['bno055imuParameters_setSensorMode'] = function(block) {
       bno055imuParameters + ', ' + sensorMode + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setSensorMode'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setSensorMode'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var sensorMode = Blockly.FtcJava.valueToCode(
       block, 'SENSOR_MODE', Blockly.FtcJava.ORDER_ASSIGNMENT);
   return bno055imuParameters + '.mode = ' + sensorMode + ';\n';
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_setTempUnit'] = {
   init: function() {
@@ -853,7 +853,7 @@ Blockly.JavaScript['bno055imuParameters_setTempUnit'] = function(block) {
       bno055imuParameters + ', ' + tempUnit + ');\n';
 };
 
-/*Blockly.FtcJava['bno055imuParameters_setTempUnit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_setTempUnit'] = function(block) {
   var bno055imuParameters = Blockly.FtcJava.valueToCode(
       block, 'BNO055IMU_PARAMETERS', Blockly.FtcJava.ORDER_MEMBER);
   var tempUnit = Blockly.FtcJava.valueToCode(
@@ -867,7 +867,7 @@ Blockly.JavaScript['bno055imuParameters_setTempUnit'] = function(block) {
   }
   Blockly.FtcJava.generateImport_('BNO055IMU');
   return bno055imuParameters + '.temperatureUnit = ' + tempUnit + ';\n';
-};*/
+};
 
 // Enums
 
@@ -906,11 +906,11 @@ Blockly.JavaScript['bno055imuParameters_enum_accelUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['bno055imuParameters_enum_accelUnit'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_enum_accelUnit'] = function(block) {
   var code = 'BNO055IMU.AccelUnit.' + block.getFieldValue('ACCEL_UNIT');
   Blockly.FtcJava.generateImport_('BNO055IMU');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_typedEnum_accelUnit'] = {
   init: function() {
@@ -945,8 +945,8 @@ Blockly.Blocks['bno055imuParameters_typedEnum_accelUnit'] = {
 Blockly.JavaScript['bno055imuParameters_typedEnum_accelUnit'] =
     Blockly.JavaScript['bno055imuParameters_enum_accelUnit'];
 
-/*Blockly.FtcJava['bno055imuParameters_typedEnum_accelUnit'] =
-    Blockly.FtcJava['bno055imuParameters_enum_accelUnit'];*/
+Blockly.FtcJava['bno055imuParameters_typedEnum_accelUnit'] =
+    Blockly.FtcJava['bno055imuParameters_enum_accelUnit'];
 
 Blockly.Blocks['bno055imuParameters_enum_accelerationIntegrationAlgorithm'] = {
   init: function() {
@@ -986,7 +986,7 @@ Blockly.JavaScript['bno055imuParameters_enum_accelerationIntegrationAlgorithm'] 
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['bno055imuParameters_enum_accelerationIntegrationAlgorithm'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_enum_accelerationIntegrationAlgorithm'] = function(block) {
   var algorithm = block.getFieldValue('ACCELERATION_INTEGRATION_ALGORITHM');
   var code;
   switch (algorithm) {
@@ -1000,7 +1000,7 @@ Blockly.JavaScript['bno055imuParameters_enum_accelerationIntegrationAlgorithm'] 
     default:
       throw 'Unexpected AccelerationIntegrationAlgorithm ' + algorithm + ' (bno055imuParameters_enum_accelerationIntegrationAlgorithm).';
   }
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_typedEnum_accelerationIntegrationAlgorithm'] =
     Blockly.Blocks['bno055imuParameters_enum_accelerationIntegrationAlgorithm'];
@@ -1008,8 +1008,8 @@ Blockly.Blocks['bno055imuParameters_typedEnum_accelerationIntegrationAlgorithm']
 Blockly.JavaScript['bno055imuParameters_typedEnum_accelerationIntegrationAlgorithm'] =
     Blockly.JavaScript['bno055imuParameters_enum_accelerationIntegrationAlgorithm'];
 
-/*Blockly.FtcJava['bno055imuParameters_typedEnum_accelerationIntegrationAlgorithm'] =
-    Blockly.FtcJava['bno055imuParameters_enum_accelerationIntegrationAlgorithm'];*/
+Blockly.FtcJava['bno055imuParameters_typedEnum_accelerationIntegrationAlgorithm'] =
+    Blockly.FtcJava['bno055imuParameters_enum_accelerationIntegrationAlgorithm'];
 
 Blockly.Blocks['bno055imuParameters_enum_sensorMode'] = {
   init: function() {
@@ -1067,11 +1067,11 @@ Blockly.JavaScript['bno055imuParameters_enum_sensorMode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['bno055imuParameters_enum_sensorMode'] = function(block) {
+Blockly.FtcJava['bno055imuParameters_enum_sensorMode'] = function(block) {
   var code = 'BNO055IMU.SensorMode.' + block.getFieldValue('SENSOR_MODE');
   Blockly.FtcJava.generateImport_('BNO055IMU');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['bno055imuParameters_typedEnum_sensorMode'] =
     Blockly.Blocks['bno055imuParameters_enum_sensorMode'];
@@ -1079,5 +1079,5 @@ Blockly.Blocks['bno055imuParameters_typedEnum_sensorMode'] =
 Blockly.JavaScript['bno055imuParameters_typedEnum_sensorMode'] =
     Blockly.JavaScript['bno055imuParameters_enum_sensorMode'];
 
-/*Blockly.FtcJava['bno055imuParameters_typedEnum_sensorMode'] =
-    Blockly.FtcJava['bno055imuParameters_enum_sensorMode'];*/
+Blockly.FtcJava['bno055imuParameters_typedEnum_sensorMode'] =
+    Blockly.FtcJava['bno055imuParameters_enum_sensorMode'];

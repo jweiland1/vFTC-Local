@@ -82,13 +82,13 @@ Blockly.JavaScript['orientation_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_getProperty'] = function(block) {
+Blockly.FtcJava['orientation_getProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var code = orientation + '.' + Blockly.FtcJava.makeFirstLetterLowerCase_(property);
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['orientation_getProperty_Number'] = {
   init: function() {
@@ -143,8 +143,8 @@ Blockly.Blocks['orientation_getProperty_Number'] = {
 Blockly.JavaScript['orientation_getProperty_Number'] =
     Blockly.JavaScript['orientation_getProperty'];
 
-/*Blockly.FtcJava['orientation_getProperty_Number'] =
-    Blockly.FtcJava['orientation_getProperty'];*/
+Blockly.FtcJava['orientation_getProperty_Number'] =
+    Blockly.FtcJava['orientation_getProperty'];
 
 Blockly.Blocks['orientation_getProperty_AxesReference'] = {
   init: function() {
@@ -180,8 +180,8 @@ Blockly.Blocks['orientation_getProperty_AxesReference'] = {
 Blockly.JavaScript['orientation_getProperty_AxesReference'] =
     Blockly.JavaScript['orientation_getProperty'];
 
-/*Blockly.FtcJava['orientation_getProperty_AxesReference'] =
-    Blockly.FtcJava['orientation_getProperty'];*/
+Blockly.FtcJava['orientation_getProperty_AxesReference'] =
+    Blockly.FtcJava['orientation_getProperty'];
 
 Blockly.Blocks['orientation_getProperty_AxesOrder'] = {
   init: function() {
@@ -217,8 +217,8 @@ Blockly.Blocks['orientation_getProperty_AxesOrder'] = {
 Blockly.JavaScript['orientation_getProperty_AxesOrder'] =
     Blockly.JavaScript['orientation_getProperty'];
 
-/*Blockly.FtcJava['orientation_getProperty_AxesOrder'] =
-    Blockly.FtcJava['orientation_getProperty'];*/
+Blockly.FtcJava['orientation_getProperty_AxesOrder'] =
+    Blockly.FtcJava['orientation_getProperty'];
 
 Blockly.Blocks['orientation_getProperty_AngleUnit'] = {
   init: function() {
@@ -254,8 +254,8 @@ Blockly.Blocks['orientation_getProperty_AngleUnit'] = {
 Blockly.JavaScript['orientation_getProperty_AngleUnit'] =
     Blockly.JavaScript['orientation_getProperty'];
 
-/*Blockly.FtcJava['orientation_getProperty_AngleUnit'] =
-    Blockly.FtcJava['orientation_getProperty'];*/
+Blockly.FtcJava['orientation_getProperty_AngleUnit'] =
+    Blockly.FtcJava['orientation_getProperty'];
 
 // Functions
 
@@ -275,11 +275,11 @@ Blockly.JavaScript['orientation_create'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_create'] = function(block) {
+Blockly.FtcJava['orientation_create'] = function(block) {
   var code = 'new Orientation()';
   Blockly.FtcJava.generateImport_('Orientation');
   return [code, Blockly.FtcJava.ORDER_NEW];
-};*/
+};
 
 Blockly.Blocks['orientation_create_withArgs'] = {
   init: function() {
@@ -345,7 +345,7 @@ Blockly.JavaScript['orientation_create_withArgs'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_create_withArgs'] = function(block) {
+Blockly.FtcJava['orientation_create_withArgs'] = function(block) {
   var axesReference = Blockly.FtcJava.valueToCode(
       block, 'AXES_REFERENCE', Blockly.FtcJava.ORDER_COMMA);
   var axesOrder = Blockly.FtcJava.valueToCode(
@@ -365,7 +365,7 @@ Blockly.JavaScript['orientation_create_withArgs'] = function(block) {
       thirdAngle + ', ' + acquisitionTime + ')';
   Blockly.FtcJava.generateImport_('Orientation');
   return [code, Blockly.FtcJava.ORDER_NEW];
-};*/
+};
 
 Blockly.Blocks['orientation_toAngleUnit'] = {
   init: function() {
@@ -396,14 +396,14 @@ Blockly.JavaScript['orientation_toAngleUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_toAngleUnit'] = function(block) {
+Blockly.FtcJava['orientation_toAngleUnit'] = function(block) {
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var angleUnit = Blockly.FtcJava.valueToCode(
       block, 'ANGLE_UNIT', Blockly.FtcJava.ORDER_NONE);
   var code = orientation + '.toAngleUnit(' + angleUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_toAxesReference'] = {
   init: function() {
@@ -434,14 +434,14 @@ Blockly.JavaScript['orientation_toAxesReference'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_toAxesReference'] = function(block) {
+Blockly.FtcJava['orientation_toAxesReference'] = function(block) {
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var axesReference = Blockly.FtcJava.valueToCode(
       block, 'AXES_REFERENCE', Blockly.FtcJava.ORDER_NONE);
   var code = orientation + '.toAxesReference(' + axesReference + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_toAxesOrder'] = {
   init: function() {
@@ -472,14 +472,14 @@ Blockly.JavaScript['orientation_toAxesOrder'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_toAxesOrder'] = function(block) {
+Blockly.FtcJava['orientation_toAxesOrder'] = function(block) {
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var axesOrder = Blockly.FtcJava.valueToCode(
       block, 'AXES_ORDER', Blockly.FtcJava.ORDER_NONE);
   var code = orientation + '.toAxesOrder(' + axesOrder + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_toText'] = {
   init: function() {
@@ -504,12 +504,12 @@ Blockly.JavaScript['orientation_toText'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_toText'] = function(block) {
+Blockly.FtcJava['orientation_toText'] = function(block) {
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var code = orientation + '.toString()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_getRotationMatrix'] = {
   init: function() {
@@ -535,12 +535,12 @@ Blockly.JavaScript['orientation_getRotationMatrix'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_getRotationMatrix'] = function(block) {
+Blockly.FtcJava['orientation_getRotationMatrix'] = function(block) {
   var orientation = Blockly.FtcJava.valueToCode(
       block, 'ORIENTATION', Blockly.FtcJava.ORDER_MEMBER);
   var code = orientation + '.getRotationMatrix()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_getRotationMatrix_withArgs'] = {
   init: function() {
@@ -602,7 +602,7 @@ Blockly.JavaScript['orientation_getRotationMatrix_withArgs'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_getRotationMatrix_withArgs'] = function(block) {
+Blockly.FtcJava['orientation_getRotationMatrix_withArgs'] = function(block) {
   var axesReference = Blockly.FtcJava.valueToCode(
       block, 'AXES_REFERENCE', Blockly.FtcJava.ORDER_COMMA);
   var axesOrder = Blockly.FtcJava.valueToCode(
@@ -620,7 +620,7 @@ Blockly.JavaScript['orientation_getRotationMatrix_withArgs'] = function(block) {
       thirdAngle + ')';
   Blockly.FtcJava.generateImport_('Orientation');
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['orientation_getOrientation'] = {
   init: function() {
@@ -669,7 +669,7 @@ Blockly.JavaScript['orientation_getOrientation'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['orientation_getOrientation'] = function(block) {
+Blockly.FtcJava['orientation_getOrientation'] = function(block) {
   var matrix = Blockly.FtcJava.valueToCode(
       block, 'MATRIX', Blockly.FtcJava.ORDER_COMMA);
   var axesReference = Blockly.FtcJava.valueToCode(
@@ -682,4 +682,4 @@ Blockly.JavaScript['orientation_getOrientation'] = function(block) {
       axesOrder + ', ' + angleUnit + ')';
   Blockly.FtcJava.generateImport_('Orientation');
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};

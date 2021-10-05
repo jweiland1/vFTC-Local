@@ -39,10 +39,10 @@ Blockly.JavaScript['distanceSensor_getDistance'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['distanceSensor_getDistance'] = function(block) {
+Blockly.FtcJava['distanceSensor_getDistance'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DistanceSensor');
   var distanceUnit = Blockly.FtcJava.valueToCode(
       block, 'DISTANCE_UNIT', Blockly.FtcJava.ORDER_NONE);
   var code = identifier + '.getDistance(' + distanceUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};

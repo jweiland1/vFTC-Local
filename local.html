@@ -358,7 +358,7 @@
 
 	  <button class="button1" onclick="overlay(true, 4)">New Program</button>
 	  <div style="width: 10px; display: inline-block;"></div>
-	  <button class="button1" onclick="overlay(true, 0)">Save as...</button>
+	  <button id="SaveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
 	  <div style="width: 10px; display: inline-block;"></div>
 	  <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
 	  <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
@@ -374,9 +374,9 @@
 
 	  <div class="divider"></div>
 
-	  <button class="button1" onclick="startProgram('')">Start Program</button>
+	  <button id="Start" class="button1" onclick="startProgram('')">Start Program</button>
 	  <div style="width: 10px; display: inline-block;"></div>
-	  <button class="button1" onclick="stopProgram()">Stop Program</button>
+	  <button id="Stop" class="button1" onclick="stopProgram()">Stop Program</button>
 	  <div style="width: 10px; display: inline-block;"></div>
 	  <button class="button1" onclick="resetField()">Reset Field</button>
 	  <div style="width: 12.5px; display: inline-block;"></div>
@@ -389,8 +389,8 @@
   <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
 	<div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
       <div id="blocklyDiv" style="width: 100%; border:1px solid white;"></div>
-      <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;" hidden>
-		<h1 id="loadingOBJText">HI</h1>
+      <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;">
+		<h1 id="loadingOBJText">LOADING</h1>
       </div>
 	</div>
 
@@ -506,23 +506,34 @@
             style="font-size: 20px; margin-top: 35px; margin-left: 295px;">Rename</button>
         </div>
         <div style="display: none;">
-          <div style="display: flex; justify-content: center; margin-top: 27.5px;">
-            <button class="button1" onclick="sampleProgram()"
-              style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">New Blocks Program</button>
-            <div style="width: 50px; display:inline-block;"></div>
-            <input id="filePrompt" type="file" accept=".blk" style="display:none;">
-            <button class="button1" onclick="promptFiles()"
-              style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
+          <div style="display: flex; justify-content: center; margin-top: 10px;">
+			<div>
+			  <h1 style="text-align: center; font-size: 20px; color: lightgrey;">Create:</h1>
+			  <div class="dropdown dropdown-dark" onchange="sampleProgram()" style="display: flex; background-color: #FFFFFF;">
+				<select id="blockSelect" class="dropdown-select" style="font-size:20px;">
+				  <option value=''>-Block Program-</option>
+				  <option value='BasicOpMode' style="font-weight: bold;">BasicOpMode</option>
+				  <option value='BasicPOVDrive'>BasicPOVDrive</option>
+				  <option value='BasicTankDrive'>BasicTankDrive</option>
+				  <option value='SensorIMU'>SensorIMU</option>
+				</select>
+			  </div>
+			  <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
+			  <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+				<select id="javaSelect" class="dropdown-select" style="font-size:20px;">
+				  <option value=''>-Java Program-</option>
+				</select>
+			  </div>
+			</div>			
+			<div style="width: 40px; display:inline-block;"></div>
+			<div style="width: 130px;">
+              <input id="filePrompt" type="file" accept=".blk,.java" style="display:none;">
+			  <button class="button1" onclick="promptFiles()" style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
+			  <div style="height: 10px;"></div>
+			  <button id="blockjavaConvert" class="button1" onclick="convertToJava()" style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Export to OnBotJava</button>
+			</div>
           </div>
-          <div class="dropdown dropdown-dark"
-            style="display: inline-block; background-color: #FFFFFF;  margin-left: 32.5px; margin-top: 10px;">
-            <select id="sampleSelect" class="dropdown-select" style="font-size:20px;">
-              <option value='BasicOpMode'>BasicOpMode</option>
-              <option value='BasicPOVDrive'>BasicPOVDrive</option>
-              <option value='BasicTankDrive'>BasicTankDrive</option>
-              <option value='SensorIMU'>SensorIMU</option>
-            </select>
-          </div>
+
         </div>
       </div>
     </div>
@@ -539,6 +550,7 @@
 	document.getElementById('leftScreen').style.width = xScreenSize + "px";
 	document.getElementById('rightScreen').style.width = xScreenSize + "px";
 	var yScreenSize = window.innerHeight / 2 - 30;
+	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
 	document.getElementById('controlPanel').style.height = yScreenSize + "px";
 	document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
     document.getElementById('fieldView').style.height = yScreenSize + "px";
@@ -584,6 +596,7 @@
 	    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
 	  }
 	  document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
+	  document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
 	});
 
 	window.addEventListener('mousemove', function(event) {
@@ -768,8 +781,10 @@
             document.getElementById('overlayName').innerHTML = "Rename Variable";
             break;
           case 4:
-            document.getElementById('sampleSelect').value = "BasicOpMode";
-            document.getElementById('overlayName').innerHTML = "Create Program";
+            document.getElementById('blockSelect').value = "";
+            document.getElementById('javaSelect').value = "";
+            document.getElementById('overlayName').innerHTML = "New Program";
+			document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
             break;
         }
         for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
@@ -791,7 +806,8 @@
 
   <!-- FTC Copied Files w/ slight modifications -->
   <script src="./robotConfigs/programConfigSetup.js"></script>
-  <script src="./blocks/FTCJavaScriptBlocks.js"></script>
+  <script src="./blocks/ftcblockly.js"></script>
+  <script src="./blocks/ftcjava.js"></script>
   <script src="./blocks/blocks/acceleration.js"></script>
   <script src="./blocks/blocks/bno055imu.js"></script>
   <script src="./blocks/blocks/bno055imu_parameters.js"></script>
@@ -800,14 +816,19 @@
   <script src="./blocks/blocks/distance_sensor.js"></script>
   <script src="./blocks/blocks/gamepad.js"></script>
   <script src="./blocks/blocks/linear_op_mode.js"></script>
+  <script src="./blocks/blocks/lists.js"></script>
   <script src="./blocks/blocks/locale.js"></script>
+  <script src="./blocks/blocks/logic.js"></script>
   <script src="./blocks/blocks/loops.js"></script>
+  <script src="./blocks/blocks/math.js"></script>
   <script src="./blocks/blocks/misc.js"></script>
   <script src="./blocks/blocks/navigation.js"></script>
   <script src="./blocks/blocks/orientation.js"></script>
   <script src="./blocks/blocks/servo.js"></script>
   <script src="./blocks/blocks/system.js"></script>
   <script src="./blocks/blocks/telemetry.js"></script>
+  <script src="./blocks/blocks/text.js"></script>
+  <script src="./blocks/blocks/variables.js"></script>
   <script src="./blocks/blocks/vars.js"></script>
   <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
@@ -5405,21 +5426,45 @@
     function switchToBlocks() {
       document.getElementById('blocklyDiv').hidden = false;
       document.getElementById('onBotJavaDiv').hidden = true;
+      document.getElementById('SaveAs').disabled = false;
+      document.getElementById('Start').disabled = false;
+      document.getElementById('Stop').disabled = false;
       isUsingBlocks = true;
+	  if (Blockly.mainWorkspace)
+		Blockly.svgResize(Blockly.mainWorkspace);
+	  if (currentProjectName != 'program') {
+		document.getElementById('save').disabled = false;
+		document.getElementById('delete').disabled = false;
+		document.getElementById('download').disabled = false;
+		document.getElementById("programSelect").value = currentProjectName;
+	  }
     }
 
     function switchToOnBotJava() {
+	  resetProgramExecution();
       document.getElementById('blocklyDiv').hidden = true;
       document.getElementById('onBotJavaDiv').hidden = false;
+	  document.getElementById('SaveAs').disabled = true;
+      document.getElementById('Start').disabled = true;
+      document.getElementById('Stop').disabled = true;
+      document.getElementById('save').disabled = true;
+      document.getElementById('delete').disabled = true;
+      document.getElementById('download').disabled = true;
       isUsingBlocks = false;
-      setUpOnBotJava();
+	  document.getElementById("programSelect").value = "Load Program";
     }
+	
+	var defaultText = 'package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\n\n@TeleOp(name = "MyLinearOpMode (Blocks to Java)", group = "")\npublic class MyLinearOpMode extends LinearOpMode {\n\n  /**\n   * This function is executed when this Op Mode is selected.\n   */\n  @Override\n  public void runOpMode() {\n    // Put initialization blocks here.\n    waitForStart();\n    if (opModeIsActive()) {\n      // Put run blocks here.\n      while (opModeIsActive()) {\n        // Put loop blocks here.\n        telemetry.update();\n      }\n    }\n  }\n}\n';
     var editor;
-    function setUpOnBotJava() {
+	
+	setUpOnBotJava();
+	switchToBlocks();
+	
+    function setUpOnBotJava(javaCode) {
       editor = CodeMirror(function (elt) {
-        document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('loadingOBJText'));
+		document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
       }, {
-        value: "public class MyOpMode extends LinearOpMode {\n@Override\npublic void runOpMode() {\n// NOTE: ONBOTJAVA IS STILL UNDER CONSTRUCTION\nwhile (opModeIsActive()) {\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\n}\n}\n}\n",
+        value: javaCode || defaultText,
         mode: "text/x-java",
         lineNumbers: true,
         theme: "darcula",
@@ -5427,8 +5472,28 @@
         autocorrect: true,
         autoCloseBrackets: true,
       });
-      autoFormatSelection();
+      //autoFormatSelection();
     }
+
+	function convertToJava() {
+	  var javaCode = generateJavaCode();
+	  switchToOnBotJava();
+	  setUpOnBotJava(javaCode);
+	  overlay(false, 0);
+	}
+	
+	//Originally from FTC code
+	function generateJavaCode() {
+	  // Get the blocks as xml (text).
+	  Blockly.FtcJava.setClassNameForFtcJava_((currentProjectName != "program") ? currentProjectName : null);
+	  var blocksContent = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+	  // Don't bother exporting if there are no blocks.
+	  if (blocksContent.indexOf('<block') > -1) {
+		// Generate Java code.
+		return Blockly.FtcJava.workspaceToCode(workspace);
+	  }
+	  return '';
+	}
 
     function getSelectedRange() {
       return { from: editor.getCursor(true), to: editor.getCursor(false) };
@@ -5468,30 +5533,41 @@
       fileReader.readAsText(document.getElementById('filePrompt').files[0]);
     });
 
-    function uploadProgram(programName, blocksContent) {
+    function uploadProgram(programName, content) {
       document.getElementById('filePrompt').value = '';
-      programName = programName.split('.')[0];
-      Blockly.mainWorkspace.clear();
-      var i = blocksContent.indexOf('</xml>');
-      blocksContent = blocksContent.substring(0, i + 6);
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
-      resetProgramExecution();
-      document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-      localStorage.setItem("Program Name: " + programName, blocksContent);
-      prepareUiToLoadProgram();
-      document.getElementById("programSelect").value = programName;
-      document.getElementById('save').disabled = false;
-      document.getElementById('delete').disabled = false;
-      document.getElementById('download').disabled = false;
-      overlay(false, 0);
+	  var fileType = programName.split('.')[programName.split('.').length - 1]
+	  if (fileType == "blk") {
+		programName = programName.substring(0, programName.length - fileType.length - 1);
+		currentProjectName = programName;
+		Blockly.mainWorkspace.clear();
+		var i = content.indexOf('</xml>');
+		content = content.substring(0, i + 6);
+		Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+		resetProgramExecution();
+		document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
+		localStorage.setItem("Program Name: " + programName, content);
+		prepareUiToLoadProgram();
+		document.getElementById("programSelect").value = programName;
+		document.getElementById('save').disabled = false;
+		document.getElementById('delete').disabled = false;
+		document.getElementById('download').disabled = false;
+		switchToBlocks();
+	    overlay(false, 0);
+	  }
+	  else if (fileType == "java") {
+		switchToOnBotJava();
+		setUpOnBotJava(content);
+		overlay(false, 0);
+	  }
     }
 
     function sampleProgram() {
-      newProgram(document.getElementById('sampleSelect').value);
+      newProgram(document.getElementById('blockSelect').value);
     }
 
     function newProgram(sampleProgram) {
       document.getElementById("programSelect").value = "Load Program";
+	  currentProjectName = "program";
       document.getElementById('save').disabled = true;
       document.getElementById('delete').disabled = true;
       document.getElementById('download').disabled = true;
@@ -5511,6 +5587,7 @@
           else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-') {
             document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
           }
+		  switchToBlocks();
         }
       }
       client.send();
@@ -5523,6 +5600,7 @@
       localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
       prepareUiToLoadProgram();
       document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
+	  currentProjectName = document.getElementById('saveProgramName').value;
       document.getElementById('save').disabled = false;
       document.getElementById('delete').disabled = false;
       document.getElementById('download').disabled = false;
@@ -5533,6 +5611,7 @@
     function loadProgram() {
       Blockly.mainWorkspace.clear();
       var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
+	  currentProjectName = document.getElementById('programSelect').value;
       if (nameOfProject == "Program Name: Load Program") {
         newProgram('BasicOpMode');
       } else if (typeof (Storage) !== "undefined") {
@@ -5544,6 +5623,7 @@
         resetProgramExecution();
         document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
       }
+	  switchToBlocks();
     }
 
     function autoSave() {
@@ -5555,6 +5635,7 @@
 
     function deleteProgram() {
       var programName = document.getElementById('programSelect').value;
+	  currentProjectName = "program";
       localStorage.removeItem("Program Name: " + programName);
       newProgram('BasicOpMode');
       prepareUiToLoadProgram();

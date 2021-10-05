@@ -59,13 +59,13 @@ Blockly.JavaScript['telemetry_addNumericData'] = function(block) {
   return telemetryIdentifierForJavaScript + '.addData(' + key + ', ' + number + ');\n';
 };
 
-/*Blockly.FtcJava['telemetry_addNumericData'] = function(block) {
+Blockly.FtcJava['telemetry_addNumericData'] = function(block) {
   var key = Blockly.FtcJava.valueToCode(
       block, 'KEY', Blockly.FtcJava.ORDER_COMMA);
   var number = Blockly.FtcJava.valueToCode(
       block, 'NUMBER', Blockly.FtcJava.ORDER_COMMA);
   return 'telemetry.addData(' + key + ', ' + number + ');\n';
-};*/
+};
 
 Blockly.Blocks['telemetry_addNumericData_Number'] = {
   init: function() {
@@ -97,8 +97,8 @@ Blockly.Blocks['telemetry_addNumericData_Number'] = {
 Blockly.JavaScript['telemetry_addNumericData_Number'] =
     Blockly.JavaScript['telemetry_addNumericData'];
 
-/*Blockly.FtcJava['telemetry_addNumericData_Number'] =
-    Blockly.FtcJava['telemetry_addNumericData'];*/
+Blockly.FtcJava['telemetry_addNumericData_Number'] =
+    Blockly.FtcJava['telemetry_addNumericData'];
 
 Blockly.Blocks['telemetry_addTextData'] = {
   init: function() {
@@ -128,13 +128,13 @@ Blockly.JavaScript['telemetry_addTextData'] = function(block) {
   return telemetryIdentifierForJavaScript + '.addData(' + key + ', ' + text + ');\n';
 };
 
-/*Blockly.FtcJava['telemetry_addTextData'] = function(block) {
+Blockly.FtcJava['telemetry_addTextData'] = function(block) {
   var key = Blockly.FtcJava.valueToCode(
       block, 'KEY', Blockly.FtcJava.ORDER_COMMA);
   var text = Blockly.FtcJava.valueToCode(
       block, 'TEXT', Blockly.FtcJava.ORDER_COMMA);
   return 'telemetry.addData(' + key + ', ' + text + ');\n';
-};*/
+};
 
 Blockly.Blocks['telemetry_addTextData_All'] = {
   init: function() {
@@ -159,8 +159,8 @@ Blockly.Blocks['telemetry_addTextData_All'] = {
 Blockly.JavaScript['telemetry_addTextData_All'] =
     Blockly.JavaScript['telemetry_addTextData'];
 
-/*Blockly.FtcJava['telemetry_addTextData_All'] =
-    Blockly.FtcJava['telemetry_addTextData'];*/
+Blockly.FtcJava['telemetry_addTextData_All'] =
+    Blockly.FtcJava['telemetry_addTextData'];
 
 Blockly.Blocks['telemetry_update'] = {
   init: function() {
@@ -180,9 +180,9 @@ Blockly.JavaScript['telemetry_update'] = function(block) {
   return telemetryIdentifierForJavaScript + '.update();\n';
 };
 
-/*Blockly.FtcJava['telemetry_update'] = function(block) {
+Blockly.FtcJava['telemetry_update'] = function(block) {
   return 'telemetry.update();\n';
-};*/
+};
 
 Blockly.Blocks['telemetry_speak'] = {
   init: function() {
@@ -211,11 +211,11 @@ Blockly.JavaScript['telemetry_speak'] = function(block) {
   return telemetryIdentifierForJavaScript + '.speak(' + text + ', ' + languageCode + ', ' + countryCode + ');\n';
 };
 
-/*Blockly.FtcJava['telemetry_speak'] = function(block) {
+Blockly.FtcJava['telemetry_speak'] = function(block) {
   var text = Blockly.FtcJava.valueToCode(
       block, 'TEXT', Blockly.FtcJava.ORDER_COMMA);
   return 'telemetry.speak(' + text + ', null, null);\n';
-};*/
+};
 
 Blockly.Blocks['telemetry_speak_withLanguage'] = {
   init: function() {
@@ -251,7 +251,7 @@ Blockly.JavaScript['telemetry_speak_withLanguage'] = function(block) {
   return telemetryIdentifierForJavaScript + '.speak(' + text + ', ' + languageCode + ', ' + countryCode + ');\n';
 };
 
-/*Blockly.FtcJava['telemetry_speak_withLanguage'] = function(block) {
+Blockly.FtcJava['telemetry_speak_withLanguage'] = function(block) {
   var text = Blockly.FtcJava.valueToCode(
       block, 'TEXT', Blockly.FtcJava.ORDER_COMMA);
   var languageCode = Blockly.FtcJava.valueToCode(
@@ -259,7 +259,7 @@ Blockly.JavaScript['telemetry_speak_withLanguage'] = function(block) {
   var countryCode = Blockly.FtcJava.valueToCode(
       block, 'COUNTRY_CODE', Blockly.FtcJava.ORDER_COMMA);
   return 'telemetry.speak(' + text + ', ' + languageCode + ', ' + countryCode + ');\n';
-};*/
+};
 
 Blockly.Blocks['telemetry_setDisplayFormat'] = {
   init: function() {
@@ -284,11 +284,11 @@ Blockly.JavaScript['telemetry_setDisplayFormat'] = function(block) {
   return telemetryIdentifierForJavaScript + '.setDisplayFormat(' + displayFormat + ');\n';
 };
 
-/*Blockly.FtcJava['telemetry_setDisplayFormat'] = function(block) {
+Blockly.FtcJava['telemetry_setDisplayFormat'] = function(block) {
   var displayFormat = Blockly.FtcJava.valueToCode(
       block, 'DISPLAY_FORMAT', Blockly.FtcJava.ORDER_NONE);
   return 'telemetry.setDisplayFormat(' + displayFormat + ');\n';
-};*/
+};
 
 // Enums
 
@@ -329,8 +329,8 @@ Blockly.JavaScript['telemetry_typedEnum_displayFormat'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['telemetry_typedEnum_displayFormat'] = function(block) {
+Blockly.FtcJava['telemetry_typedEnum_displayFormat'] = function(block) {
   var code = 'Telemetry.DisplayFormat.' + block.getFieldValue('DISPLAY_FORMAT');
   Blockly.FtcJava.generateImport_('Telemetry');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};

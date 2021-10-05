@@ -50,9 +50,9 @@ Blockly.JavaScript['linearOpMode_waitForStart'] = function(block) {
   return linearOpModeIdentifierForJavaScript + '.waitForStart();\n';
 };
 
-/*Blockly.FtcJava['linearOpMode_waitForStart'] = function(block) {
+Blockly.FtcJava['linearOpMode_waitForStart'] = function(block) {
   return 'waitForStart();\n';
-};*/
+};
 
 Blockly.Blocks['linearOpMode_idle'] = {
   init: function() {
@@ -73,9 +73,9 @@ Blockly.JavaScript['linearOpMode_idle'] = function(block) {
   return linearOpModeIdentifierForJavaScript + '.idle();\n';
 };
 
-/*Blockly.FtcJava['linearOpMode_idle'] = function(block) {
+Blockly.FtcJava['linearOpMode_idle'] = function(block) {
   return 'idle();\n';
-};*/
+};
 
 Blockly.Blocks['linearOpMode_sleep'] = {
   init: function() {
@@ -100,11 +100,11 @@ Blockly.JavaScript['linearOpMode_sleep'] = function(block) {
   return 'await ' +linearOpModeIdentifierForJavaScript + '.sleep(' + millis + ');\n';
 };
 
-/*Blockly.FtcJava['linearOpMode_sleep'] = function(block) {
+Blockly.FtcJava['linearOpMode_sleep'] = function(block) {
   var millis = Blockly.FtcJava.valueToCode(
       block, 'MILLISECONDS', Blockly.FtcJava.ORDER_NONE);
   return 'sleep(' + millis + ');\n';
-};*/
+};
 
 Blockly.Blocks['linearOpMode_sleep_Number'] = {
   init: function() {
@@ -132,8 +132,8 @@ Blockly.Blocks['linearOpMode_sleep_Number'] = {
 Blockly.JavaScript['linearOpMode_sleep_Number'] =
     Blockly.JavaScript['linearOpMode_sleep'];
 
-/*Blockly.FtcJava['linearOpMode_sleep_Number'] =
-    Blockly.FtcJava['linearOpMode_sleep'];*/
+Blockly.FtcJava['linearOpMode_sleep_Number'] =
+    Blockly.FtcJava['linearOpMode_sleep'];
 
 Blockly.Blocks['linearOpMode_opModeIsActive'] = {
   init: function() {
@@ -153,10 +153,10 @@ Blockly.JavaScript['linearOpMode_opModeIsActive'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['linearOpMode_opModeIsActive'] = function(block) {
+Blockly.FtcJava['linearOpMode_opModeIsActive'] = function(block) {
   var code = 'opModeIsActive()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['linearOpMode_isStarted'] = {
   init: function() {
@@ -176,10 +176,10 @@ Blockly.JavaScript['linearOpMode_isStarted'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['linearOpMode_isStarted'] = function(block) {
+Blockly.FtcJava['linearOpMode_isStarted'] = function(block) {
   var code = 'isStarted()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['linearOpMode_isStopRequested'] = {
   init: function() {
@@ -199,10 +199,10 @@ Blockly.JavaScript['linearOpMode_isStopRequested'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['linearOpMode_isStopRequested'] = function(block) {
+Blockly.FtcJava['linearOpMode_isStopRequested'] = function(block) {
   var code = 'isStopRequested()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['linearOpMode_getRuntime'] = {
   init: function() {
@@ -222,10 +222,10 @@ Blockly.JavaScript['linearOpMode_getRuntime'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['linearOpMode_getRuntime'] = function(block) {
+Blockly.FtcJava['linearOpMode_getRuntime'] = function(block) {
   var code = 'getRuntime()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['linearOpMode_getRuntime_Number'] = {
   init: function() {
@@ -246,5 +246,5 @@ Blockly.Blocks['linearOpMode_getRuntime_Number'] = {
 Blockly.JavaScript['linearOpMode_getRuntime_Number'] =
     Blockly.JavaScript['linearOpMode_getRuntime'];
 
-/*Blockly.FtcJava['linearOpMode_getRuntime_Number'] =
-    Blockly.FtcJava['linearOpMode_getRuntime'];*/
+Blockly.FtcJava['linearOpMode_getRuntime_Number'] =
+    Blockly.FtcJava['linearOpMode_getRuntime'];

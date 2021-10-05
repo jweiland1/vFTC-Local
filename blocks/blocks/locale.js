@@ -56,11 +56,11 @@ Blockly.JavaScript['locale_languageCode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['locale_languageCode'] = function(block) {
+Blockly.FtcJava['locale_languageCode'] = function(block) {
   // Even in Java, a language code is actually just a string, not an enum.
   var code = '"' + block.getFieldValue('LANGUAGE_CODE') + '"';
   return [code, Blockly.FtcJava.ORDER_ATOMIC];
-};*/
+};
 
 Blockly.Blocks['locale_countryCode'] = {
   init: function() {
@@ -89,8 +89,8 @@ Blockly.JavaScript['locale_countryCode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['locale_countryCode'] = function(block) {
+Blockly.FtcJava['locale_countryCode'] = function(block) {
   // Even in Java, a country code is actually just a string, not an enum.
   var code = '"' + block.getFieldValue('COUNTRY_CODE') + '"';
   return [code, Blockly.FtcJava.ORDER_ATOMIC];
-};*/
+};

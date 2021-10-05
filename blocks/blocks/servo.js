@@ -69,13 +69,13 @@ Blockly.JavaScript['servo_setProperty'] = function(block) {
   return 'servo.setProperty(' + identifier.substring(identifier.length - 1) + ', \'' + property + '\', ' + value + ');\n';
 };
 
-/*Blockly.FtcJava['servo_setProperty'] = function(block) {
+Blockly.FtcJava['servo_setProperty'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'Servo');
   var property = block.getFieldValue('PROP');
   var value = Blockly.FtcJava.valueToCode(
       block, 'VALUE', Blockly.FtcJava.ORDER_NONE);
   return identifier + '.set' + property + '(' + value + ');\n';
-};*/
+};
 
 Blockly.Blocks['servo_setProperty_Direction'] = {
   init: function() {
@@ -111,8 +111,8 @@ Blockly.Blocks['servo_setProperty_Direction'] = {
 Blockly.JavaScript['servo_setProperty_Direction'] =
     Blockly.JavaScript['servo_setProperty'];
 
-/*Blockly.FtcJava['servo_setProperty_Direction'] =
-    Blockly.FtcJava['servo_setProperty'];*/
+Blockly.FtcJava['servo_setProperty_Direction'] =
+    Blockly.FtcJava['servo_setProperty'];
 
 Blockly.Blocks['servo_setProperty_Number'] = {
   init: function() {
@@ -160,8 +160,8 @@ Blockly.Blocks['servo_setProperty_Number'] = {
 Blockly.JavaScript['servo_setProperty_Number'] =
     Blockly.JavaScript['servo_setProperty'];
 
-/*Blockly.FtcJava['servo_setProperty_Number'] =
-    Blockly.FtcJava['servo_setProperty'];*/
+Blockly.FtcJava['servo_setProperty_Number'] =
+    Blockly.FtcJava['servo_setProperty'];
 
 Blockly.Blocks['servo_getProperty'] = {
   init: function() {
@@ -200,12 +200,12 @@ Blockly.JavaScript['servo_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['servo_getProperty'] = function(block) {
+Blockly.FtcJava['servo_getProperty'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'Servo');
   var property = block.getFieldValue('PROP');
   var code = identifier + '.get' + property + '()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['servo_getProperty_Direction'] = {
   init: function() {
@@ -238,8 +238,8 @@ Blockly.Blocks['servo_getProperty_Direction'] = {
 Blockly.JavaScript['servo_getProperty_Direction'] =
     Blockly.JavaScript['servo_getProperty'];
 
-/*Blockly.FtcJava['servo_getProperty_Direction'] =
-    Blockly.FtcJava['servo_getProperty'];*/
+Blockly.FtcJava['servo_getProperty_Direction'] =
+    Blockly.FtcJava['servo_getProperty'];
 
 Blockly.Blocks['servo_getProperty_Number'] = {
   init: function() {
@@ -281,8 +281,8 @@ Blockly.Blocks['servo_getProperty_Number'] = {
 Blockly.JavaScript['servo_getProperty_Number'] =
     Blockly.JavaScript['servo_getProperty'];
 
-/*Blockly.FtcJava['servo_getProperty_Number'] =
-    Blockly.FtcJava['servo_getProperty'];*/
+Blockly.FtcJava['servo_getProperty_Number'] =
+    Blockly.FtcJava['servo_getProperty'];
 
 // Enums
 
@@ -321,11 +321,11 @@ Blockly.JavaScript['servo_enum_direction'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['servo_enum_direction'] = function(block) {
+Blockly.FtcJava['servo_enum_direction'] = function(block) {
   var code = 'Servo.Direction.' + block.getFieldValue('DIRECTION');
   Blockly.FtcJava.generateImport_('Servo');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['servo_typedEnum_direction'] = {
   init: function() {
@@ -360,8 +360,8 @@ Blockly.Blocks['servo_typedEnum_direction'] = {
 Blockly.JavaScript['servo_typedEnum_direction'] =
     Blockly.JavaScript['servo_enum_direction'];
 
-/*Blockly.FtcJava['servo_typedEnum_direction'] =
-    Blockly.FtcJava['servo_enum_direction'];*/
+Blockly.FtcJava['servo_typedEnum_direction'] =
+    Blockly.FtcJava['servo_enum_direction'];
 
 // Functions
 
@@ -395,14 +395,14 @@ Blockly.JavaScript['servo_scaleRange'] = function(block) {
   return 'servo.scaleRange(' + identifier.substring(identifier.length - 1) + ', ' + min + ', ' + max + ');\n';
 };
 
-/*Blockly.FtcJava['servo_scaleRange'] = function(block) {
+Blockly.FtcJava['servo_scaleRange'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'Servo');
   var min = Blockly.FtcJava.valueToCode(
       block, 'MIN', Blockly.FtcJava.ORDER_COMMA);
   var max = Blockly.FtcJava.valueToCode(
       block, 'MAX', Blockly.FtcJava.ORDER_COMMA);
   return identifier + '.scaleRange(' + min + ', ' + max + ');\n';
-};*/
+};
 
 Blockly.Blocks['servo_scaleRange_Number'] = {
   init: function() {
@@ -436,5 +436,5 @@ Blockly.Blocks['servo_scaleRange_Number'] = {
 Blockly.JavaScript['servo_scaleRange_Number'] =
     Blockly.JavaScript['servo_scaleRange'];
 
-/*Blockly.FtcJava['servo_scaleRange_Number'] =
-    Blockly.FtcJava['servo_scaleRange'];*/
+Blockly.FtcJava['servo_scaleRange_Number'] =
+    Blockly.FtcJava['servo_scaleRange'];

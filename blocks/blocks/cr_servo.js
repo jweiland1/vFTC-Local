@@ -67,13 +67,13 @@ Blockly.JavaScript['crServo_setProperty'] = function(block) {
   return 'servo.setProperty(' + identifier.substring(identifier.length - 1) + ', \'' + property + '\', ' + value + ');\n';
 };
 
-/*Blockly.FtcJava['crServo_setProperty'] = function(block) {
+Blockly.FtcJava['crServo_setProperty'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'CRServo');
   var property = block.getFieldValue('PROP');
   var value = Blockly.FtcJava.valueToCode(
       block, 'VALUE', Blockly.FtcJava.ORDER_NONE);
   return identifier + '.set' + property + '(' + value + ');\n';
-};*/
+};
 
 Blockly.Blocks['crServo_setProperty_Direction'] = {
   init: function() {
@@ -109,8 +109,8 @@ Blockly.Blocks['crServo_setProperty_Direction'] = {
 Blockly.JavaScript['crServo_setProperty_Direction'] =
     Blockly.JavaScript['crServo_setProperty'];
 
-/*Blockly.FtcJava['crServo_setProperty_Direction'] =
-    Blockly.FtcJava['crServo_setProperty'];*/
+Blockly.FtcJava['crServo_setProperty_Direction'] =
+    Blockly.FtcJava['crServo_setProperty'];
 
 Blockly.Blocks['crServo_setProperty_Number'] = {
   init: function() {
@@ -158,8 +158,8 @@ Blockly.Blocks['crServo_setProperty_Number'] = {
 Blockly.JavaScript['crServo_setProperty_Number'] =
     Blockly.JavaScript['crServo_setProperty'];
 
-/*Blockly.FtcJava['crServo_setProperty_Number'] =
-    Blockly.FtcJava['crServo_setProperty'];*/
+Blockly.FtcJava['crServo_setProperty_Number'] =
+    Blockly.FtcJava['crServo_setProperty'];
 
 Blockly.Blocks['crServo_getProperty'] = {
   init: function() {
@@ -198,12 +198,12 @@ Blockly.JavaScript['crServo_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['crServo_getProperty'] = function(block) {
+Blockly.FtcJava['crServo_getProperty'] = function(block) {
   var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'CRServo');
   var property = block.getFieldValue('PROP');
   var code = identifier + '.get' + property + '()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['crServo_getProperty_Direction'] = {
   init: function() {
@@ -236,8 +236,8 @@ Blockly.Blocks['crServo_getProperty_Direction'] = {
 Blockly.JavaScript['crServo_getProperty_Direction'] =
     Blockly.JavaScript['crServo_getProperty'];
 
-/*Blockly.FtcJava['crServo_getProperty_Direction'] =
-    Blockly.FtcJava['crServo_getProperty'];*/
+Blockly.FtcJava['crServo_getProperty_Direction'] =
+    Blockly.FtcJava['crServo_getProperty'];
 
 Blockly.Blocks['crServo_getProperty_Number'] = {
   init: function() {
@@ -279,8 +279,8 @@ Blockly.Blocks['crServo_getProperty_Number'] = {
 Blockly.JavaScript['crServo_getProperty_Number'] =
     Blockly.JavaScript['crServo_getProperty'];
 
-/*Blockly.FtcJava['crServo_getProperty_Number'] =
-    Blockly.FtcJava['crServo_getProperty'];*/
+Blockly.FtcJava['crServo_getProperty_Number'] =
+    Blockly.FtcJava['crServo_getProperty'];
 
 // Enums
 
@@ -319,11 +319,11 @@ Blockly.JavaScript['crServo_enum_direction'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['crServo_enum_direction'] = function(block) {
+Blockly.FtcJava['crServo_enum_direction'] = function(block) {
   var code = 'DcMotorSimple.Direction.' + block.getFieldValue('DIRECTION');
   Blockly.FtcJava.generateImport_('DcMotorSimple');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['crServo_typedEnum_direction'] = {
   init: function() {
@@ -358,5 +358,5 @@ Blockly.Blocks['crServo_typedEnum_direction'] = {
 Blockly.JavaScript['crServo_typedEnum_direction'] =
     Blockly.JavaScript['crServo_enum_direction'];
 
-/*Blockly.FtcJava['crServo_typedEnum_direction'] =
-    Blockly.FtcJava['crServo_enum_direction'];*/
+Blockly.FtcJava['crServo_typedEnum_direction'] =
+    Blockly.FtcJava['crServo_enum_direction'];

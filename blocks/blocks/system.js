@@ -50,7 +50,7 @@ Blockly.JavaScript['system_nanoTime'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['system_nanoTime'] = function(block) {
+Blockly.FtcJava['system_nanoTime'] = function(block) {
   var code = 'System.nanoTime()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
