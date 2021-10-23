@@ -25,7 +25,10 @@
 // The following are defined in vars.js:
 // navigationIdentifierForJavaScript
 // propertyColorUtilities
-// functionColor
+// propertyColorUtilities
+
+//VRS-Created navigationIdentifierForJavaScript
+navigationIdentifierForJavaScript = "navigation";
 
 // Enums
 
@@ -94,7 +97,7 @@ Blockly.Blocks['navigation_angleUnit_normalize'] = {
     this.appendValueInput('ANGLE_UNIT').setCheck('AngleUnit')
         .appendField('angleUnit')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(functionColor);
+    this.setColour(propertyColorUtilities);
     this.setTooltip('Normalizes the given angle to the range of [-180,+180) ' +
         'degrees or [-\u03c0,+\u03c0) radians.');
     this.getFtcJavaInputType = function(inputName) {
@@ -150,7 +153,7 @@ Blockly.Blocks['navigation_angleUnit_convert'] = {
     this.appendValueInput('TO_ANGLE_UNIT').setCheck('AngleUnit')
         .appendField('to')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(functionColor);
+    this.setColour(propertyColorUtilities);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [

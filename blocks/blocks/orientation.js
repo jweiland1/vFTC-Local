@@ -339,7 +339,7 @@ Blockly.JavaScript['orientation_create_withArgs'] = function(block) {
       block, 'THIRD_ANGLE', Blockly.JavaScript.ORDER_COMMA);
   var acquisitionTime = Blockly.JavaScript.valueToCode(
       block, 'ACQUISITION_TIME', Blockly.JavaScript.ORDER_COMMA);
-  var code = orientationIdentifierForJavaScript + '.create_withArgs(' + axesReference + ', ' +
+  var code = orientationIdentifierForJavaScript + '.create(' + axesReference + ', ' +
       axesOrder + ', ' + angleUnit + ', ' + firstAngle + ', ' + secondAngle + ', ' +
       thirdAngle + ', ' + acquisitionTime + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];

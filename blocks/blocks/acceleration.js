@@ -264,7 +264,7 @@ Blockly.JavaScript['acceleration_create_withArgs'] = function(block) {
       block, 'Z_ACCEL', Blockly.JavaScript.ORDER_COMMA);
   var acquisitionTime = Blockly.JavaScript.valueToCode(
       block, 'ACQUISITION_TIME', Blockly.JavaScript.ORDER_COMMA);
-  var code = accelerationIdentifierForJavaScript + '.create_withArgs(' + distanceUnit + ', ' + xAccel + ', ' +
+  var code = accelerationIdentifierForJavaScript + '.create(' + distanceUnit + ', ' + xAccel + ', ' +
       yAccel + ', ' + zAccel + ', ' + acquisitionTime + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
@@ -332,7 +332,7 @@ Blockly.JavaScript['acceleration_fromGravity'] = function(block) {
       block, 'GZ', Blockly.JavaScript.ORDER_COMMA);
   var acquisitionTime = Blockly.JavaScript.valueToCode(
       block, 'ACQUISITION_TIME', Blockly.JavaScript.ORDER_COMMA);
-  var code = accelerationIdentifierForJavaScript + '.fromGravity(' + gx + ', ' + gy + ', ' + gz + ', ' +
+  var code = accelerationIdentifierForJavaScript + '.create("g", ' + gx + ', ' + gy + ', ' + gz + ', ' +
       acquisitionTime + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

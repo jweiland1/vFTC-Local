@@ -20,11 +20,47 @@ function resetProperties() {
 	}
 }
 
+var programStart = false;
+var startTime = performance.now();
+var telemetryData = "";
+
 const noOp = function () {}
 
 // set up user code API environment
 let linearOpMode = {
-    waitForStart: noOp,
+    waitForStart: async function () {
+
+        // bail early if the program has been aborted already
+        if (programExecController.signal.aborted) {
+            return Promise.reject(abortedErrorMsg);
+        }
+
+        return new Promise((resolve, reject) => {
+
+            // handle for the interval, so we are able to cancel it
+            let interval;
+
+            // when signal arrives, cancel the interval and
+            // reject the promise to stop the program
+            const abortHandler = () => {
+                clearInterval(interval);
+                reject(abortedMsg);
+                console.log("aborting");
+            }
+            programExecController.signal.addEventListener('abort', abortHandler);
+
+            // start the interval
+            // clean up the event listener when it is over
+            interval = setInterval(
+                    () => {
+				if (programStart) {
+					resolve();
+					programExecController.signal.removeEventListener('abort', abortHandler);
+				}
+            }, 1);
+
+        });
+    },
     idle: noOp,
     sleep: async function (milliseconds) {
 
@@ -59,9 +95,9 @@ let linearOpMode = {
         });
     },
     opModeIsActive: () => true,
-    isStarted: () => true,
+    isStarted: () => programStart,
     isStopRequested: () => false,
-    getRuntime: () => 0,
+    getRuntime: function() {return Math.floor((performance.now() - startTime) * .1) / 100;},
 }
 
 let gamepad = {
@@ -176,6 +212,305 @@ let servo = {
 	}
 }
 
+let navigation = {
+	angleUnit_normalize: function (angle, unit) {
+		var fullRot = 360.0;
+		if (unit == "RADIANS")
+			fullRot = Math.PI * 2;
+		angle = (angle % fullRot + fullRot) % fullRot;
+		if (angle >= fullRot / 2)
+			angle -= fullRot;
+		return angle;
+	},
+	angleUnit_convert: function (angle, fromUnit, toUnit) {
+		angle = navigation.angleUnit_normalize(angle, fromUnit);
+		if (fromUnit == toUnit)
+			return angle;
+		else if (toUnit == "DEGREES")
+			return angle * 360 / (Math.PI * 2);
+		else if (toUnit == "RADIANS")
+			return angle * (Math.PI * 2) / 360;
+	}
+}
+
+let acceleration = {
+	create: function(units, x, y, z, time) {
+		return {"DistanceUnit": units || "CM", "XAccel": x || 0, "YAccel": y || 0, "ZAccel": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toText: function(variable) {return JSON.stringify(variable);},
+	toDistanceUnit: function(variable, newUnit) {
+		let newVar = JSON.parse(JSON.stringify(variable));
+		if (variable["DistanceUnit"] == newUnit)
+			return newVar;
+		var conversion = 1;
+		//Conversion to CM
+		switch (variable["DistanceUnit"]) {
+			case "INCH": conversion *= 2.54; break;
+			case "METER": conversion *= 100; break;
+			case "MM": conversion *= .1; break;
+			case "g": conversion *= 981; break;
+		}
+		//Conversion to new Unit
+		switch (newUnit) {
+			case "INCH": conversion /= 2.54; break;
+			case "METER": conversion /= 100; break;
+			case "MM": conversion /= .1; break;
+			case "g": conversion /= 981; break;
+		}
+		newVar.DistanceUnit = newUnit;
+		newVar.XAccel *= conversion;
+		newVar.YAccel *= conversion;
+		newVar.ZAccel *= conversion;
+		return newVar;
+	}
+}
+
+let angularVelocity = {
+	create: function(units, x, y, z, time) {
+		return {"AngleUnit": units || "DEGREES", "XRotationRate": x || 0, "YRotationRate": y || 0, "ZRotationRate": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	getRotationRate: function(variable, axis) {return variable[axis + "RotationRate"]; },
+	toAngleUnit: function(variable, newUnit) {
+		var conversion = 1;
+		if (variable["AngleUnit"] == newUnit)
+			return variable;
+		else if (newUnit == "DEGREES")
+			conversion = 360 / (Math.PI * 2);
+		else if (newUnit == "RADIANS")
+			conversion = (Math.PI * 2) / 360;
+		let newVar = JSON.parse(JSON.stringify(variable));
+		newVar.AngleUnit = newUnit;
+		newVar.XRotationRate *= conversion;
+		newVar.YRotationRate *= conversion;
+		newVar.ZRotationRate *= conversion;
+		return newVar;
+	},
+}
+
+let color = {
+	rgbToColor: function(r, g, b, a) {
+		return {"Red": r, "Green": g, "Blue": b, "Alpha": (a || 255)};
+	},
+	hsvToColor: function(h, s, v, a) {
+		var c = v * s;
+		var x = c * (1 - Math.abs((h / 60.0) % 2 - 1));
+		var m = v - c;
+		var r = g = b = 0;
+		if (h < 60) {
+			r = c;
+			g = x;
+		}
+		else if (h < 120) {
+			r = x;
+			g = c;
+		}
+		else if (h < 180) {
+			g = c;
+			b = x;
+		}
+		else if (h < 240) {
+			g = x;
+			b = c;
+		}
+		else if (h < 300) {
+			r = x;
+			b = c;
+		}
+		else if (h < 360) {
+			r = c;
+			b = x;
+		}
+		return {"Red": r, "Green": g, "Blue": b, "Alpha": (a || 255)};
+	},
+	textToColor: function(text) {
+		var r = g = b = 0;
+		var a = 255;
+		switch (text.toLowerCase()) {
+			case "red":		r = 255; break;
+			case "green":	g = 255; break;
+			case "blue":	b = 255; break;
+			case "yellow":	r = 255; g = 255; break;
+			case "purple":	r = 128; b = 128; break;
+			case "cyan":	g = 255; b = 255; break;
+			default:
+				if (!text.startsWith('#') || text.length > 9)
+					break;
+				try {
+					r = parseInt(text.substring(1, 3), 16);
+					g = parseInt(text.substring(3, 5), 16);
+					b = parseInt(text.substring(5, 7), 16);
+					if (text.length > 7)
+						a = parseInt(text.substring(7, 9), 16);
+				} catch (e) {}
+				break;
+		}
+		console.log({"Red": r, "Green": g, "Blue": b, "Alpha": a});
+		return {"Red": r, "Green": g, "Blue": b, "Alpha": a};
+	},
+	get: function (property, variable) {
+		if (property == "Hue" || property == "Saturation" || property == "Value")
+			return color.rgbTo(property, variable.Red, variable.Green, variable.Blue);
+		else
+			return variable[property];
+	},
+	toText: function (variable) {
+		var r = variable.Red;
+		var g = variable.Green;
+		var b = variable.Blue;
+		var a = variable.Alpha;
+		var hex = "#" + r.toString(16) + (r.toString(16).length == 1 ? "0" : "") + g.toString(16) + (g.toString(16).length == 1 ? "0" : "") +
+			b.toString(16) + (b.toString(16).length == 1 ? "0" : "") + a.toString(16) + (a.toString(16).length == 1 ? "0" : "");
+		return hex;
+	},
+	rgbTo: function(type, r, g, b) {
+		r /= 255.0;
+		g /= 255.0;
+		b /= 255.0;
+		maxColor = Math.max(r,g,b);
+		minColor = Math.min(r,g,b);
+		diff = maxColor - minColor;
+		if (type == "Hue") {
+			if (diff == 0)
+				return 0;
+			else if (maxColor == r)
+				return 60 * (((g - b) / diff) % 6);
+			else if(maxColor == g)
+				return 60 * (((b - r) / diff) + 2);
+			else
+				return 60 * (((r - g) / diff) + 4);
+		}
+		else if (type == "Saturation") {
+			if(maxColor == 0)
+				return 0;
+			else
+				return diff / maxColor;
+		}
+		else if (type == "Value")
+			return maxColor;
+	},
+	showColor: noOp,
+}
+
+let dbgLog = {
+	msg: function(text) {alert("MESSAGE:\n" + text); },
+	error: function(text) {alert("ERROR:\n" + text); },
+}
+
+let magneticFlux = {
+	create: function(x, y, z, time) {
+		return {"X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toText: function(variable) {return JSON.stringify(variable); }
+}
+
+let orientation = {
+	create: function(refrence, order, units, x, y, z, time) {
+		return {"AxesReference": refrence || "EXTRINSIC", "AxesOrder": order || "XYX", "AngleUnit": units || "DEGREES", "FirstAngle": x || 0, "SecondAngle": y || 0, "ThirdAngle": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toText: function(variable) {return JSON.stringify(variable); },
+	toAngleUnit: function (variable, newUnit) {
+		var conversion = 1;
+		if (variable["AngleUnit"] == newUnit)
+			return variable;
+		else if (newUnit == "DEGREES")
+			conversion = 360 / (Math.PI * 2);
+		else if (newUnit == "RADIANS")
+			conversion = (Math.PI * 2) / 360;
+		let newVar = JSON.parse(JSON.stringify(variable));
+		newVar.AngleUnit = newUnit;
+		newVar.FirstAngle *= conversion;
+		newVar.SecondAngle *= conversion;
+		newVar.ThirdAngle *= conversion;
+		return newVar;
+	}
+}
+
+let pidf = {
+	create: function(p, i, d, f, algorithm) {
+		return {"P": p || 0, "I": i || 0, "D": d || 0, "F": f || 0, "Algorithm": algorithm || "PIDF"};
+	},
+	create_withPIDFCoefficients: function(variable) {
+		return JSON.parse(JSON.stringify(variable));
+	},
+	get: function(property, variable) {return variable[property]; },
+	set: function(property, variable, value) {variable[property] = value; },
+	toText: function(variable) {return JSON.stringify(variable); }
+}
+
+let position = {
+	create: function(units, x, y, z, time) {
+		return {"DistanceUnit": units || "CM", "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toText: function(variable) {return JSON.stringify(variable); },
+	toDistanceUnit: function(variable, newUnit) {
+		let newVar = JSON.parse(JSON.stringify(variable));
+		if (variable["DistanceUnit"] == newUnit)
+			return newVar;
+		var conversion = 1;
+		//Conversion to CM
+		switch (variable["DistanceUnit"]) {
+			case "INCH": conversion *= 2.54; break;
+			case "METER": conversion *= 100; break;
+			case "MM": conversion *= .1; break;
+		}
+		//Conversion to new Unit
+		switch (newUnit) {
+			case "INCH": conversion /= 2.54; break;
+			case "METER": conversion /= 100; break;
+			case "MM": conversion /= .1; break;
+		}
+		newVar.DistanceUnit = newUnit;
+		newVar.X *= conversion;
+		newVar.Y *= conversion;
+		newVar.Z *= conversion;
+		return newVar;
+	}
+}
+
+let quaternion = {
+	create: function(w, x, y, z, time) {
+		return {"W": w || 0, "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {
+		if (property == "Magnitude")
+			return (variable.W ** 2 + variable.X ** 2 + variable.Y ** 2 + variable.Z ** 2) ** .5;
+		return variable[property];
+	},
+	normalized: function(variable) {
+		var magn = quaternion.get("Magnitude", variable);
+		let newVar = JSON.parse(JSON.stringify(variable));
+		newVar.W /= magn;
+		newVar.X /= magn;
+		newVar.Y /= magn;
+		newVar.Z /= magn;
+		return newVar;
+	},
+	congugate: function(variable) {
+		let newVar = JSON.parse(JSON.stringify(variable));
+		newVar.X *= -1;
+		newVar.Y *= -1;
+		newVar.Z *= -1;
+		return newVar;
+	}
+}
+
+let range = {
+	scale: function(number, prevMin, prevMax, newMin, newMax) {
+		number -= prevMin;
+		number /= (prevMax - prevMin);
+		number *= (newMax - newMin);
+		return number + newMin;
+	},
+	clip: function(number, min, max) {
+		return Math.min(Math.max(number, min), max);
+	}
+}
+
 let telemetry = {
     addData: function (key, data) {
         return (telemetryData += key + ": " + data + "\n");
@@ -187,6 +522,139 @@ let telemetry = {
     },
     speak: noOp,
     setDisplayFormat: noOp,
+}
+
+let temperature = {
+	create: function(unit, temp, time) {
+		return {"TempUnit": unit || "CELSIUS", "Temperature": temp || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toTempUnit: function(variable, newUnit) {
+		let newVar = JSON.parse(JSON.stringify(variable));
+		if (variable["TempUnit"] == newUnit)
+			return newVar;
+		newVar.TempUnit = newUnit;
+		//Convert to Celcius
+		switch (variable["TempUnit"]) {
+			case "FARENHEIT": newVar.Temperature = (newVar.Temperature - 32) * (5 / 9.0); break;
+			case "KELVIN": newVar.Temperature -= 273.15; break;
+		}
+		//Convert to NewUnit
+		switch (newUnit) {
+			case "FARENHEIT": newVar.Temperature = (newVar.Temperature * (9.0 / 5)) + 32; break;
+			case "KELVIN": newVar.Temperature += 273.15; break;
+		}
+		return newVar;
+	}
+}
+
+let elapsedTime = {
+	create: function(time, resolution) {
+		return {"StartTime": time || system.nanoTime(), "Resolution": resolution || "SECONDS"};
+	},
+	get: function(property, variable) {
+		if (property == "StartTime")
+			return Math.floor(variable.StartTime / ((variable.Resolution == "SECONDS") ? 10000000 : 10000)) / 100;
+		else if ((property == "Time" && variable.Resolution == "SECONDS") || property == "Seconds")
+			return Math.floor((system.nanoTime() - variable.StartTime) / 10000000) / 100;
+		else if ((property == "Time" && variable.Resolution == "MILLISECONDS") || property == "Milliseconds")
+			return Math.floor((system.nanoTime() - variable.StartTime) / 10000) / 100;
+		return variable[property];
+	},
+	toText: function(variable) {return JSON.stringify(variable); },
+	reset: function(variable) {variable.StartTime = system.nanoTime(); }
+}
+
+let vectorF = {
+	create: function(length) {return Array(length).fill(0); },
+	get: function(property, variable) {
+		if (property == "Length")
+			return variable.length;
+		if (property == "Magnitude") {
+			var magnitude = 0;
+			variable.forEach(function(item){magnitude += item ** 2; })
+			return magnitude ** .5;
+		}	
+	},
+	getIndex: function(variable, index) {return variable[index]; },
+	put: function(variable, index, value) {variable[index] = value; },
+	toText: function(variable) {return JSON.stringify(variable); },
+	normalized3D: function(variable) {
+		var newVar = [];
+		for (var i = 0; i < 3; i++)
+			newVar[i] = variable[i] || 0;
+		var magnitude = vectorF.get("Magnitude", newVar);
+		for (var i = 0; i < 3; i++)
+			newVar[i] /= magnitude;
+		return newVar;
+	},
+	dotProduct: function(var1, var2) {
+		var product = 0;
+		var minLength = Math.min(var1.length, var2.length);
+		for (var i = 0; i < minLength; i++)
+			product += var1[i] * var2[i];
+		return product;
+	},
+	add_withVector: function(returnVar, var1, var2) {
+		var maxLength = Math.max(var1.length, var2.length);
+		var newVar = [];
+		for (var i = 0; i < maxLength; i++)
+			newVar[i] = (var1[i] || 0) + (var2[i] || 0);
+		if (returnVar)
+			return newVar;
+		for (var i = 0; i < maxLength; i++)
+			var1[i] = newVar[i];
+	},
+	subtract_withVector: function(returnVar, var1, var2) {
+		var maxLength = Math.max(var1.length, var2.length);
+		var newVar = [];
+		for (var i = 0; i < maxLength; i++)
+			newVar[i] = (var1[i] || 0) - (var2[i] || 0);
+		if (returnVar)
+			return newVar;
+		for (var i = 0; i < maxLength; i++)
+			var1[i] = newVar[i];
+	},
+	multiply_withScale: function(returnVar, var1, scale) {
+		var newVar = [];
+		for (var i = 0; i < var1.length; i++)
+			newVar[i] = var1[i] * scale;
+		if (returnVar)
+			return newVar;
+		for (var i = 0; i < var1.length; i++)
+			var1[i] = newVar[i];
+	}
+}
+
+let velocity = {
+	create: function(units, x, y, z, time) {
+		return {"DistanceUnit": units || "CM", "XVeloc": x || 0, "YVeloc": y || 0, "ZVeloc": z || 0, "AcquisitionTime": time || 0};
+	},
+	get: function(property, variable) {return variable[property]; },
+	toText: function(variable) {return JSON.stringify(variable); },
+	toDistanceUnit: function(variable, newUnit) {
+		let newVar = JSON.parse(JSON.stringify(variable));
+		if (variable["DistanceUnit"] == newUnit)
+			return newVar;
+		var conversion = 1;
+		//Conversion to CM
+		switch (variable["DistanceUnit"]) {
+			case "INCH": conversion *= 2.54; break;
+			case "METER": conversion *= 100; break;
+			case "MM": conversion *= .1; break;
+		}
+		//Conversion to new Unit
+		switch (newUnit) {
+			case "INCH": conversion /= 2.54; break;
+			case "METER": conversion /= 100; break;
+			case "MM": conversion /= .1; break;
+		}
+		newVar.DistanceUnit = newUnit;
+		newVar.XVeloc *= conversion;
+		newVar.YVeloc *= conversion;
+		newVar.Zveloc *= conversion;
+		return newVar;
+	}
 }
 
 let misc = {
@@ -207,7 +675,9 @@ let misc = {
     }
 }
 
-var telemetryData = "";
+let system = {
+	nanoTime: function() {return Math.floor((performance.now() - startTime) * 1000000)}
+}
 
 setTimeout(variableUpdate, 1);
 

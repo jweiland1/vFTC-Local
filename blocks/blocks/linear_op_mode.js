@@ -42,12 +42,12 @@ Blockly.Blocks['linearOpMode_waitForStart'] = {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Wait until start has been pressed.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Wait until start has been pressed.');
   }
 };
 
 Blockly.JavaScript['linearOpMode_waitForStart'] = function(block) {
-  return linearOpModeIdentifierForJavaScript + '.waitForStart();\n';
+  return 'await ' + linearOpModeIdentifierForJavaScript + '.waitForStart();\n';
 };
 
 Blockly.FtcJava['linearOpMode_waitForStart'] = function(block) {
@@ -65,7 +65,7 @@ Blockly.Blocks['linearOpMode_idle'] = {
     this.setNextStatement(true);
     this.setColour(propertyColorLinearOpMode);
     this.setTooltip('Put the current thread to sleep for a bit, allowing other threads in the ' +
-        'system to run.\n[NOT IMPLEMENTED]');
+        'system to run.');
   }
 };
 
@@ -144,7 +144,7 @@ Blockly.Blocks['linearOpMode_opModeIsActive'] = {
         .appendField('.')
         .appendField(createNonEditableField('opModeIsActive'));
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Return true if this opMode is active.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Return true if this opMode is active.');
   }
 };
 
@@ -167,7 +167,7 @@ Blockly.Blocks['linearOpMode_isStarted'] = {
         .appendField('.')
         .appendField(createNonEditableField('isStarted'));
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Return true if this opMode has been started.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Return true if this opMode has been started.');
   }
 };
 
@@ -190,7 +190,7 @@ Blockly.Blocks['linearOpMode_isStopRequested'] = {
         .appendField('.')
         .appendField(createNonEditableField('isStopRequested'));
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Return true if stopping of this opMode has been requested.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Return true if stopping of this opMode has been requested.');
   }
 };
 
@@ -213,7 +213,7 @@ Blockly.Blocks['linearOpMode_getRuntime'] = {
         .appendField('.')
         .appendField(createNonEditableField('getRuntime'));
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Returns the number of seconds this op mode has been running.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Returns the number of seconds this op mode has been running.');
   }
 };
 
@@ -236,7 +236,7 @@ Blockly.Blocks['linearOpMode_getRuntime_Number'] = {
         .appendField('.')
         .appendField(createNonEditableField('getRuntime'));
     this.setColour(propertyColorLinearOpMode);
-    this.setTooltip('Returns the number of seconds this op mode has been running.\n[NOT IMPLEMENTED]');
+    this.setTooltip('Returns the number of seconds this op mode has been running.');
     this.getFtcJavaOutputType = function() {
       return 'double';
     };
