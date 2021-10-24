@@ -125,43 +125,8 @@
     }
 
     function updateEncoderLocalStorage() {
-      var obj = new Object();
-      obj.flEncoders = frontLeftEncoder;
-      obj.frEncoders = frontRightEncoder;
-      obj.blEncoders = backLeftEncoder;
-      obj.brEncoders = backRightEncoder;
-      localStorage.setItem('motorCurrentPositions', JSON.stringify(obj));
-    }
-	
-	var frontLeftVelocity = 0;
-    var frontRightVelocity = 0;
-    var backLeftVelocity = 0;
-    var backRightVelocity = 0;
-
-    function setFrontLeftVelocity(velocity) {
-      frontLeftVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setFrontRightVelocity(velocity) {
-      frontRightVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setBackLeftVelocity(velocity) {
-      backLeftVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setBackRightVelocity(velocity) {
-      backRightVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-
-    function updateVelocityLocalStorage() {
-      var obj = new Object();
-      obj.flVelocity = frontLeftVelocity;
-      obj.frVelocity = frontRightVelocity;
-      obj.blVelocity = backLeftVelocity;
-      obj.brVelocity = backRightVelocity;
-      localStorage.setItem('motorReturnVelocitys', JSON.stringify(obj));
+	  var motorPositions = "[" + frontLeftEncoder + ", " + frontRightEncoder + ", " + backLeftEncoder + ", " + backRightEncoder + ", 0, 0, 0, 0]";
+      localStorage.setItem('motorCurrentPositions', motorPositions);
     }
   </script>
 </body>

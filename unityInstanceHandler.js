@@ -33,14 +33,14 @@ function writeMotorPowers() {
     }
 
     var motorPowers = JSON.parse(localStorage.getItem('motorPowers'));
-    var motor1 = motorPowers[Object.keys(motorPowers)[0]];
-    var motor2 = motorPowers[Object.keys(motorPowers)[1]];
-    var motor3 = motorPowers[Object.keys(motorPowers)[2]];
-    var motor4 = motorPowers[Object.keys(motorPowers)[3]];
-    var motor5 = motorPowers[Object.keys(motorPowers)[4]];
-    var motor6 = motorPowers[Object.keys(motorPowers)[5]];
-    var motor7 = motorPowers[Object.keys(motorPowers)[6]];
-    var motor8 = motorPowers[Object.keys(motorPowers)[7]];
+    var motor1 = motorPowers[0];
+    var motor2 = motorPowers[1];
+    var motor3 = motorPowers[2];
+    var motor4 = motorPowers[3];
+    var motor5 = motorPowers[4];
+    var motor6 = motorPowers[5];
+    var motor7 = motorPowers[6];
+    var motor8 = motorPowers[7];
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontLeftVel", (motor1 != null) ? motor1 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontRightVel", (motor2 != null) ? motor2 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackLeftVel", (motor3 != null) ? motor3 : 0);
@@ -49,5 +49,8 @@ function writeMotorPowers() {
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor6", (motor6 != null) ? motor6 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor7", (motor7 != null) ? motor7 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor8", (motor8 != null) ? motor8 : 0);
+	
+	//Implement Servos once Unity is ready
+	
     check();
 }

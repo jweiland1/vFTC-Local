@@ -148,7 +148,7 @@ function getControlValues(property) {
 
 //VRS-Removed gamepad_getProperty (seemed depreciated)
 
-/*Blockly.FtcJava['gamepad_getProperty'] = function(block) {
+Blockly.FtcJava['gamepad_getProperty'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');
   var property = block.getFieldValue('PROP');
   var code;
@@ -251,7 +251,7 @@ function getControlValues(property) {
     return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
   }
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['gamepad_getProperty_Boolean'] = {
   init: function() {
@@ -333,8 +333,8 @@ Blockly.JavaScript['gamepad_getProperty_Boolean'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['gamepad_getProperty_Boolean'] =
-    Blockly.FtcJava['gamepad_getProperty'];*/
+Blockly.FtcJava['gamepad_getProperty_Boolean'] =
+    Blockly.FtcJava['gamepad_getProperty'];
 
 
 Blockly.Blocks['gamepad_getProperty_Number'] = {
@@ -395,5 +395,5 @@ Blockly.JavaScript['gamepad_getProperty_Number'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['gamepad_getProperty_Number'] =
-    Blockly.FtcJava['gamepad_getProperty'];*/
+Blockly.FtcJava['gamepad_getProperty_Number'] =
+    Blockly.FtcJava['gamepad_getProperty'];

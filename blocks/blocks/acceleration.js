@@ -78,7 +78,7 @@ Blockly.JavaScript['acceleration_getProperty'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_getProperty'] = function(block) {
+Blockly.FtcJava['acceleration_getProperty'] = function(block) {
   var property = block.getFieldValue('PROP');
   switch (property) {
     case 'DistanceUnit':
@@ -97,7 +97,7 @@ Blockly.JavaScript['acceleration_getProperty'] = function(block) {
       block, 'ACCELERATION', Blockly.FtcJava.ORDER_MEMBER);
   var code = acceleration + '.' + property;
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['acceleration_getProperty_DistanceUnit'] = {
   init: function() {
@@ -133,8 +133,8 @@ Blockly.Blocks['acceleration_getProperty_DistanceUnit'] = {
 Blockly.JavaScript['acceleration_getProperty_DistanceUnit'] =
     Blockly.JavaScript['acceleration_getProperty'];
 
-/*Blockly.FtcJava['acceleration_getProperty_DistanceUnit'] =
-    Blockly.FtcJava['acceleration_getProperty'];*/
+Blockly.FtcJava['acceleration_getProperty_DistanceUnit'] =
+    Blockly.FtcJava['acceleration_getProperty'];
 
 Blockly.Blocks['acceleration_getProperty_Number'] = {
   init: function() {
@@ -189,8 +189,8 @@ Blockly.Blocks['acceleration_getProperty_Number'] = {
 Blockly.JavaScript['acceleration_getProperty_Number'] =
     Blockly.JavaScript['acceleration_getProperty'];
 
-/*Blockly.FtcJava['acceleration_getProperty_Number'] =
-    Blockly.FtcJava['acceleration_getProperty'];*/
+Blockly.FtcJava['acceleration_getProperty_Number'] =
+    Blockly.FtcJava['acceleration_getProperty'];
 
 // Functions
 
@@ -210,11 +210,11 @@ Blockly.JavaScript['acceleration_create'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_create'] = function(block) {
+Blockly.FtcJava['acceleration_create'] = function(block) {
   var code = 'new Acceleration()';
   Blockly.FtcJava.generateImport_('Acceleration');
   return [code, Blockly.FtcJava.ORDER_NEW];
-};*/
+};
 
 Blockly.Blocks['acceleration_create_withArgs'] = {
   init: function() {
@@ -264,12 +264,12 @@ Blockly.JavaScript['acceleration_create_withArgs'] = function(block) {
       block, 'Z_ACCEL', Blockly.JavaScript.ORDER_COMMA);
   var acquisitionTime = Blockly.JavaScript.valueToCode(
       block, 'ACQUISITION_TIME', Blockly.JavaScript.ORDER_COMMA);
-  var code = accelerationIdentifierForJavaScript + '.create_withArgs(' + distanceUnit + ', ' + xAccel + ', ' +
+  var code = accelerationIdentifierForJavaScript + '.create(' + distanceUnit + ', ' + xAccel + ', ' +
       yAccel + ', ' + zAccel + ', ' + acquisitionTime + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_create_withArgs'] = function(block) {
+Blockly.FtcJava['acceleration_create_withArgs'] = function(block) {
   var distanceUnit = Blockly.FtcJava.valueToCode(
       block, 'DISTANCE_UNIT', Blockly.FtcJava.ORDER_COMMA);
   var xAccel = Blockly.FtcJava.valueToCode(
@@ -284,7 +284,7 @@ Blockly.JavaScript['acceleration_create_withArgs'] = function(block) {
       ', ' + acquisitionTime + ')';
   Blockly.FtcJava.generateImport_('Acceleration');
   return [code, Blockly.FtcJava.ORDER_NEW];
-};*/
+};
 
 Blockly.Blocks['acceleration_fromGravity'] = {
   init: function() {
@@ -332,12 +332,12 @@ Blockly.JavaScript['acceleration_fromGravity'] = function(block) {
       block, 'GZ', Blockly.JavaScript.ORDER_COMMA);
   var acquisitionTime = Blockly.JavaScript.valueToCode(
       block, 'ACQUISITION_TIME', Blockly.JavaScript.ORDER_COMMA);
-  var code = accelerationIdentifierForJavaScript + '.fromGravity(' + gx + ', ' + gy + ', ' + gz + ', ' +
+  var code = accelerationIdentifierForJavaScript + '.create("g", ' + gx + ', ' + gy + ', ' + gz + ', ' +
       acquisitionTime + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_fromGravity'] = function(block) {
+Blockly.FtcJava['acceleration_fromGravity'] = function(block) {
   var gx = Blockly.FtcJava.valueToCode(
       block, 'GX', Blockly.FtcJava.ORDER_COMMA);
   var gy = Blockly.FtcJava.valueToCode(
@@ -349,7 +349,7 @@ Blockly.JavaScript['acceleration_fromGravity'] = function(block) {
   var code = 'Acceleration.fromGravity(' + gx + ', ' + gy + ', ' + gz + ', ' + acquisitionTime + ')';
   Blockly.FtcJava.generateImport_('Acceleration');
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['acceleration_toDistanceUnit'] = {
   init: function() {
@@ -380,14 +380,14 @@ Blockly.JavaScript['acceleration_toDistanceUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_toDistanceUnit'] = function(block) {
+Blockly.FtcJava['acceleration_toDistanceUnit'] = function(block) {
   var acceleration = Blockly.FtcJava.valueToCode(
       block, 'ACCELERATION', Blockly.FtcJava.ORDER_MEMBER);
   var distanceUnit = Blockly.FtcJava.valueToCode(
       block, 'DISTANCE_UNIT', Blockly.FtcJava.ORDER_NONE);
   var code = acceleration + '.toUnit(' + distanceUnit + ')';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};
 
 Blockly.Blocks['acceleration_toText'] = {
   init: function() {
@@ -412,9 +412,9 @@ Blockly.JavaScript['acceleration_toText'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
-/*Blockly.FtcJava['acceleration_toText'] = function(block) {
+Blockly.FtcJava['acceleration_toText'] = function(block) {
   var acceleration = Blockly.FtcJava.valueToCode(
       block, 'ACCELERATION', Blockly.FtcJava.ORDER_MEMBER);
   var code = acceleration + '.toString()';
   return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
-};*/
+};

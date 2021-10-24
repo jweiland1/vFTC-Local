@@ -29,22 +29,6 @@
 // createNonEditableField
 // propertyColorUtilities
 
-//VRS-Created my own dropdowns
-createLanguageCodeDropdown = function () {
-  var PROPERTY_CHOICES = [
-    ['en', 'en'],
-  ];
-  return new Blockly.FieldDropdown(PROPERTY_CHOICES);
-}
-
-createCountryCodeDropdown = function () {
-  var PROPERTY_CHOICES = [
-    ['US', 'US'],
-  ];
-  return new Blockly.FieldDropdown(PROPERTY_CHOICES);
-}
-
-
 Blockly.Blocks['locale_languageCode'] = {
   init: function() {
     this.setOutput(true, 'String');
@@ -52,9 +36,8 @@ Blockly.Blocks['locale_languageCode'] = {
         .appendField(createNonEditableField('Language'))
         .appendField(createLanguageCodeDropdown(), 'LANGUAGE_CODE');
     this.setColour(propertyColorUtilities);
-	//VRS-I don't think we need this
     // Assign 'this' to a variable for use in the tooltip closure below.
-    /*var thisBlock = this;
+    var thisBlock = this;
     var TOOLTIPS = LANGUAGE_CODE_TOOLTIPS;
     this.setTooltip(function() {
       var key = thisBlock.getFieldValue('LANGUAGE_CODE');
@@ -64,7 +47,7 @@ Blockly.Blocks['locale_languageCode'] = {
         }
       }
       return '';
-    });*/
+    });
   }
 };
 
@@ -73,11 +56,11 @@ Blockly.JavaScript['locale_languageCode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['locale_languageCode'] = function(block) {
+Blockly.FtcJava['locale_languageCode'] = function(block) {
   // Even in Java, a language code is actually just a string, not an enum.
   var code = '"' + block.getFieldValue('LANGUAGE_CODE') + '"';
   return [code, Blockly.FtcJava.ORDER_ATOMIC];
-};*/
+};
 
 Blockly.Blocks['locale_countryCode'] = {
   init: function() {
@@ -86,9 +69,8 @@ Blockly.Blocks['locale_countryCode'] = {
         .appendField(createNonEditableField('Country'))
         .appendField(createCountryCodeDropdown(), 'COUNTRY_CODE');
     this.setColour(propertyColorUtilities);
-	//VRS-I don't think we need this
     // Assign 'this' to a variable for use in the tooltip closure below.
-    /*var thisBlock = this;
+    var thisBlock = this;
     var TOOLTIPS = COUNTRY_CODE_TOOLTIPS;
     this.setTooltip(function() {
       var key = thisBlock.getFieldValue('COUNTRY_CODE');
@@ -98,7 +80,7 @@ Blockly.Blocks['locale_countryCode'] = {
         }
       }
       return '';
-    });*/
+    });
   }
 };
 
@@ -107,8 +89,8 @@ Blockly.JavaScript['locale_countryCode'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['locale_countryCode'] = function(block) {
+Blockly.FtcJava['locale_countryCode'] = function(block) {
   // Even in Java, a country code is actually just a string, not an enum.
   var code = '"' + block.getFieldValue('COUNTRY_CODE') + '"';
   return [code, Blockly.FtcJava.ORDER_ATOMIC];
-};*/
+};
