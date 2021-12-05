@@ -31,6 +31,11 @@ function writeMotorPowers() {
         UnityInstance.SendMessage("FieldManager", "resetField");
         localStorage.setItem('resetField', false);
     }
+	
+	if (localStorage.getItem('motorResetEncoders') == 'true') {
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "resetEncoders");
+        localStorage.setItem('motorResetEncoders', false);
+	}
 
     var motorPowers = JSON.parse(localStorage.getItem('motorPowers'));
     var motor1 = motorPowers[0];
