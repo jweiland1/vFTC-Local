@@ -771,17 +771,34 @@
       link = "";
       if (videoType == 1) {
         switch (document.getElementById('lessonSelect').value) {
-			
-        }
+          case "0": link = "https://www.youtube.com/embed/x7BokrnYRVQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "1": link = "https://www.youtube.com/embed/c4eEeLBST9A?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "2": link = "https://www.youtube.com/embed/Mwt1i6DcoAw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "3": link = "https://www.youtube.com/embed/T7qsSIdD1d4?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "4": link = "https://www.youtube.com/embed/GrotP67WXic?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "5": link = "https://www.youtube.com/embed/9jmv3Qa42sQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "6": link = "https://www.youtube.com/embed/Bks7X4O9m84?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "7": link = "https://www.youtube.com/embed/aqcV63eJp5M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "8": link = "https://www.youtube.com/embed/t43pUXOM0Xk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "9": link = "https://www.youtube.com/embed/SEw5JmZKjJQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+		}
       }
       else if (videoType == 2) {
         switch (document.getElementById('lessonSelect').value) {
-          case "0": link = "https://www.youtube.com/embed/zBjlgFOxw7A"; break;
-          case "1": link = "https://www.youtube.com/embed/6VdMtwmT_Ms"; break;
+          case "0": link = "https://www.youtube.com/embed/ZgVQHswMonk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "1": link = "https://www.youtube.com/embed/Q-C3vVFQS10?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "2": link = "https://www.youtube.com/embed/nx4PnIYA7ns?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "3": link = "https://www.youtube.com/embed/MXjoF2XXLAE?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "4": link = "https://www.youtube.com/embed/IGs1DomVS3w?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "5": link = "https://www.youtube.com/embed/j7tnpOZ_xDw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "6": link = "https://www.youtube.com/embed/iCbP_eR3QAU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "7": link = "https://www.youtube.com/embed/qqN5xwUKk3M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "8": link = "https://www.youtube.com/embed/VwxFRgVVlGs?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "9": link = "https://www.youtube.com/embed/THkZypgWRhg?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
         }
       }
       else
-        link = 'https://www.youtube.com/embed/bKFBm2jqFpI';
+        link = 'https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz';
       document.getElementById('tabOptions').children[3].src = link;
       switchTab(document.getElementById('videoButton'), 3);
     }
