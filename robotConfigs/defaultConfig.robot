@@ -50,29 +50,9 @@
 		}
 	],
 	"servos": [
-		{
-			"name": "fullServo",
-			"type": "continous"
-		},
-		{
-			"name": "leftServo",
-			"type": "180degrees"
-		},
-		{
-			"name": "rightServo",
-			"type": "180degrees"
-		}
 	],
 	"distSensor": [
-		{
-			"name": "frontDistSensor",
-			"type": "REV 2M"
-		}
 	],
 	"IMU": [
-		{
-			"name": "imu",
-			"type": "REV Control Hub"
-		}
 	]
 }
