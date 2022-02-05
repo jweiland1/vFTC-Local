@@ -13,7 +13,7 @@
   <style>
     body {
       background-color: #242424;
-	  overflow: hidden;
+      overflow: hidden;
     }
 
     h1 {
@@ -226,18 +226,18 @@
       position: relative;
     }
 
-	#middleSlider {
-	  min-width: 10px;
-	  cursor: e-resize;
-	}
+    #middleSlider {
+      min-width: 10px;
+      cursor: e-resize;
+    }
 
-	#rightSlider {
-	  cursor: n-resize;
-	}
+    #rightSlider {
+      cursor: n-resize;
+    }
 
-	#multiSlider {
-	  cursor: move;
-	}
+    #multiSlider {
+      cursor: move;
+    }
 
     #scrollOverlay {
       visibility: hidden;
@@ -246,7 +246,7 @@
       left: 0px;
       width: 100%;
       height: 100%;
-	  z-index: 100;
+      z-index: 100;
     }
 
     #overlay {
@@ -349,61 +349,62 @@
     <a href="homepage.html" id="backButton"><span class="chevron left"></span></a>
     <div style="min-width: 12.5px; display: inline-block;"></div>
     <div id="topMenu" style="white-space: nowrap; overflow: hidden;">
-	  <div style="width: 12.5px; display: inline-block;"></div>
-	  <button class="button1" onclick="switchToBlocks()">Blocks</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
+      <div style="width: 12.5px; display: inline-block;"></div>
+      <button class="button1" onclick="switchToBlocks()">Blocks</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
 
-	  <div class="divider"></div>
+      <div class="divider"></div>
 
-	  <button class="button1" onclick="overlay(true, 4)">New Program</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <button id="saveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
-	  <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
-	  	<option value="Load Program">-Load Program-</option>
-	  </select>
-	  </div>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
+      <button class="button1" onclick="overlay(true, 4)">New Program</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="saveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+        <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
+          <option value="Load Program">-Load Program-</option>
+        </select>
+      </div>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
 
-	  <div class="divider"></div>
+      <div class="divider"></div>
 
-	  <button class="button1" onclick="resetField()">Reset Field</button>
-	  <div style="width: 10px; display: inline-block;"></div>
-	  <div id="programStartStop" style="display: none;">
-		<button id="startBttn" class="button1" onclick="startProgram()">Start Program</button>
-		<div style="width: 10px; display: inline-block;"></div>
-		<button class="button1" onclick="stopProgram()">Stop Program</button>
-	  </div>
-	  <div id="programInit" style="display: inline-block;">
-		<button id="initBttn" class="button1" onclick="initProgram('')">Initialize Program</button>
-		<div style="width: 101.54px; display: inline-block;"></div>
-	  </div>
-	  <div style="width: 12.5px; display: inline-block;"></div>
-	</div>
+      <button class="button1" onclick="resetField()">Reset Field</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <div id="programStartStop" style="display: none;">
+        <!-- <button id="startBttn" class="button1" onclick="startProgram()" disabled>Start Program</button> -->
+        <div style="width: 10px; display: inline-block;"></div>
+        <button class="button1" onclick="stopProgram()">Stop Program</button>
+      </div>
+      <div id="programInit" style="display: inline-block;">
+        <button id="initBttn" class="button1" onclick="initProgram('')">Initialize Program</button>
+        <div style="width: 101.54px; display: inline-block;"></div>
+      </div>
+      <div style="width: 12.5px; display: inline-block;"></div>
+    </div>
     <div style="min-width: 12.5px; display: inline-block;"></div>
     <button class="button1" onClick="playVideo(0)" style="min-width: 100px;">How to Use</button>
   </div>
 
 
   <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
-	<div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
+    <div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
       <div id="blocklyDiv" style="width: 100%; border:1px solid white;"></div>
       <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;">
-		<h1 id="loadingOBJText">LOADING</h1>
+        <h1 id="loadingOBJText">LOADING</h1>
       </div>
-	</div>
+    </div>
 
-	<div id="middleSlider" style="width: 10px;"></div>
+    <div id="middleSlider" style="width: 10px;"></div>
 
     <div id="rightScreen" style="min-width: 10px; width: 50%; background-color: #242424;">
-      <div id="controlPanel" style="min-height: 10px; height: 50%; background-color: #242424; border:1px solid white; overflow: hidden;">
+      <div id="controlPanel"
+        style="min-height: 10px; height: 50%; background-color: #242424; border:1px solid white; overflow: hidden;">
         <div id="textSelection" style="white-space: nowrap; overflow: hidden;" class="buttonText">
           <div style="width: 20px; display: inline-block;"></div>
           <div id="firstTab" style="display: inline-block;" onclick="switchTab(this, 0)">Telemetry</div>
@@ -412,8 +413,9 @@
           <div class="divider"></div>
           <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">LMS</div>
           <div class="divider"></div>
-          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video</div>
-		  <div style="width: 20px; display: inline-block;"></div>
+          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video
+          </div>
+          <div style="width: 20px; display: inline-block;"></div>
         </div>
         <div style="width:100%; height: 10px; background-color: #4B4B4B; margin-top: 15px; margin-bottom: 20px;"></div>
         <div id="tabOptions" style="height: 80%;">
@@ -424,7 +426,8 @@
           </div>
           <div style="display: none; height: 100%;">
             <div style="display: flex; justify-content: center; overflow: hidden; height: 11%">
-              <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
+              <div class="dropdown dropdown-dark"
+                style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
                 <select id="lessonSelect" class="dropdown-select" onChange="loadLesson()" style="font-size:20px;">
                   <option value=-1>Coding Lessons</option>
                   <option value=0>Drive to White Line - 2 Motors</option> <!-- Timing			-->
@@ -443,24 +446,28 @@
             <div style="width:100%; overflow:hidden; background-color: #323232;">
               <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">[Select a Lesson]</h2>
             </div>
-            <div id="lessonButtons" style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
-              <button class="button1" onClick="runLessonCode()" style="font-size: 20px; white-space: nowrap; height: 29.2px;">Show the Task</button>
-			  <div style="width: 10%; display: inline-block;"></div>
-              <button class="button1" onClick="playVideo(1)" style="font-size: 20px; white-space: nowrap; height: 29.2px;">Video Hint</button>
-			  <div style="width: 10%; display: inline-block;"></div>
+            <div id="lessonButtons"
+              style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
+              <button class="button1" onClick="runLessonCode()"
+                style="font-size: 20px; white-space: nowrap; height: 29.2px;">Show the Task</button>
+              <div style="width: 10%; display: inline-block;"></div>
+              <button class="button1" onClick="playVideo(1)"
+                style="font-size: 20px; white-space: nowrap; height: 29.2px;">Video Hint</button>
+              <div style="width: 10%; display: inline-block;"></div>
               <button class="button1" onClick="playVideo(2)"
                 style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
           <iframe src="https://virtualftc.jasonbennett.work/courses/basic-movement-with-blocks/'" width="100%"
             height="100%" frameBorder="0" style="display: none;"></iframe>
-          <iframe src="https://www.youtube.com/embed/bKFBm2jqFpI" width="100%"
-            height="100%" frameBorder="0" style="display: none;"></iframe>
+          <iframe src="https://www.youtube.com/embed/bKFBm2jqFpI" width="100%" height="100%" frameBorder="0"
+            style="display: none;"></iframe>
         </div>
       </div>
 
-	  <div id="multiSlider" style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
-	  <div id="rightSlider" style="height: 10px;"></div>
+      <div id="multiSlider"
+        style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
+      <div id="rightSlider" style="height: 10px;"></div>
 
       <div id="fieldView" style="height: 50%; background-color: #000000;">
         <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
@@ -515,63 +522,69 @@
         </div>
         <div style="display: none;">
           <div style="display: flex; justify-content: center; margin-top: 10px;">
-			<div>
-			  <h1 style="text-align: center; font-size: 20px; color: lightgrey;">Create:</h1>
-			  <div class="dropdown dropdown-dark" onchange="sampleProgram(true)" style="display: flex; background-color: #FFFFFF;">
-				<select id="blockSelect" class="dropdown-select" style="font-size:20px; width: 200px; text-align-last:center;">
-				  <option value=''>-Block Program-</option>
-				  <optgroup label="Default OpMode">
-					<option value='BasicAutoOpMode'>Autonomous</option>
-					<option value='BasicOpMode'>DriverControl</option>
-				  </optgroup>
-				  <optgroup label="Driver Control">
-					<option value='BasicPOVDrive'>POVDrive</option>
-					<option value='BasicTankDrive'>TankDrive</option>
-				  </optgroup>
-				  <optgroup label="Sensor">
-					<option value='SensorIMU'>IMU</option>
-				  </optgroup>
-				</select>
-			  </div>
-			  <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
-			  <div class="dropdown dropdown-dark" onChange="sampleProgram(false)" style="display: inline-block; background-color: #FFFFFF;">
-				<select id="javaSelect" class="dropdown-select" style="font-size:20px; max-width: 200px; text-align-last:center;">
-				  <option value=''>-Java Program-</option>
-				  <optgroup label="Default OpMode">
-					<option value='BlankLinearOpMode'>Linear</option>
-					<option value='BlankIterativeOpMode'>Iterative</option>
-				  </optgroup>
-				  <optgroup label="Tank Drive">
-					<option value='BasicOpMode_Linear'>Linear</option>
-					<option value='BasicOpMode_Iterative'>Iterative</option>
-				  </optgroup>
-				  <optgroup label="Concept">
-					<option value='ConceptNullOp'>NullOp</option>
-					<option value='ConceptRampMotorSpeed'>RampMotorSpeed</option>
-					<option value='ConceptScanServo'>ScanServo</option>
-					<option value='ConceptTelemetry'>Telemetry</option>
-				  </optgroup>
-				  <optgroup label="Pushbot">
-					<option value='HardwarePushbot'>Hardware</option>
-					<option value='PushbotAutoDriveByEncoder_Linear'>AutoDriveByEncoder</option>
-					<option value='PushbotAutoDriveByTime_Linear'>AutoDriveByTime</option>
-					<option value='PushbotTeleOpPOV_Linear'>LinearPOVDrive</option>
-					<option value='PushbotTeleOpTank_Iterative'>IterativeTankDrive</option>
-				  </optgroup>
-				  <optgroup label="Sensor">
-					<option value='SensorBNO055IMU'>BNO055IMU</option>
-					<option value='SensorREV2mDistance'>REV2mDistance</option>
-				  </optgroup>
-				</select>
-			  </div>
-			</div>			
-			<div style="width: 35px; display:inline-block;"></div>
-			<div style="width: 130px;">
+            <div>
+              <h1 style="text-align: center; font-size: 20px; color: lightgrey;">Create:</h1>
+              <div class="dropdown dropdown-dark" onchange="sampleProgram(true)"
+                style="display: flex; background-color: #FFFFFF;">
+                <select id="blockSelect" class="dropdown-select"
+                  style="font-size:20px; width: 200px; text-align-last:center;">
+                  <option value=''>-Block Program-</option>
+                  <optgroup label="Default OpMode">
+                    <option value='BasicAutoOpMode'>Autonomous</option>
+                    <option value='BasicOpMode'>DriverControl</option>
+                  </optgroup>
+                  <optgroup label="Driver Control">
+                    <option value='BasicPOVDrive'>POVDrive</option>
+                    <option value='BasicTankDrive'>TankDrive</option>
+                  </optgroup>
+                  <optgroup label="Sensor">
+                    <option value='SensorIMU'>IMU</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
+              <div class="dropdown dropdown-dark" onChange="sampleProgram(false)"
+                style="display: inline-block; background-color: #FFFFFF;">
+                <select id="javaSelect" class="dropdown-select"
+                  style="font-size:20px; max-width: 200px; text-align-last:center;">
+                  <option value=''>-Java Program-</option>
+                  <optgroup label="Default OpMode">
+                    <option value='BlankLinearOpMode'>Linear</option>
+                    <option value='BlankIterativeOpMode'>Iterative</option>
+                  </optgroup>
+                  <optgroup label="Tank Drive">
+                    <option value='BasicOpMode_Linear'>Linear</option>
+                    <option value='BasicOpMode_Iterative'>Iterative</option>
+                  </optgroup>
+                  <optgroup label="Concept">
+                    <option value='ConceptNullOp'>NullOp</option>
+                    <option value='ConceptRampMotorSpeed'>RampMotorSpeed</option>
+                    <option value='ConceptScanServo'>ScanServo</option>
+                    <option value='ConceptTelemetry'>Telemetry</option>
+                  </optgroup>
+                  <optgroup label="Pushbot">
+                    <option value='HardwarePushbot'>Hardware</option>
+                    <option value='PushbotAutoDriveByEncoder_Linear'>AutoDriveByEncoder</option>
+                    <option value='PushbotAutoDriveByTime_Linear'>AutoDriveByTime</option>
+                    <option value='PushbotTeleOpPOV_Linear'>LinearPOVDrive</option>
+                    <option value='PushbotTeleOpTank_Iterative'>IterativeTankDrive</option>
+                  </optgroup>
+                  <optgroup label="Sensor">
+                    <option value='SensorBNO055IMU'>BNO055IMU</option>
+                    <option value='SensorREV2mDistance'>REV2mDistance</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div style="width: 35px; display:inline-block;"></div>
+            <div style="width: 130px;">
               <input id="filePrompt" type="file" accept=".blk,.java" style="display:none;">
-			  <button class="button1" onclick="document.getElementById('filePrompt').click()" style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
-			  <div style="height: 10px;"></div>
-			  <button id="blockjavaConvert" class="button1" onclick="convertToJava()" style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Export to OnBotJava</button>
-			</div>
+              <button class="button1" onclick="document.getElementById('filePrompt').click()"
+                style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
+              <div style="height: 10px;"></div>
+              <button id="blockjavaConvert" class="button1" onclick="convertToJava()"
+                style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Export to OnBotJava</button>
+            </div>
           </div>
 
         </div>
@@ -579,19 +592,19 @@
     </div>
   </div>
 
-<script>
-	//---TempVariable will be replaced by vars.js---
-	var currentProjectName = "";
-	
-	//---Sending Data to Unity---
-	const abortedMsg = "aborted";
+  <script>
+    //---TempVariable will be replaced by vars.js---
+    var currentProjectName = "";
+
+    //---Sending Data to Unity---
+    const abortedMsg = "aborted";
     localStorage.setItem('startMatch', false);
     localStorage.setItem('stopMatch', false);
     localStorage.setItem('resetField', false);
-	localStorage.setItem('playMode', "Autonomous")
+    localStorage.setItem('playMode', "Autonomous")
 
-	//---Loading Screen for Unity---
-	var shouldBeUpdatingLoadingText = true;
+    //---Loading Screen for Unity---
+    var shouldBeUpdatingLoadingText = true;
     var counterForLoadingText = 1;
     setTimeout(function () {
       shouldBeUpdatingLoadingText = false;
@@ -618,87 +631,87 @@
     }
     updateLoadingText();
 
-	//---Resize Screens---
-	var xScreenSize = .5 * document.body.clientWidth;
-	document.getElementById('leftScreen').style.width = xScreenSize + "px";
-	document.getElementById('rightScreen').style.width = xScreenSize + "px";
-	var yScreenSize = window.innerHeight / 2 - 30;
-	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-	document.getElementById('controlPanel').style.height = yScreenSize + "px";
-	document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+    //---Resize Screens---
+    var xScreenSize = .5 * document.body.clientWidth;
+    document.getElementById('leftScreen').style.width = xScreenSize + "px";
+    document.getElementById('rightScreen').style.width = xScreenSize + "px";
+    var yScreenSize = window.innerHeight / 2 - 30;
+    document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
+    document.getElementById('controlPanel').style.height = yScreenSize + "px";
+    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
     document.getElementById('fieldView').style.height = yScreenSize + "px";
-	var mouseClicked = 0;
+    var mouseClicked = 0;
 
-	document.getElementById('middleSlider').addEventListener('mousedown', function() {
-	  document.getElementById('scrollOverlay').style.cursor = "e-resize";
-	  document.getElementById('scrollOverlay').style.visibility = "visible";
-	  mouseClicked = 1;
-	});
+    document.getElementById('middleSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "e-resize";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 1;
+    });
 
-	document.getElementById('rightSlider').addEventListener('mousedown', function() {
-	  document.getElementById('scrollOverlay').style.cursor = "n-resize";
-	  document.getElementById('scrollOverlay').style.visibility = "visible";
-	  mouseClicked = 2;
-	});
+    document.getElementById('rightSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "n-resize";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 2;
+    });
 
-	document.getElementById('multiSlider').addEventListener('mousedown', function() {
-	  document.getElementById('scrollOverlay').style.cursor = "move";
-	  document.getElementById('scrollOverlay').style.visibility = "visible";
-	  mouseClicked = 3;
-	});
+    document.getElementById('multiSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "move";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 3;
+    });
 
-	window.addEventListener('mouseup', function() {
-	  document.getElementById('scrollOverlay').style.visibility = "hidden";
-	  xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
-	  yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
-	  mouseClicked = 0;
-	});
+    window.addEventListener('mouseup', function () {
+      document.getElementById('scrollOverlay').style.visibility = "hidden";
+      xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
+      yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
+      mouseClicked = 0;
+    });
 
-	window.addEventListener('resize', function () {
-	  //Width Consideration
-	  xScreenSize = document.getElementById('leftScreen').clientWidth;
-	  if (xScreenSize < 10) {
-		document.getElementById('leftScreen').style.width = '10px';
-		xScreenSize = 10;
-	  }
-	  document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
-	  //Height Consideration
-	  if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
-		yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-	    document.getElementById('controlPanel').style.height = yScreenSize + "px";
-	    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
-	  }
-	  document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
-	  document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-	});
+    window.addEventListener('resize', function () {
+      //Width Consideration
+      xScreenSize = document.getElementById('leftScreen').clientWidth;
+      if (xScreenSize < 10) {
+        document.getElementById('leftScreen').style.width = '10px';
+        xScreenSize = 10;
+      }
+      document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
+      //Height Consideration
+      if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
+        yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+        document.getElementById('controlPanel').style.height = yScreenSize + "px";
+        document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+      }
+      document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
+      document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
+    });
 
-	window.addEventListener('mousemove', function(event) {
-	  if (mouseClicked != 0) {
-	    if (mouseClicked != 2) {
-	      xScreenSize += event.movementX * .8;
-		  var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
-	      document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
-		  document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
-		  Blockly.svgResize(Blockly.mainWorkspace);
-		}
-		if (mouseClicked != 1) {
-		  yScreenSize += event.movementY * .8;
-		  var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-	      document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
-	      document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
-		  document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
-		}
-		event.preventDefault();
-	  }
-	});
+    window.addEventListener('mousemove', function (event) {
+      if (mouseClicked != 0) {
+        if (mouseClicked != 2) {
+          xScreenSize += event.movementX * .8;
+          var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
+          document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
+          document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
+          Blockly.svgResize(Blockly.mainWorkspace);
+        }
+        if (mouseClicked != 1) {
+          yScreenSize += event.movementY * .8;
+          var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+          document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
+          document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
+          document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
+        }
+        event.preventDefault();
+      }
+    });
 
-	document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += event.deltaY * .5; });
+    document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += event.deltaY * .5; });
     document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += event.deltaY * .5; });
 
-	//---Prompts---
+    //---Prompts---
     var overlayReturned = null;
 
-	//Overrides Window.Prompt for Variable Renaming
+    //Overrides Window.Prompt for Variable Renaming
     window.prompt = function overlayPrompt(message, placeholder) {
       overlayReturned = null;
       overlay(true, (message == "New variable name:" ? 2 : 3));
@@ -715,9 +728,9 @@
         }, 1000);
       });
     }
-	
-	//---Gamepad Connections---
-	window.addEventListener("gamepadconnected", (event) => {
+
+    //---Gamepad Connections---
+    window.addEventListener("gamepadconnected", (event) => {
       if (event.gamepad.index < 2) {
         document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
       }
@@ -728,9 +741,9 @@
         document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
       }
     });
-	
-	//---Miscellaneous Functions---
-	//Overlay
+
+    //---Miscellaneous Functions---
+    //Overlay
     function overlay(show, activity) {
       if (show) {
         document.getElementById('overlay').style.animation = "showOverlay .25s ease 1 normal forwards";
@@ -755,7 +768,7 @@
             document.getElementById('blockSelect').value = "";
             document.getElementById('javaSelect').value = "";
             document.getElementById('overlayName').innerHTML = "New Program";
-			document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
+            document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
             break;
         }
         for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
@@ -773,9 +786,9 @@
           overlayReturned = document.getElementById('changedVariableName').value;
       }
     }
-	
-	//Functions for OnBotJava
-	function getSelectedRange() {
+
+    //Functions for OnBotJava
+    function getSelectedRange() {
       return { from: editor.getCursor(true), to: editor.getCursor(false) };
     }
 
@@ -786,8 +799,8 @@
       editor.autoFormatRange(range.from, range.to);
       editor.setCursor(cursor);
     }
-	
-	//(re)loads dropdown of saved programs
+
+    //(re)loads dropdown of saved programs
     function prepareUiToLoadProgram() {
       var keys = Object.keys(localStorage).sort();
 
@@ -805,9 +818,9 @@
     }
 
     prepareUiToLoadProgram();
-	
-	//---Switching between Blocks and Java---
-	var isUsingBlocks = true;
+
+    //---Switching between Blocks and Java---
+    var isUsingBlocks = true;
 
     function switchToBlocks() {
       document.getElementById('blocklyDiv').hidden = false;
@@ -815,38 +828,38 @@
       document.getElementById('saveAs').disabled = false;
       document.getElementById('initBttn').disabled = false;
       isUsingBlocks = true;
-	  if (Blockly.mainWorkspace)
-		Blockly.svgResize(Blockly.mainWorkspace);
-	  if (currentProjectName != 'program') {
-		document.getElementById('save').disabled = false;
-		document.getElementById('delete').disabled = false;
-		document.getElementById('download').disabled = false;
-		document.getElementById("programSelect").value = currentProjectName;
-	  }
+      if (Blockly.mainWorkspace)
+        Blockly.svgResize(Blockly.mainWorkspace);
+      if (currentProjectName != 'program') {
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        document.getElementById("programSelect").value = currentProjectName;
+      }
     }
 
     function switchToOnBotJava() {
-	  resetProgramExecution();
+      resetProgramExecution();
       document.getElementById('blocklyDiv').hidden = true;
       document.getElementById('onBotJavaDiv').hidden = false;
-	  document.getElementById('saveAs').disabled = true;
+      document.getElementById('saveAs').disabled = true;
       document.getElementById('initBttn').disabled = true;
       document.getElementById('save').disabled = true;
       document.getElementById('delete').disabled = true;
       document.getElementById('download').disabled = true;
       isUsingBlocks = false;
-	  document.getElementById("programSelect").value = "Load Program";
+      document.getElementById("programSelect").value = "Load Program";
     }
-	
-	var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
+
+    var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
     var editor;
-	
-	setUpOnBotJava();
-	switchToBlocks();
-	
+
+    setUpOnBotJava();
+    switchToBlocks();
+
     function setUpOnBotJava(javaCode) {
       editor = CodeMirror(function (elt) {
-		document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
+        document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
       }, {
         value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block Code exported to Java\n * and some Sample Code given in the 'New Program' popup.\n */\n\n" + (javaCode || defaultText),
         mode: "text/x-java",
@@ -858,17 +871,17 @@
       });
       //autoFormatSelection();
     }
-	
-	//---Functionality for New Program Overlay Buttons---
-	//"Sample Program"
-	function sampleProgram(blockProgram) {
-	  var sampleProgram;
-	  if (blockProgram)
-		sampleProgram = document.getElementById('blockSelect').value;
-	  else
-		sampleProgram = document.getElementById('javaSelect').value;
+
+    //---Functionality for New Program Overlay Buttons---
+    //"Sample Program"
+    function sampleProgram(blockProgram) {
+      var sampleProgram;
+      if (blockProgram)
+        sampleProgram = document.getElementById('blockSelect').value;
+      else
+        sampleProgram = document.getElementById('javaSelect').value;
       document.getElementById("programSelect").value = "Load Program";
-	  currentProjectName = "program";
+      currentProjectName = "program";
       document.getElementById('save').disabled = true;
       document.getElementById('delete').disabled = true;
       document.getElementById('download').disabled = true;
@@ -878,30 +891,30 @@
       client.onload = function () {
         var content = client.responseText;
         if (content !== '') {
-		  if (blockProgram) {
-			var i = content.indexOf('</xml>');
-			content = content.substring(0, i + 6);
-			Blockly.mainWorkspace.clear();
-			Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-			resetProgramExecution();
-			if (sampleProgram != 'BasicAutoOpMode')
+          if (blockProgram) {
+            var i = content.indexOf('</xml>');
+            content = content.substring(0, i + 6);
+            Blockly.mainWorkspace.clear();
+            Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+            resetProgramExecution();
+            if (sampleProgram != 'BasicAutoOpMode')
               document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-			else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller")) {
+            else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller")) {
               document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-			}
-			switchToBlocks();
-		  }
-		  else {
-			switchToOnBotJava();
-			setUpOnBotJava(content);
-		  }
+            }
+            switchToBlocks();
+          }
+          else {
+            switchToOnBotJava();
+            setUpOnBotJava(content);
+          }
         }
       }
       client.send();
       overlay(false, 0);
     }
-	
-	//"Upload Program"
+
+    //"Upload Program"
     document.getElementById('filePrompt').addEventListener('change', function () {
       var fileReader = new FileReader();
       fileReader.onload = function () {
@@ -912,86 +925,86 @@
 
     function uploadProgram(programName, content) {
       document.getElementById('filePrompt').value = '';
-	  var fileType = programName.split('.')[programName.split('.').length - 1]
-	  if (fileType == "blk") {
-		programName = programName.substring(0, programName.length - fileType.length - 1);
-		currentProjectName = programName;
-		Blockly.mainWorkspace.clear();
-		var i = content.indexOf('</xml>');
-		content = content.substring(0, i + 6);//Convert from names to config
-		//String to XML to Blockly
-		var parser = new DOMParser();
-		var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
-		//Convert 2 Duals to Quad
-		var blocks = xmlDoc.getElementsByTagName("block");
-		for (var i = 0; i < blocks.length - 1; i++) {
-		  if (blocks[i].getElementsByTagName("next")[0]) {
-			nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[0];
-			if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") && 
-				blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
-			  blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-		      for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
-				if (nextBlock.childNodes[c].getAttribute("name")) {
-				  var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
-				  nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
-				  blocks[i].appendChild(nextBlock.childNodes[c]);
-				}
-			  blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
-			  if (nextBlock.getElementsByTagName("next")[0])
-				blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
-			}
-		  }
-		}
-		content = new XMLSerializer().serializeToString(xmlDoc);
-		console.log(content);
-		Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-		resetProgramExecution();
-		document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-		localStorage.setItem("Program Name: " + programName, content);
-		prepareUiToLoadProgram();
-		document.getElementById("programSelect").value = programName;
-		document.getElementById('save').disabled = false;
-		document.getElementById('delete').disabled = false;
-		document.getElementById('download').disabled = false;
-		switchToBlocks();
-	    overlay(false, 0);
-	  }
-	  else if (fileType == "java") {
-		switchToOnBotJava();
-		setUpOnBotJava(content);
-		overlay(false, 0);
-	  }
+      var fileType = programName.split('.')[programName.split('.').length - 1]
+      if (fileType == "blk") {
+        programName = programName.substring(0, programName.length - fileType.length - 1);
+        currentProjectName = programName;
+        Blockly.mainWorkspace.clear();
+        var i = content.indexOf('</xml>');
+        content = content.substring(0, i + 6);//Convert from names to config
+        //String to XML to Blockly
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
+        //Convert 2 Duals to Quad
+        var blocks = xmlDoc.getElementsByTagName("block");
+        for (var i = 0; i < blocks.length - 1; i++) {
+          if (blocks[i].getElementsByTagName("next")[0]) {
+            nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[0];
+            if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
+              blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
+              blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
+              for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
+                if (nextBlock.childNodes[c].getAttribute("name")) {
+                  var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
+                  nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
+                  blocks[i].appendChild(nextBlock.childNodes[c]);
+                }
+              blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
+              if (nextBlock.getElementsByTagName("next")[0])
+                blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
+            }
+          }
+        }
+        content = new XMLSerializer().serializeToString(xmlDoc);
+        console.log(content);
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+        resetProgramExecution();
+        document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
+        localStorage.setItem("Program Name: " + programName, content);
+        prepareUiToLoadProgram();
+        document.getElementById("programSelect").value = programName;
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        switchToBlocks();
+        overlay(false, 0);
+      }
+      else if (fileType == "java") {
+        switchToOnBotJava();
+        setUpOnBotJava(content);
+        overlay(false, 0);
+      }
     }
 
-	//"Export to OnBotJava"
-	function convertToJava() {
-	  var javaCode = generateJavaCode();
-	  switchToOnBotJava();
-	  setUpOnBotJava(configNaming(javaCode));
-	  overlay(false, 0);
-	}
-	
-	//Coped from FTC Code
-	function generateJavaCode() {
-	  // Get the blocks as xml (text).
-	  Blockly.FtcJava.setClassNameForFtcJava_((currentProjectName != "program") ? currentProjectName : null);
-	  var blocksContent = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
-	  // Don't bother exporting if there are no blocks.
-	  if (blocksContent.indexOf('<block') > -1) {
-		// Generate Java code.
-		return Blockly.FtcJava.workspaceToCode(workspace);
-	  }
-	  return '';
-	}
+    //"Export to OnBotJava"
+    function convertToJava() {
+      var javaCode = generateJavaCode();
+      switchToOnBotJava();
+      setUpOnBotJava(configNaming(javaCode));
+      overlay(false, 0);
+    }
 
-	//---Functionality of Middle Buttons---
+    //Coped from FTC Code
+    function generateJavaCode() {
+      // Get the blocks as xml (text).
+      Blockly.FtcJava.setClassNameForFtcJava_((currentProjectName != "program") ? currentProjectName : null);
+      var blocksContent = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+      // Don't bother exporting if there are no blocks.
+      if (blocksContent.indexOf('<block') > -1) {
+        // Generate Java code.
+        return Blockly.FtcJava.workspaceToCode(workspace);
+      }
+      return '';
+    }
+
+    //---Functionality of Middle Buttons---
     function saveProgram() {
       var programName = document.getElementById('saveProgramName').value;
       var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
       localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
       prepareUiToLoadProgram();
       document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
-	  currentProjectName = document.getElementById('saveProgramName').value;
+      currentProjectName = document.getElementById('saveProgramName').value;
       document.getElementById('save').disabled = false;
       document.getElementById('delete').disabled = false;
       document.getElementById('download').disabled = false;
@@ -1002,10 +1015,10 @@
     function loadProgram() {
       Blockly.mainWorkspace.clear();
       var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
-	  currentProjectName = document.getElementById('programSelect').value;
+      currentProjectName = document.getElementById('programSelect').value;
       if (nameOfProject == "Program Name: Load Program") {
-		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-		sampleProgram(true);
+        document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+        sampleProgram(true);
       } else if (typeof (Storage) !== "undefined") {
         document.getElementById('save').disabled = false;
         document.getElementById('delete').disabled = false;
@@ -1015,7 +1028,7 @@
         resetProgramExecution();
         document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
       }
-	  switchToBlocks();
+      switchToBlocks();
     }
 
     function autoSave() {
@@ -1027,11 +1040,11 @@
 
     function deleteProgram() {
       var programName = document.getElementById('programSelect').value;
-	  currentProjectName = "program";
+      currentProjectName = "program";
       localStorage.removeItem("Program Name: " + programName);
-	  document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-	  sampleProgram(true);
-	  prepareUiToLoadProgram();
+      document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+      sampleProgram(true);
+      prepareUiToLoadProgram();
       resetProgramExecution();
       document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
       overlay(false, 0);
@@ -1039,72 +1052,72 @@
 
     function downloadProgram(button) {
       var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-	  //Blockly to XML to String
-	  var parser = new DOMParser();
-	  var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
-	  //Convert Quad to 2 Duals
-	  var blocks = xmlDoc.getElementsByTagName("block");
-	  for (var i = 0; i < blocks.length; i++)
-		if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
-		  var secondDual = blocks[i].cloneNode();
-		  blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
-		  secondDual.setAttribute("type", blocks[i].getAttribute("type"));
-		  secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
-		  for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
-			if (blocks[i].childNodes[c].getAttribute("name")) {
-			  var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
-			  if (num > 2) {
-				blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
-				secondDual.appendChild(blocks[i].childNodes[c]);
-			  }
-			}
-		  if (blocks[i].getElementsByTagName("next")[0])
-			secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
-		  blocks[i].appendChild(xmlDoc.createElement("next"));
-		  blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
-		}
-	  //Download Program
+      //Blockly to XML to String
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
+      //Convert Quad to 2 Duals
+      var blocks = xmlDoc.getElementsByTagName("block");
+      for (var i = 0; i < blocks.length; i++)
+        if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
+          var secondDual = blocks[i].cloneNode();
+          blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
+          secondDual.setAttribute("type", blocks[i].getAttribute("type"));
+          secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
+          for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
+            if (blocks[i].childNodes[c].getAttribute("name")) {
+              var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
+              if (num > 2) {
+                blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
+                secondDual.appendChild(blocks[i].childNodes[c]);
+              }
+            }
+          if (blocks[i].getElementsByTagName("next")[0])
+            secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
+          blocks[i].appendChild(xmlDoc.createElement("next"));
+          blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
+        }
+      //Download Program
       button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
       button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
     }
-	
-	//---Functionality for Top Right Buttons---
+
+    //---Functionality for Top Right Buttons---
     function initProgram(code) {
-	  resetProgramExecution();
-	  programStart = false;
-	  document.getElementById('programInit').style.display = 'none';
-	  document.getElementById('programStartStop').style.display = 'inline-block';
-	  document.getElementById('startBttn').disabled = false;
-	  startTime = performance.now();
-	  if (code == "") {
-		code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-	    var finalCode = "";
-		var inFunction = false;
-		for (var line of code.split('\n')) {
-		  if (line.startsWith('function ')) {
-			inFunction = true;
-		  }
-		  if (line.startsWith('async function '))
-			inFunction = true;
-		  if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
-			finalCode += line + '\n';
-		  else
-			finalCode += '//' + line + '\n';
-		  if (line == '}')
-			inFunction = false;
-		}
-	
-		finalCode += "\nawait runOpMode();\n";
-		runProgram(finalCode);
-	  }
-	  else
-		runProgram(code);
+      resetProgramExecution();
+      programStart = false;
+      document.getElementById('programInit').style.display = 'none';
+      document.getElementById('programStartStop').style.display = 'inline-block';
+      // document.getElementById('startBttn').disabled = false;
+      startTime = performance.now();
+      if (code == "") {
+        code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
+        var finalCode = "";
+        var inFunction = false;
+        for (var line of code.split('\n')) {
+          if (line.startsWith('function ')) {
+            inFunction = true;
+          }
+          if (line.startsWith('async function '))
+            inFunction = true;
+          if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
+            finalCode += line + '\n';
+          else
+            finalCode += '//' + line + '\n';
+          if (line == '}')
+            inFunction = false;
+        }
+
+        finalCode += "\nawait runOpMode();\n";
+        runProgram(finalCode);
+      }
+      else
+        runProgram(code);
     }
 
-	function startProgram() {
-	  document.getElementById('startBttn').disabled = true;
-	  programStart = true;
-	}
+    function startProgram() {
+      // document.getElementById('startBttn').disabled = true;
+      programStart = true;
+    }
 
     function stopProgram() {
       localStorage.setItem('stopMatch', true);
@@ -1116,14 +1129,14 @@
       localStorage.setItem('resetField', true);
       document.getElementById("telemetryText").innerText = "Field Reset \n";
     }
-	
-	//---Funcionality for Running Blockly Code---
-	var programExecController = new AbortController();
-	
-	async function runProgram(code){
-	  console.log(code);
-      let AsyncFunctionCtor = Object.getPrototypeOf(async function(){}).constructor;
-      let program = new AsyncFunctionCtor( code );
+
+    //---Funcionality for Running Blockly Code---
+    var programExecController = new AbortController();
+
+    async function runProgram(code) {
+      console.log(code);
+      let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
+      let program = new AsyncFunctionCtor(code);
 
       //setup
       localStorage.setItem('startMatch', true);
@@ -1131,40 +1144,40 @@
 
       programExecController = new AbortController();
       // execution
-      try{
+      try {
         await program();
       }
-      catch(err){
+      catch (err) {
         // anything other than abortedMsg is an actual error
-        if( err != abortedMsg ){
-		  localStorage.setItem('stopMatch', true);
-		  document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
-		  resetProgramExecution();
+        if (err != abortedMsg) {
+          localStorage.setItem('stopMatch', true);
+          document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
+          resetProgramExecution();
           throw err;
         }
       }
 
       // end
-	  resetProperties();
+      resetProperties();
       localStorage.setItem('stopMatch', true);
-	  if (!document.getElementById("telemetryText").innerText.startsWith("<Program has stopped!>"))
-		document.getElementById("telemetryText").innerText = "Program Ended \n";
-	  document.getElementById('programInit').style.display = 'inline-block';
-	  document.getElementById('programStartStop').style.display = 'none';
+      if (!document.getElementById("telemetryText").innerText.startsWith("<Program has stopped!>"))
+        document.getElementById("telemetryText").innerText = "Program Ended \n";
+      document.getElementById('programInit').style.display = 'inline-block';
+      document.getElementById('programStartStop').style.display = 'none';
     }
-	
+
     function resetProgramExecution() {
       programExecController.abort();
       resetProperties();
-	  document.getElementById('programInit').style.display = 'inline-block';
-	  document.getElementById('programStartStop').style.display = 'none';
+      document.getElementById('programInit').style.display = 'inline-block';
+      document.getElementById('programStartStop').style.display = 'none';
     }
-	
-	//---Switch Between Top Right Tabs---
+
+    //---Switch Between Top Right Tabs---
     var prevTabButton = document.getElementById('firstTab');
 
     function switchTab(button, tabNum) {
-	  if (button.className == 'textNormal') {
+      if (button.className == 'textNormal') {
         for (var i = 0; i < document.getElementById('tabOptions').children.length; i++)
           document.getElementById('tabOptions').children[i].style.display = "none";
         document.getElementById('tabOptions').children[tabNum].style.display = "inherit";
@@ -1174,10 +1187,10 @@
       }
     }
 
-	//---Load Lessons---
+    //---Load Lessons---
     function loadLesson() {
       document.getElementById('lessonButtons').style.display = "flex";
-	  document.getElementById('lessonText').parentElement.style.height = '75%';
+      document.getElementById('lessonText').parentElement.style.height = '75%';
       switch (document.getElementById('lessonSelect').value) {
         case "0":
           document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
@@ -1232,41 +1245,41 @@
         default:
           document.getElementById('lessonButtons').style.display = "none";
           document.getElementById('lessonText').innerText = "[Select Lesson]";
-		  document.getElementById('lessonText').parentElement.style.height = '';
+          document.getElementById('lessonText').parentElement.style.height = '';
           break;
       }
     }
 
-	function runLessonCode() {
-	  var lessonName = "";
-	  switch (document.getElementById('lessonSelect').value) {
-		case "0": lessonName = "WhiteLine2Motors"; break;
-		case "1": lessonName = "WhiteLine4Motors"; break;
-		case "2": lessonName = "DriveRotate90"; break;
-		case "3": lessonName = "DriveRotateSquare"; break;
-		case "4": lessonName = "DriveStrafeSquare"; break;
-		case "5": lessonName = "WobblePos1"; break;
-		case "6": lessonName = "WobblePos2"; break;
-		case "7": lessonName = "WobblePos3"; break;
-		case "8": lessonName = "ShootHighGoal"; break;
-		case "9": lessonName = "ShootPowerShots"; break;
-	  }
-	  stopProgram();
-	  resetField();
-	  //Load Lesson Code to Run
+    function runLessonCode() {
+      var lessonName = "";
+      switch (document.getElementById('lessonSelect').value) {
+        case "0": lessonName = "WhiteLine2Motors"; break;
+        case "1": lessonName = "WhiteLine4Motors"; break;
+        case "2": lessonName = "DriveRotate90"; break;
+        case "3": lessonName = "DriveRotateSquare"; break;
+        case "4": lessonName = "DriveStrafeSquare"; break;
+        case "5": lessonName = "WobblePos1"; break;
+        case "6": lessonName = "WobblePos2"; break;
+        case "7": lessonName = "WobblePos3"; break;
+        case "8": lessonName = "ShootHighGoal"; break;
+        case "9": lessonName = "ShootPowerShots"; break;
+      }
+      stopProgram();
+      resetField();
+      //Load Lesson Code to Run
       var client = new XMLHttpRequest();
       client.open('GET', './blocks/lessons/' + lessonName + '.ftccode');
       client.onload = function () {
-		var lessonCode = client.responseText;
-		if (lessonCode !== '')
-		  initProgram(lessonCode);
+        var lessonCode = client.responseText;
+        if (lessonCode !== '')
+          initProgram(lessonCode);
       }
       client.send();
-	}
+    }
 
     function playVideo(videoType) {
       link = "";
-	  //videoType: 0 = howTo, 1 = hint, 2 = solution
+      //videoType: 0 = howTo, 1 = hint, 2 = solution
       if (videoType == 1) {
         switch (document.getElementById('lessonSelect').value) {
           case "0": link = "https://www.youtube.com/embed/x7BokrnYRVQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
@@ -1279,7 +1292,7 @@
           case "7": link = "https://www.youtube.com/embed/aqcV63eJp5M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
           case "8": link = "https://www.youtube.com/embed/t43pUXOM0Xk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
           case "9": link = "https://www.youtube.com/embed/SEw5JmZKjJQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-		}
+        }
       }
       else if (videoType == 2) {
         switch (document.getElementById('lessonSelect').value) {
@@ -1300,9 +1313,9 @@
       document.getElementById('tabOptions').children[3].src = link;
       switchTab(document.getElementById('videoButton'), 3);
     }
-	
+
   </script>
-  
+
   <!-- FTC Copied Files w/ slight modifications -->
   <script src="./robotConfigs/programConfigSetup.js"></script>
   <script src="./blocks/ftcblockly.js"></script>
@@ -1632,8 +1645,8 @@
             </value>
           </block>
         </category>
-		<category css-icon="" name="Quad" toolboxitemid="MotorQuad">
-	      <block type="dcMotor_setQuadProperty_Number">
+        <category css-icon="" name="Quad" toolboxitemid="MotorQuad">
+          <block type="dcMotor_setQuadProperty_Number">
             <field name="PROP">Power</field>
             <field name="IDENTIFIER1">dcMotor0</field>
             <field name="IDENTIFIER2">dcMotor1</field>
@@ -1649,7 +1662,7 @@
                 <field name="NUM">1</field>
               </shadow>
             </value>
-			<value name="VALUE3">
+            <value name="VALUE3">
               <shadow type="math_number">
                 <field name="NUM">1</field>
               </shadow>
@@ -1660,11 +1673,11 @@
               </shadow>
             </value>
           </block>
-		  <block type="dcMotor_setQuadProperty_Number">
+          <block type="dcMotor_setQuadProperty_Number">
             <field name="PROP">Power</field>
             <field name="IDENTIFIER1">dcMotor0</field>
             <field name="IDENTIFIER2">dcMotor1</field>
-			<field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
             <field name="IDENTIFIER4">dcMotor3</field>
             <value name="VALUE1">
               <shadow type="math_number">
@@ -1676,7 +1689,7 @@
                 <field name="NUM">0</field>
               </shadow>
             </value>
-			<value name="VALUE3">
+            <value name="VALUE3">
               <shadow type="math_number">
                 <field name="NUM">0</field>
               </shadow>
@@ -1687,7 +1700,7 @@
               </shadow>
             </value>
           </block>
-		  <block type="dcMotor_setQuadProperty_RunMode">
+          <block type="dcMotor_setQuadProperty_RunMode">
             <field name="PROP">Mode</field>
             <field name="IDENTIFIER1">dcMotor0</field>
             <field name="IDENTIFIER2">dcMotor1</field>
@@ -1699,18 +1712,18 @@
             <value name="VALUE2">
               <shadow type="dcMotor_typedEnum_runMode" />
             </value>
-			<value name="VALUE3">
+            <value name="VALUE3">
               <shadow type="dcMotor_typedEnum_runMode" />
             </value>
             <value name="VALUE4">
               <shadow type="dcMotor_typedEnum_runMode" />
             </value>
           </block>
-		  <block type="dcMotor_setQuadProperty_Number">
+          <block type="dcMotor_setQuadProperty_Number">
             <field name="PROP">TargetPosition</field>
             <field name="IDENTIFIER1">dcMotor0</field>
             <field name="IDENTIFIER2">dcMotor1</field>
-			<field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
             <field name="IDENTIFIER4">dcMotor3</field>
             <value name="VALUE1">
               <shadow type="math_number">
@@ -1722,7 +1735,7 @@
                 <field name="NUM">0</field>
               </shadow>
             </value>
-			<value name="VALUE3">
+            <value name="VALUE3">
               <shadow type="math_number">
                 <field name="NUM">0</field>
               </shadow>
@@ -1733,11 +1746,11 @@
               </shadow>
             </value>
           </block>
-		  <block type="dcMotor_setQuadProperty_ZeroPowerBehavior">
+          <block type="dcMotor_setQuadProperty_ZeroPowerBehavior">
             <field name="PROP">ZeroPowerBehavior</field>
             <field name="IDENTIFIER1">dcMotor0</field>
             <field name="IDENTIFIER2">dcMotor1</field>
-			<field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
             <field name="IDENTIFIER4">dcMotor3</field>
             <value name="VALUE1">
               <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
@@ -1745,15 +1758,15 @@
             <value name="VALUE2">
               <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
             </value>
-			<value name="VALUE3">
+            <value name="VALUE3">
               <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
             </value>
-			<value name="VALUE4">
+            <value name="VALUE4">
               <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
             </value>
           </block>
-		</category>
-        <category css-icon="customIcon fa fa-caret-right" name="Extended"  toolboxitemid="MotorEx">
+        </category>
+        <category css-icon="customIcon fa fa-caret-right" name="Extended" toolboxitemid="MotorEx">
           <block type="dcMotor_setProperty_Number">
             <field name="IDENTIFIER">dcMotor0</field>
             <field name="PROP">TargetPositionTolerance</field>
@@ -1829,12 +1842,12 @@
                   <field name="NUM">10</field>
                 </shadow>
               </value>
-			  <value name="VALUE3">
+              <value name="VALUE3">
                 <shadow type="math_number">
                   <field name="NUM">10</field>
                 </shadow>
               </value>
-			  <value name="VALUE4">
+              <value name="VALUE4">
                 <shadow type="math_number">
                   <field name="NUM">10</field>
                 </shadow>
@@ -1856,12 +1869,12 @@
                   <field name="NUM">10</field>
                 </shadow>
               </value>
-			  <value name="VALUE3">
+              <value name="VALUE3">
                 <shadow type="math_number">
                   <field name="NUM">10</field>
                 </shadow>
               </value>
-			  <value name="VALUE4">
+              <value name="VALUE4">
                 <shadow type="math_number">
                   <field name="NUM">10</field>
                 </shadow>
@@ -1974,36 +1987,36 @@
           </block>
         </category>
       </category>
-	  <category css-icon="" name="CRServo" toolboxitemid="CRServo">
-		<block type="crServo_setProperty_Direction">
-		  <field name="PROP">Direction</field>
-		  <value name="VALUE">
-			<shadow type="crServo_typedEnum_direction"/>
-		  </value>
-		</block>
-		<block type="crServo_getProperty_Direction">
-		  <field name="PROP">Direction</field>
-		</block>
-		<block type="crServo_setProperty_Number">
-		  <field name="PROP">Power</field>
-		  <value name="VALUE">
-			<shadow type="math_number">
-			  <field name="NUM">1</field>
-			</shadow>
-		  </value>
-		</block>
-		<block type="crServo_setProperty_Number">
-		  <field name="PROP">Power</field>
-		  <value name="VALUE">
-			<shadow type="math_number">
-			  <field name="NUM">0</field>
-			</shadow>
-		  </value>
-		</block>
-		<block type="crServo_getProperty_Number">
-		  <field name="PROP">Power</field>
-		</block>
-	  </category>
+      <category css-icon="" name="CRServo" toolboxitemid="CRServo">
+        <block type="crServo_setProperty_Direction">
+          <field name="PROP">Direction</field>
+          <value name="VALUE">
+            <shadow type="crServo_typedEnum_direction" />
+          </value>
+        </block>
+        <block type="crServo_getProperty_Direction">
+          <field name="PROP">Direction</field>
+        </block>
+        <block type="crServo_setProperty_Number">
+          <field name="PROP">Power</field>
+          <value name="VALUE">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="crServo_setProperty_Number">
+          <field name="PROP">Power</field>
+          <value name="VALUE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="crServo_getProperty_Number">
+          <field name="PROP">Power</field>
+        </block>
+      </category>
       <category css-icon="" name="Servo" toolboxitemid="Servo">
         <block type="servo_setProperty_Direction">
           <field name="PROP">Direction</field>
@@ -2040,14 +2053,14 @@
       </category>
     </category>
     <category css-icon="customIcon fa fa-dashboard" name="Sensors" colour="#2E8B57" toolboxitemid="Sensors">
-	  <category css-icon="" name="DistanceSensor" toolboxitemid="DistanceSensor">
-	 	  <block type="distanceSensor_getDistance">
-	 		  <field name="IDENTIFIER">distanceSensor0</field>
-	 		  <value name="DISTANCE_UNIT">
-	 			  <shadow type="navigation_typedEnum_distanceUnit"/>
-	 		  </value>
-	 	  </block>
-	  </category>
+      <category css-icon="" name="DistanceSensor" toolboxitemid="DistanceSensor">
+        <block type="distanceSensor_getDistance">
+          <field name="IDENTIFIER">distanceSensor0</field>
+          <value name="DISTANCE_UNIT">
+            <shadow type="navigation_typedEnum_distanceUnit" />
+          </value>
+        </block>
+      </category>
       <category css-icon="" name="IMU-BNO055" toolboxitemid="IMUSensor">
         <block type="bno055imu_getProperty_Acceleration">
           <field name="IDENTIFIER">imu0</field>
@@ -5885,7 +5898,7 @@
   </xml>
 
   <script>
-	//---Sets up Blockly Interface---
+    //---Sets up Blockly Interface---
     Blockly.JavaScript.addReservedWords('exit');
 
     var workspace = Blockly.inject('blocklyDiv',
