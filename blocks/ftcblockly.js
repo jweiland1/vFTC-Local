@@ -715,8 +715,6 @@ let system = {
 	nanoTime: function() {return Math.floor((performance.now() - startTime) * 1000000)}
 }
 
-setTimeout(variableUpdate, 1);
-
 var lastTime = 0;
 var currMotorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
 
@@ -778,6 +776,7 @@ function variableUpdate() {
 	} catch (err) {
 		document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
 		resetProgramExecution();
+		throw err;
 	}
 	
 	//Receives Motor Positions

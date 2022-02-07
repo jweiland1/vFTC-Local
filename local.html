@@ -377,7 +377,7 @@
       <button class="button1" onclick="resetField()">Reset Field</button>
       <div style="width: 10px; display: inline-block;"></div>
       <div id="programStartStop" style="display: none;">
-        <!-- <button id="startBttn" class="button1" onclick="startProgram()" disabled>Start Program</button> -->
+        <button id="startBttn" class="button1" onclick="startProgram()">Start Program</button>
         <div style="width: 10px; display: inline-block;"></div>
         <button class="button1" onclick="stopProgram()">Stop Program</button>
       </div>
@@ -1087,7 +1087,7 @@
       programStart = false;
       document.getElementById('programInit').style.display = 'none';
       document.getElementById('programStartStop').style.display = 'inline-block';
-      // document.getElementById('startBttn').disabled = false;
+      document.getElementById('startBttn').disabled = false;
       startTime = performance.now();
       if (code == "") {
         code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
@@ -1115,7 +1115,7 @@
     }
 
     function startProgram() {
-      // document.getElementById('startBttn').disabled = true;
+      document.getElementById('startBttn').disabled = true;
       programStart = true;
     }
 

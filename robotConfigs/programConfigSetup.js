@@ -7,6 +7,7 @@ client.onload = function () {
     var robotConfigTxt = client.responseText;
     if (robotConfigTxt !== '' && robotConfig == null) {
 		robotConfig = JSON.parse(robotConfigTxt);
+		setTimeout(variableUpdate, 1);
 		setTimeout(setupCategories, 250);
     }
 }
