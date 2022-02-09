@@ -66,21 +66,13 @@
         mobileWarning.style.display = "none";
       }, 5000);
     } else {
-      // canvas.style.width = "960px";
-      // canvas.style.height = "600px";
-
-      // const fieldView = parent.document.querySelector('#fieldView');
+      document.querySelector("#unity-footer").style.display = "none";
 
       const resizeCanvas = () => {
         const fieldView = parent.document.querySelector('#fieldView');
 
-        if(fieldView.offsetHeight > fieldView?.offsetWidth * 600 / 960) {
-          canvas.style.width = `${fieldView?.offsetWidth}px`;
-          canvas.style.height = `${fieldView?.offsetWidth * 600 / 960}px`;
-        } else {
-          canvas.style.width = `${fieldView?.offsetHeight * 960 / 600}px`;
-          canvas.style.height = `${fieldView.offsetHeight}px`;
-        }
+		canvas.style.width = `${fieldView?.offsetWidth}px`;
+		canvas.style.height = `${fieldView.offsetHeight}px`;
       }
 
       resizeCanvas();
@@ -133,43 +125,8 @@
     }
 
     function updateEncoderLocalStorage() {
-      var obj = new Object();
-      obj.flEncoders = frontLeftEncoder;
-      obj.frEncoders = frontRightEncoder;
-      obj.blEncoders = backLeftEncoder;
-      obj.brEncoders = backRightEncoder;
-      localStorage.setItem('motorCurrentPositions', JSON.stringify(obj));
-    }
-	
-	var frontLeftVelocity = 0;
-    var frontRightVelocity = 0;
-    var backLeftVelocity = 0;
-    var backRightVelocity = 0;
-
-    function setFrontLeftVelocity(velocity) {
-      frontLeftVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setFrontRightVelocity(velocity) {
-      frontRightVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setBackLeftVelocity(velocity) {
-      backLeftVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-    function setBackRightVelocity(velocity) {
-      backRightVelocity = velocity;
-      updateVelocityLocalStorage();
-    }
-
-    function updateVelocityLocalStorage() {
-      var obj = new Object();
-      obj.flVelocity = frontLeftVelocity;
-      obj.frVelocity = frontRightVelocity;
-      obj.blVelocity = backLeftVelocity;
-      obj.brVelocity = backRightVelocity;
-      localStorage.setItem('motorReturnVelocitys', JSON.stringify(obj));
+	  var motorPositions = "[" + frontLeftEncoder + ", " + frontRightEncoder + ", " + backLeftEncoder + ", " + backRightEncoder + ", 0, 0, 0, 0]";
+      localStorage.setItem('motorCurrentPositions', motorPositions);
     }
   </script>
 </body>

@@ -25,7 +25,10 @@
 // The following are defined in vars.js:
 // navigationIdentifierForJavaScript
 // propertyColorUtilities
-// functionColor
+// propertyColorUtilities
+
+//VRS-Created navigationIdentifierForJavaScript
+navigationIdentifierForJavaScript = "navigation";
 
 // Enums
 
@@ -65,11 +68,11 @@ Blockly.JavaScript['navigation_enum_angleUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['navigation_enum_angleUnit'] = function(block) {
+Blockly.FtcJava['navigation_enum_angleUnit'] = function(block) {
   var code = 'AngleUnit.' + block.getFieldValue('ANGLE_UNIT');
   Blockly.FtcJava.generateImport_('AngleUnit');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};
 
 Blockly.Blocks['navigation_typedEnum_angleUnit'] =
     Blockly.Blocks['navigation_enum_angleUnit'];
@@ -77,12 +80,9 @@ Blockly.Blocks['navigation_typedEnum_angleUnit'] =
 Blockly.JavaScript['navigation_typedEnum_angleUnit'] =
     Blockly.JavaScript['navigation_enum_angleUnit'];
 
-/*Blockly.FtcJava['navigation_typedEnum_angleUnit'] =
-    Blockly.FtcJava['navigation_enum_angleUnit'];*/
+Blockly.FtcJava['navigation_typedEnum_angleUnit'] =
+    Blockly.FtcJava['navigation_enum_angleUnit'];
 
-//VRS-Only used navigation_typedEnum_angleUnit and navigation_typedEnum_currentUnit for now
-
-/*
 Blockly.Blocks['navigation_angleUnit_normalize'] = {
   init: function() {
     this.setOutput(true, 'Number');
@@ -97,7 +97,7 @@ Blockly.Blocks['navigation_angleUnit_normalize'] = {
     this.appendValueInput('ANGLE_UNIT').setCheck('AngleUnit')
         .appendField('angleUnit')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(functionColor);
+    this.setColour(propertyColorUtilities);
     this.setTooltip('Normalizes the given angle to the range of [-180,+180) ' +
         'degrees or [-\u03c0,+\u03c0) radians.');
     this.getFtcJavaInputType = function(inputName) {
@@ -153,7 +153,7 @@ Blockly.Blocks['navigation_angleUnit_convert'] = {
     this.appendValueInput('TO_ANGLE_UNIT').setCheck('AngleUnit')
         .appendField('to')
         .setAlign(Blockly.ALIGN_RIGHT);
-    this.setColour(functionColor);
+    this.setColour(propertyColorUtilities);
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
@@ -666,7 +666,6 @@ Blockly.FtcJava['navigation_typedEnum_axis'] = function(block) {
   Blockly.FtcJava.generateImport_('Axis');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
 };
-*/
 
 // CurrentUnit
 Blockly.Blocks['navigation_typedEnum_currentUnit'] = {
@@ -704,8 +703,8 @@ Blockly.JavaScript['navigation_typedEnum_currentUnit'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
-/*Blockly.FtcJava['navigation_typedEnum_currentUnit'] = function(block) {
+Blockly.FtcJava['navigation_typedEnum_currentUnit'] = function(block) {
   var code = 'CurrentUnit.' + block.getFieldValue('CURRENT_UNIT');
   Blockly.FtcJava.generateImport_('CurrentUnit');
   return [code, Blockly.FtcJava.ORDER_MEMBER];
-};*/
+};

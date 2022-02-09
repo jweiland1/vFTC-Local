@@ -9,10 +9,11 @@
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml">
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml"> -->
-  <title>Virtual Robot Simulator Controller</title>
+  <title>Virtual Robot Simulator: Autonomous</title>
   <style>
     body {
       background-color: #242424;
+      overflow: hidden;
     }
 
     h1 {
@@ -52,10 +53,6 @@
 
     .textNormal:hover {
       color: white;
-    }
-
-    .textDisabled {
-      color: darkslategrey;
     }
 
     .center {
@@ -229,17 +226,27 @@
       position: relative;
     }
 
-    #videoTab {
-      display: none;
+    #middleSlider {
+      min-width: 10px;
+      cursor: e-resize;
+    }
+
+    #rightSlider {
+      cursor: n-resize;
+    }
+
+    #multiSlider {
+      cursor: move;
+    }
+
+    #scrollOverlay {
+      visibility: hidden;
       position: absolute;
-      top: 36.5px;
-      left: 50%;
-      margin-left: 6px;
-      padding: 8px;
-      padding-bottom: 10px;
-      background-color: #242424;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
       z-index: 100;
-      border: 1px solid white;
     }
 
     #overlay {
@@ -315,7 +322,6 @@
   <script src="./blocks/blockly/blockly_compressed.js"></script>
   <script src="./blocks/blockly/blocks_compressed.js"></script>
   <script src="./blocks/blockly/msg/js/en.js"></script>
-  <script src="./blocks/interpreter/acorn_interpreter.js"></script>
   <script src="./blocks/blockly/javascript_compressed.js"></script>
 
   <script src="./codemirror/lib/codemirror.js"></script>
@@ -339,53 +345,67 @@
 
   <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
 
-  <div style="display: flex; display: inline;">
+  <div style="display: flex; width: 100%; justify-content: space-between;">
     <a href="homepage.html" id="backButton"><span class="chevron left"></span></a>
-    <div style="width: 25px; display: inline-block;"></div>
-    <button class="button1" onclick="switchToBlocks()">Blocks</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
+    <div style="min-width: 12.5px; display: inline-block;"></div>
+    <div id="topMenu" style="white-space: nowrap; overflow: hidden;">
+      <div style="width: 12.5px; display: inline-block;"></div>
+      <button class="button1" onclick="switchToBlocks()">Blocks</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
 
-    <div class="divider"></div>
+      <div class="divider"></div>
 
-    <button class="button1" onclick="overlay(true, 4)">New Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="overlay(true, 0)">Save as...</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
-      <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
-        <option value="Load Program">Load Program</option>
-      </select>
+      <button class="button1" onclick="overlay(true, 4)">New Program</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="saveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+        <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
+          <option value="Load Program">-Load Program-</option>
+        </select>
+      </div>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
+
+      <div class="divider"></div>
+
+      <button class="button1" onclick="resetField()">Reset Field</button>
+      <div style="width: 10px; display: inline-block;"></div>
+      <div id="programStartStop" style="display: none;">
+        <button id="startBttn" class="button1" onclick="startProgram()">Start Program</button>
+        <div style="width: 10px; display: inline-block;"></div>
+        <button class="button1" onclick="stopProgram()">Stop Program</button>
+      </div>
+      <div id="programInit" style="display: inline-block;">
+        <button id="initBttn" class="button1" onclick="initProgram('')">Initialize Program</button>
+        <div style="width: 101.54px; display: inline-block;"></div>
+      </div>
+      <div style="width: 12.5px; display: inline-block;"></div>
     </div>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button id="save" class="button1" onclick="autoSave()" disabled>Save</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button id="delete" class="button1" onclick="overlay(true, 1)" disabled>Delete</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <a><button id="download" class="button1" onclick="downloadProgram(this)" disabled>Download</button></a>
-
-    <div class="divider"></div>
-
-    <button class="button1" onclick="startProgram()">Start Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="stopProgram()">Stop Program</button>
-    <div style="width: 10px; display: inline-block;"></div>
-    <button class="button1" onclick="resetField()">Reset Field</button>
-
-
-    <button class="button1" onClick="playVideo(false)" style="position: absolute; right: 25px;">Program Stuck?</button>
+    <div style="min-width: 12.5px; display: inline-block;"></div>
+    <button class="button1" onClick="playVideo(0)" style="min-width: 100px;">How to Use</button>
   </div>
 
 
   <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
-    <div id="blocklyDiv" style="width: 50%; border:1px solid white;"></div>
-    <div id="onBotJavaDiv" style="width: 50%;border:1px solid white;" hidden>
-      <h1 id="loadingOBJText">HI</h1>
+    <div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
+      <div id="blocklyDiv" style="width: 100%; border:1px solid white;"></div>
+      <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;">
+        <h1 id="loadingOBJText">LOADING</h1>
+      </div>
     </div>
 
-    <div style="width: 50%; background-color: #242424; padding-left: 10px;">
-      <div id="controlPanel" style="height: 50%; background-color: #242424; border:1px solid white;">
-        <div style="display: flex; display: inline;" class="buttonText">
+    <div id="middleSlider" style="width: 10px;"></div>
+
+    <div id="rightScreen" style="min-width: 10px; width: 50%; background-color: #242424;">
+      <div id="controlPanel"
+        style="min-height: 10px; height: 50%; background-color: #242424; border:1px solid white; overflow: hidden;">
+        <div id="textSelection" style="white-space: nowrap; overflow: hidden;" class="buttonText">
           <div style="width: 20px; display: inline-block;"></div>
           <div id="firstTab" style="display: inline-block;" onclick="switchTab(this, 0)">Telemetry</div>
           <div class="divider"></div>
@@ -393,19 +413,21 @@
           <div class="divider"></div>
           <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">LMS</div>
           <div class="divider"></div>
-          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textDisabled">Video
+          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video
           </div>
+          <div style="width: 20px; display: inline-block;"></div>
         </div>
         <div style="width:100%; height: 10px; background-color: #4B4B4B; margin-top: 15px; margin-bottom: 20px;"></div>
         <div id="tabOptions" style="height: 80%;">
           <div style="height: 100%; overflow: scroll;">
-            <div style="width:100%; overflow:hidden; background-color: #323232;">
-              <h2 id="telemetryText" style="font-size: 20px;">-Telemetry Output-</h2>
+            <div style="width:100%; overflow:hidden; overflow-wrap: break-word; background-color: #323232;">
+              <h2 id="telemetryText" style="font-size: 20px; padding-right: 17.5px;">-Telemetry Output-</h2>
             </div>
           </div>
-          <div style="display: none;">
-            <div style="display: flex; justify-content: center;">
-              <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+          <div style="display: none; height: 100%;">
+            <div style="display: flex; justify-content: center; overflow: hidden; height: 11%">
+              <div class="dropdown dropdown-dark"
+                style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
                 <select id="lessonSelect" class="dropdown-select" onChange="loadLesson()" style="font-size:20px;">
                   <option value=-1>Coding Lessons</option>
                   <option value=0>Drive to White Line - 2 Motors</option> <!-- Timing			-->
@@ -421,22 +443,33 @@
                 </select>
               </div>
             </div>
-            <div style="width:100%; overflow:hidden; background-color: #323232; margin-top: 10px;">
-              <h2 id="lessonText" style="font-size: 20px;">[Select a Lesson]</h2>
+            <div style="width:100%; overflow:hidden; background-color: #323232;">
+              <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">[Select a Lesson]</h2>
             </div>
-            <div id="lessonButtons" style="padding-top: 12.5px; display: none;">
-              <button class="button1" style="position: relative; left: 105px; font-size: 20px;">Show the Task</button>
-              <!-- Hello Mihir -->
-              <button class="button1" onClick="playVideo(true)"
-                style="position: absolute; right: 112.5px; font-size:20px;">Show Video Solution</button>
+            <div id="lessonButtons"
+              style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
+              <button class="button1" onClick="runLessonCode()"
+                style="font-size: 20px; white-space: nowrap; height: 29.2px;">Show the Task</button>
+              <div style="width: 10%; display: inline-block;"></div>
+              <button class="button1" onClick="playVideo(1)"
+                style="font-size: 20px; white-space: nowrap; height: 29.2px;">Video Hint</button>
+              <div style="width: 10%; display: inline-block;"></div>
+              <button class="button1" onClick="playVideo(2)"
+                style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
           <iframe src="https://virtualftc.jasonbennett.work/courses/basic-movement-with-blocks/'" width="100%"
             height="100%" frameBorder="0" style="display: none;"></iframe>
+          <iframe src="https://www.youtube.com/embed/bKFBm2jqFpI" width="100%" height="100%" frameBorder="0"
+            style="display: none;"></iframe>
         </div>
       </div>
 
-      <div id="fieldView" style="height: 50%; margin-top: 10px; background-color: #000000;">
+      <div id="multiSlider"
+        style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
+      <div id="rightSlider" style="height: 10px;"></div>
+
+      <div id="fieldView" style="height: 50%; background-color: #000000;">
         <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
           hidden></iframe>
         <div class="center" id="loadingTextDiv">
@@ -446,19 +479,7 @@
     </div>
   </div>
 
-  <div id="videoTab">
-    <div style="display: flex;">
-      <a onClick="switchTab(this, 3)" id="backButton"><span class="chevron left"></span></a>
-    </div>
-
-    <div class="container" style="display: flex; padding-top: 5px;">
-      <div style="width: 100%; background-color: #242424;">
-        <div id="videoView" style="background-color: #000000;">
-          <iframe src="" width="100%" height="100%" frameBorder="0"></iframe>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="scrollOverlay"></div>
 
   <div id="overlay">
     <div id="overlayInfo">
@@ -500,136 +521,197 @@
             style="font-size: 20px; margin-top: 35px; margin-left: 295px;">Rename</button>
         </div>
         <div style="display: none;">
-          <div style="display: flex; justify-content: center; margin-top: 27.5px;">
-            <button class="button1" onclick="sampleProgram()"
-              style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">New Blocks Program</button>
-            <div style="width: 50px; display:inline-block;"></div>
-            <input id="filePrompt" type="file" accept=".blk" style="display:none;">
-            <button class="button1" onclick="promptFiles()"
-              style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
+          <div style="display: flex; justify-content: center; margin-top: 10px;">
+            <div>
+              <h1 style="text-align: center; font-size: 20px; color: lightgrey;">Create:</h1>
+              <div class="dropdown dropdown-dark" onchange="sampleProgram(true)"
+                style="display: flex; background-color: #FFFFFF;">
+                <select id="blockSelect" class="dropdown-select"
+                  style="font-size:20px; width: 200px; text-align-last:center;">
+                  <option value=''>-Block Program-</option>
+                  <optgroup label="Default OpMode">
+                    <option value='BasicAutoOpMode'>Autonomous</option>
+                    <option value='BasicOpMode'>DriverControl</option>
+                  </optgroup>
+                  <optgroup label="Driver Control">
+                    <option value='BasicPOVDrive'>POVDrive</option>
+                    <option value='BasicTankDrive'>TankDrive</option>
+                  </optgroup>
+                  <optgroup label="Sensor">
+                    <option value='SensorIMU'>IMU</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
+              <div class="dropdown dropdown-dark" onChange="sampleProgram(false)"
+                style="display: inline-block; background-color: #FFFFFF;">
+                <select id="javaSelect" class="dropdown-select"
+                  style="font-size:20px; max-width: 200px; text-align-last:center;">
+                  <option value=''>-Java Program-</option>
+                  <optgroup label="Default OpMode">
+                    <option value='BlankLinearOpMode'>Linear</option>
+                    <option value='BlankIterativeOpMode'>Iterative</option>
+                  </optgroup>
+                  <optgroup label="Tank Drive">
+                    <option value='BasicOpMode_Linear'>Linear</option>
+                    <option value='BasicOpMode_Iterative'>Iterative</option>
+                  </optgroup>
+                  <optgroup label="Concept">
+                    <option value='ConceptNullOp'>NullOp</option>
+                    <option value='ConceptRampMotorSpeed'>RampMotorSpeed</option>
+                    <option value='ConceptScanServo'>ScanServo</option>
+                    <option value='ConceptTelemetry'>Telemetry</option>
+                  </optgroup>
+                  <optgroup label="Pushbot">
+                    <option value='HardwarePushbot'>Hardware</option>
+                    <option value='PushbotAutoDriveByEncoder_Linear'>AutoDriveByEncoder</option>
+                    <option value='PushbotAutoDriveByTime_Linear'>AutoDriveByTime</option>
+                    <option value='PushbotTeleOpPOV_Linear'>LinearPOVDrive</option>
+                    <option value='PushbotTeleOpTank_Iterative'>IterativeTankDrive</option>
+                  </optgroup>
+                  <optgroup label="Sensor">
+                    <option value='SensorBNO055IMU'>BNO055IMU</option>
+                    <option value='SensorREV2mDistance'>REV2mDistance</option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+            <div style="width: 35px; display:inline-block;"></div>
+            <div style="width: 130px;">
+              <input id="filePrompt" type="file" accept=".blk,.java" style="display:none;">
+              <button class="button1" onclick="document.getElementById('filePrompt').click()"
+                style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
+              <div style="height: 10px;"></div>
+              <button id="blockjavaConvert" class="button1" onclick="convertToJava()"
+                style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Export to OnBotJava</button>
+            </div>
           </div>
-          <div class="dropdown dropdown-dark"
-            style="display: inline-block; background-color: #FFFFFF;  margin-left: 32.5px; margin-top: 10px;">
-            <select id="sampleSelect" class="dropdown-select" style="font-size:20px;">
-              <option value='BasicOpMode'>BasicOpMode</option>
-              <option value='BasicPOVDrive'>BasicPOVDrive</option>
-              <option value='BasicTankDrive'>BasicTankDrive</option>
-            </select>
-          </div>
+
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    function promptFiles() {
-      document.getElementById('filePrompt').click();
-    }
+    //---TempVariable will be replaced by vars.js---
+    var currentProjectName = "";
 
-    document.getElementById('videoView').style.height = .5 * (screen.height) - 69 + "px";
-    document.getElementById('videoTab').style.width = .5 * (document.body.clientWidth) - 24 + "px";
+    //---Sending Data to Unity---
+    const abortedMsg = "aborted";
+    localStorage.setItem('startMatch', false);
+    localStorage.setItem('stopMatch', false);
+    localStorage.setItem('resetField', false);
+    localStorage.setItem('playMode', "Autonomous")
 
-    var prevTabButton = document.getElementById('firstTab');
+    //---Loading Screen for Unity---
+    var shouldBeUpdatingLoadingText = true;
+    var counterForLoadingText = 1;
+    setTimeout(function () {
+      shouldBeUpdatingLoadingText = false;
+      document.getElementById('fieldViewiframe').hidden = false;
+      document.getElementById('loadingText').remove();
+      document.getElementById('loadingTextDiv').remove();
+    }, 3000);
 
-    function switchTab(button, tabNum) {
-      if (tabNum == 3) {
-        if (button.className == 'textNormal')
-          document.getElementById('videoTab').style.display = "inherit";
-        else
-          document.getElementById('videoTab').style.display = "none";
-      }
-      else if (button.className == 'textNormal') {
-        for (var i = 0; i < document.getElementById('tabOptions').children.length; i++)
-          document.getElementById('tabOptions').children[i].style.display = "none";
-        document.getElementById('tabOptions').children[tabNum].style.display = "inherit";
-        prevTabButton.classList.add('textNormal');
-        button.classList.remove('textNormal');
-        prevTabButton = button;
-      }
-    }
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    function playVideo(lessonVideo) {
-      link = "";
-      if (lessonVideo) {
-        switch (document.getElementById('lessonSelect').value) {
-          case "0":
-            link = "https://www.youtube.com/embed/zBjlgFOxw7A";
-            break;
-          case "1":
-            link = "https://www.youtube.com/embed/6VdMtwmT_Ms";
-            break;
+    const updateLoadingText = async () => {
+      while (shouldBeUpdatingLoadingText) {
+        if (counterForLoadingText == 1) {
+          document.getElementById('loadingText').innerHTML = "Loading Field."
+        } else if (counterForLoadingText == 2) {
+          document.getElementById('loadingText').innerHTML = "Loading Field.."
+        } else if (counterForLoadingText == 3) {
+          document.getElementById('loadingText').innerHTML = "Loading Field..."
+          counterForLoadingText = 0;
         }
-      }
-      else
-        link = 'https://www.youtube.com/embed/KXMlbdsr8fM';
-      document.getElementById('videoTab').lastElementChild.firstElementChild.firstElementChild.firstElementChild.src = link;
-      document.getElementById('videoButton').classList.remove('textDisabled');
-      document.getElementById('videoButton').classList.add('textNormal');
-      switchTab(document.getElementById('videoButton'), 3);
-    }
-
-    function loadLesson() {
-      document.getElementById('lessonButtons').style.display = "inherit";
-      switch (document.getElementById('lessonSelect').value) {
-        case "0":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "In this first lesson, you will need to power the Front Left and Front Right Wheels for a certain amount of time in order to get the robot on the White Line for +5 Points during Autonomous. Press the \"Show the Task\" button to see what you need to do." +
-            "\n\nYou'll Learn:\nBasic Motor Powering\nMovement Timing";
-          break;
-        case "1":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "The next stage will now be to add power to all 4 Wheels in your program. This will require a bit more precision, but will benefit with the added Torque and Speed the motors will provide. Your robot can have a max of 8 motors and 12 servos for full movement!" +
-            "\n\nYou'll Learn:\nBalance between Speed and Reliability\nMore Motor Control";
-          break;
-        case "2":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "For this lesson, we will be adding more than just forwards and backwards and introducing rotation! This may require alot more precision than you initially think. If only there was a way of consistently moving..." +
-            "\n\nYou'll Learn:\nThe Limits to using Timing\nRotation Basics";
-          break;
-        case "3":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Let's make the robot go along the path of the strongest shape: the Square! Or was it the triangle? Either way it may be useful to use loops for this program so the code looks cleaner and changes can be made faster." +
-            "\n\nYou'll Learn:\nThe Joys of Clean Code\nUsing Loop Blocks";
-          break;
-        case "4":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Are those mecanum wheels on your robot there? Great! That means you have another mode of movement called strafing where the robot can move directly left and right without turning. The wheels just need to spin a certain way..." +
-            "\n\nYou'll Learn:\nThe Art of Expirementing\nStrafing Movement";
-          break;
-        case "5":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Alright, now let's start getting some actual autonomous points. First off, let's put the wobble goal in the first position earning +15 points. For right now, we can stick to timing but we can see it becomes a bit more unreliable the more we move." +
-            "\n\nYou'll Learn:\nHow to Handle Large Amounts of Code\nComplex Movement";
-          break;
-        case "6":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motors: 1440 Ticks per Revolution & Wheels: 4π Circumfrence." +
-            "\n\nYou'll Learn:\nMotor Encoders\nVariables";
-          break;
-        case "7":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Great, we have cracked the code for motor encoders! But... the code looks all messy and complicated and would be a pain to make sight changes to. Let's try and compact the 3 main movements into 3 functions we can call." +
-            "\n\nYou'll Learn:\nKeeping Code Simple\nFunctions";
-          break;
-        case "8":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Looks like the engineering team has just slapped a shooting mechanism onto your robot. Time to learn how that works. It seems they have wired in a new \"ringLoader\" and \"ringShooter\" motor. Let's get 3 rings into that Top Goal scoring +36 points." +
-            "\n\nYou'll Learn:\nHandling Multiple Tasks\nComplex Motors";
-          break;
-        case "9":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous. Try and shoot at each powershot for +45 points while either rotating or strafing to change targets." +
-            "\n\nYou'll Learn:\nScoring Big in Autonomous\nHow to Code! (hopefully...)";
-          break;
-        default:
-          document.getElementById('lessonButtons').style.display = "none";
-          document.getElementById('lessonText').innerText = "[Select Lesson]";
-          break;
+        counterForLoadingText++;
+        await delay(500);
       }
     }
+    updateLoadingText();
 
+    //---Resize Screens---
+    var xScreenSize = .5 * document.body.clientWidth;
+    document.getElementById('leftScreen').style.width = xScreenSize + "px";
+    document.getElementById('rightScreen').style.width = xScreenSize + "px";
+    var yScreenSize = window.innerHeight / 2 - 30;
+    document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
+    document.getElementById('controlPanel').style.height = yScreenSize + "px";
+    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+    document.getElementById('fieldView').style.height = yScreenSize + "px";
+    var mouseClicked = 0;
+
+    document.getElementById('middleSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "e-resize";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 1;
+    });
+
+    document.getElementById('rightSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "n-resize";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 2;
+    });
+
+    document.getElementById('multiSlider').addEventListener('mousedown', function () {
+      document.getElementById('scrollOverlay').style.cursor = "move";
+      document.getElementById('scrollOverlay').style.visibility = "visible";
+      mouseClicked = 3;
+    });
+
+    window.addEventListener('mouseup', function () {
+      document.getElementById('scrollOverlay').style.visibility = "hidden";
+      xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
+      yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
+      mouseClicked = 0;
+    });
+
+    window.addEventListener('resize', function () {
+      //Width Consideration
+      xScreenSize = document.getElementById('leftScreen').clientWidth;
+      if (xScreenSize < 10) {
+        document.getElementById('leftScreen').style.width = '10px';
+        xScreenSize = 10;
+      }
+      document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
+      //Height Consideration
+      if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
+        yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+        document.getElementById('controlPanel').style.height = yScreenSize + "px";
+        document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+      }
+      document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
+      document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
+    });
+
+    window.addEventListener('mousemove', function (event) {
+      if (mouseClicked != 0) {
+        if (mouseClicked != 2) {
+          xScreenSize += event.movementX * .8;
+          var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
+          document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
+          document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
+          Blockly.svgResize(Blockly.mainWorkspace);
+        }
+        if (mouseClicked != 1) {
+          yScreenSize += event.movementY * .8;
+          var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
+          document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
+          document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
+          document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
+        }
+        event.preventDefault();
+      }
+    });
+
+    document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += event.deltaY * .5; });
+    document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += event.deltaY * .5; });
+
+    //---Prompts---
     var overlayReturned = null;
 
+    //Overrides Window.Prompt for Variable Renaming
     window.prompt = function overlayPrompt(message, placeholder) {
       overlayReturned = null;
       overlay(true, (message == "New variable name:" ? 2 : 3));
@@ -647,6 +729,21 @@
       });
     }
 
+    //---Gamepad Connections---
+    window.addEventListener("gamepadconnected", (event) => {
+      if (event.gamepad.index < 2) {
+        document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
+      }
+    });
+
+    window.addEventListener("gamepaddisconnected", (event) => {
+      if (event.gamepad.index < 2) {
+        document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
+      }
+    });
+
+    //---Miscellaneous Functions---
+    //Overlay
     function overlay(show, activity) {
       if (show) {
         document.getElementById('overlay').style.animation = "showOverlay .25s ease 1 normal forwards";
@@ -668,8 +765,10 @@
             document.getElementById('overlayName').innerHTML = "Rename Variable";
             break;
           case 4:
-            document.getElementById('sampleSelect').value = "BasicOpMode";
-            document.getElementById('overlayName').innerHTML = "Create Program";
+            document.getElementById('blockSelect').value = "";
+            document.getElementById('javaSelect').value = "";
+            document.getElementById('overlayName').innerHTML = "New Program";
+            document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
             break;
         }
         for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
@@ -688,19 +787,578 @@
       }
     }
 
+    //Functions for OnBotJava
+    function getSelectedRange() {
+      return { from: editor.getCursor(true), to: editor.getCursor(false) };
+    }
+
+    function autoFormatSelection() {
+      var cursor = editor.getCursor();
+      CodeMirror.commands["selectAll"](editor);
+      var range = getSelectedRange();
+      editor.autoFormatRange(range.from, range.to);
+      editor.setCursor(cursor);
+    }
+
+    //(re)loads dropdown of saved programs
+    function prepareUiToLoadProgram() {
+      var keys = Object.keys(localStorage).sort();
+
+      document.getElementById("programSelect").options.length = 1;
+
+      for (var i = 0; i < keys.length; i++) {
+        console.log(keys[i]);
+        if (keys[i].includes("Program Name: ")) {
+          var option = document.createElement("option");
+          option.value = keys[i].replace("Program Name: ", "");
+          option.text = keys[i].replace("Program Name: ", "");
+          document.getElementById("programSelect").appendChild(option);
+        }
+      }
+    }
+
+    prepareUiToLoadProgram();
+
+    //---Switching between Blocks and Java---
+    var isUsingBlocks = true;
+
+    function switchToBlocks() {
+      document.getElementById('blocklyDiv').hidden = false;
+      document.getElementById('onBotJavaDiv').hidden = true;
+      document.getElementById('saveAs').disabled = false;
+      document.getElementById('initBttn').disabled = false;
+      isUsingBlocks = true;
+      if (Blockly.mainWorkspace)
+        Blockly.svgResize(Blockly.mainWorkspace);
+      if (currentProjectName != 'program') {
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        document.getElementById("programSelect").value = currentProjectName;
+      }
+    }
+
+    function switchToOnBotJava() {
+      resetProgramExecution();
+      document.getElementById('blocklyDiv').hidden = true;
+      document.getElementById('onBotJavaDiv').hidden = false;
+      document.getElementById('saveAs').disabled = true;
+      document.getElementById('initBttn').disabled = true;
+      document.getElementById('save').disabled = true;
+      document.getElementById('delete').disabled = true;
+      document.getElementById('download').disabled = true;
+      isUsingBlocks = false;
+      document.getElementById("programSelect").value = "Load Program";
+    }
+
+    var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
+    var editor;
+
+    setUpOnBotJava();
+    switchToBlocks();
+
+    function setUpOnBotJava(javaCode) {
+      editor = CodeMirror(function (elt) {
+        document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
+      }, {
+        value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block Code exported to Java\n * and some Sample Code given in the 'New Program' popup.\n */\n\n" + (javaCode || defaultText),
+        mode: "text/x-java",
+        lineNumbers: true,
+        theme: "darcula",
+        scrollbarStyle: null,
+        autocorrect: true,
+        autoCloseBrackets: true,
+      });
+      //autoFormatSelection();
+    }
+
+    //---Functionality for New Program Overlay Buttons---
+    //"Sample Program"
+    function sampleProgram(blockProgram) {
+      var sampleProgram;
+      if (blockProgram)
+        sampleProgram = document.getElementById('blockSelect').value;
+      else
+        sampleProgram = document.getElementById('javaSelect').value;
+      document.getElementById("programSelect").value = "Load Program";
+      currentProjectName = "program";
+      document.getElementById('save').disabled = true;
+      document.getElementById('delete').disabled = true;
+      document.getElementById('download').disabled = true;
+      //Load Basic Program From Files
+      var client = new XMLHttpRequest();
+      client.open('GET', './blocks/samples/' + sampleProgram + (blockProgram ? '.blk' : '.java'));
+      client.onload = function () {
+        var content = client.responseText;
+        if (content !== '') {
+          if (blockProgram) {
+            var i = content.indexOf('</xml>');
+            content = content.substring(0, i + 6);
+            Blockly.mainWorkspace.clear();
+            Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+            resetProgramExecution();
+            if (sampleProgram != 'BasicAutoOpMode')
+              document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
+            else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller")) {
+              document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
+            }
+            switchToBlocks();
+          }
+          else {
+            switchToOnBotJava();
+            setUpOnBotJava(content);
+          }
+        }
+      }
+      client.send();
+      overlay(false, 0);
+    }
+
+    //"Upload Program"
+    document.getElementById('filePrompt').addEventListener('change', function () {
+      var fileReader = new FileReader();
+      fileReader.onload = function () {
+        uploadProgram(document.getElementById('filePrompt').files[0].name, fileReader.result);
+      }
+      fileReader.readAsText(document.getElementById('filePrompt').files[0]);
+    });
+
+    function uploadProgram(programName, content) {
+      document.getElementById('filePrompt').value = '';
+      var fileType = programName.split('.')[programName.split('.').length - 1]
+      if (fileType == "blk") {
+        programName = programName.substring(0, programName.length - fileType.length - 1);
+        currentProjectName = programName;
+        Blockly.mainWorkspace.clear();
+        var i = content.indexOf('</xml>');
+        content = content.substring(0, i + 6);//Convert from names to config
+        //String to XML to Blockly
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
+        //Convert 2 Duals to Quad
+        var blocks = xmlDoc.getElementsByTagName("block");
+        for (var i = 0; i < blocks.length - 1; i++) {
+          if (blocks[i].getElementsByTagName("next")[0]) {
+            nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[0];
+            if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
+              blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
+              blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
+              for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
+                if (nextBlock.childNodes[c].getAttribute("name")) {
+                  var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
+                  nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
+                  blocks[i].appendChild(nextBlock.childNodes[c]);
+                }
+              blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
+              if (nextBlock.getElementsByTagName("next")[0])
+                blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
+            }
+          }
+        }
+        content = new XMLSerializer().serializeToString(xmlDoc);
+        console.log(content);
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+        resetProgramExecution();
+        document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
+        localStorage.setItem("Program Name: " + programName, content);
+        prepareUiToLoadProgram();
+        document.getElementById("programSelect").value = programName;
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        switchToBlocks();
+        overlay(false, 0);
+      }
+      else if (fileType == "java") {
+        switchToOnBotJava();
+        setUpOnBotJava(content);
+        overlay(false, 0);
+      }
+    }
+
+    //"Export to OnBotJava"
+    function convertToJava() {
+      var javaCode = generateJavaCode();
+      switchToOnBotJava();
+      setUpOnBotJava(configNaming(javaCode));
+      overlay(false, 0);
+    }
+
+    //Coped from FTC Code
+    function generateJavaCode() {
+      // Get the blocks as xml (text).
+      Blockly.FtcJava.setClassNameForFtcJava_((currentProjectName != "program") ? currentProjectName : null);
+      var blocksContent = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
+      // Don't bother exporting if there are no blocks.
+      if (blocksContent.indexOf('<block') > -1) {
+        // Generate Java code.
+        return Blockly.FtcJava.workspaceToCode(workspace);
+      }
+      return '';
+    }
+
+    //---Functionality of Middle Buttons---
+    function saveProgram() {
+      var programName = document.getElementById('saveProgramName').value;
+      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
+      prepareUiToLoadProgram();
+      document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
+      currentProjectName = document.getElementById('saveProgramName').value;
+      document.getElementById('save').disabled = false;
+      document.getElementById('delete').disabled = false;
+      document.getElementById('download').disabled = false;
+      overlay(false, 0);
+      document.getElementById("telemetryText").innerText = 'Saved new "' + programName + '" Program \n';
+    }
+
+    function loadProgram() {
+      Blockly.mainWorkspace.clear();
+      var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
+      currentProjectName = document.getElementById('programSelect').value;
+      if (nameOfProject == "Program Name: Load Program") {
+        document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+        sampleProgram(true);
+      } else if (typeof (Storage) !== "undefined") {
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+        resetProgramExecution();
+        document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
+      }
+      switchToBlocks();
+    }
+
+    function autoSave() {
+      var programName = document.getElementById('programSelect').value;
+      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
+      document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
+    }
+
+    function deleteProgram() {
+      var programName = document.getElementById('programSelect').value;
+      currentProjectName = "program";
+      localStorage.removeItem("Program Name: " + programName);
+      document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+      sampleProgram(true);
+      prepareUiToLoadProgram();
+      resetProgramExecution();
+      document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
+      overlay(false, 0);
+    }
+
+    function downloadProgram(button) {
+      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+      //Blockly to XML to String
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
+      //Convert Quad to 2 Duals
+      var blocks = xmlDoc.getElementsByTagName("block");
+      for (var i = 0; i < blocks.length; i++)
+        if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
+          var secondDual = blocks[i].cloneNode();
+          blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
+          secondDual.setAttribute("type", blocks[i].getAttribute("type"));
+          secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
+          for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
+            if (blocks[i].childNodes[c].getAttribute("name")) {
+              var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
+              if (num > 2) {
+                blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
+                secondDual.appendChild(blocks[i].childNodes[c]);
+              }
+            }
+          if (blocks[i].getElementsByTagName("next")[0])
+            secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
+          blocks[i].appendChild(xmlDoc.createElement("next"));
+          blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
+        }
+      //Download Program
+      button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
+      button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
+    }
+
+    //---Functionality for Top Right Buttons---
+    function initProgram(code) {
+      resetProgramExecution();
+      programStart = false;
+      document.getElementById('programInit').style.display = 'none';
+      document.getElementById('programStartStop').style.display = 'inline-block';
+      document.getElementById('startBttn').disabled = false;
+      startTime = performance.now();
+      if (code == "") {
+        code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
+        var finalCode = "";
+        var inFunction = false;
+        for (var line of code.split('\n')) {
+          if (line.startsWith('function ')) {
+            inFunction = true;
+          }
+          if (line.startsWith('async function '))
+            inFunction = true;
+          if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
+            finalCode += line + '\n';
+          else
+            finalCode += '//' + line + '\n';
+          if (line == '}')
+            inFunction = false;
+        }
+
+        finalCode += "\nawait runOpMode();\n";
+        runProgram(finalCode);
+      }
+      else
+        runProgram(code);
+    }
+
+    function startProgram() {
+      document.getElementById('startBttn').disabled = true;
+      programStart = true;
+    }
+
+    function stopProgram() {
+      localStorage.setItem('stopMatch', true);
+      resetProgramExecution();
+      document.getElementById("telemetryText").innerText = "Program Aborted \n";
+    }
+
+    function resetField() {
+      localStorage.setItem('resetField', true);
+      document.getElementById("telemetryText").innerText = "Field Reset \n";
+    }
+
+    //---Funcionality for Running Blockly Code---
+    var programExecController = new AbortController();
+
+    async function runProgram(code) {
+      console.log(code);
+      let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
+      let program = new AsyncFunctionCtor(code);
+
+      //setup
+      localStorage.setItem('startMatch', true);
+      document.getElementById("telemetryText").innerText = "Program Started \n";
+
+      programExecController = new AbortController();
+      // execution
+      try {
+        await program();
+      }
+      catch (err) {
+        // anything other than abortedMsg is an actual error
+        if (err != abortedMsg) {
+          localStorage.setItem('stopMatch', true);
+          document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
+          resetProgramExecution();
+          throw err;
+        }
+      }
+
+      // end
+      resetProperties();
+      localStorage.setItem('stopMatch', true);
+      if (!document.getElementById("telemetryText").innerText.startsWith("<Program has stopped!>"))
+        document.getElementById("telemetryText").innerText = "Program Ended \n";
+      document.getElementById('programInit').style.display = 'inline-block';
+      document.getElementById('programStartStop').style.display = 'none';
+    }
+
+    function resetProgramExecution() {
+      programExecController.abort();
+      resetProperties();
+      document.getElementById('programInit').style.display = 'inline-block';
+      document.getElementById('programStartStop').style.display = 'none';
+    }
+
+    //---Switch Between Top Right Tabs---
+    var prevTabButton = document.getElementById('firstTab');
+
+    function switchTab(button, tabNum) {
+      if (button.className == 'textNormal') {
+        for (var i = 0; i < document.getElementById('tabOptions').children.length; i++)
+          document.getElementById('tabOptions').children[i].style.display = "none";
+        document.getElementById('tabOptions').children[tabNum].style.display = "inherit";
+        prevTabButton.classList.add('textNormal');
+        button.classList.remove('textNormal');
+        prevTabButton = button;
+      }
+    }
+
+    //---Load Lessons---
+    function loadLesson() {
+      document.getElementById('lessonButtons').style.display = "flex";
+      document.getElementById('lessonText').parentElement.style.height = '75%';
+      switch (document.getElementById('lessonSelect').value) {
+        case "0":
+          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
+            "In this first lesson, you will need to power the Front Left and Front Right Wheels for a certain amount of time in order to get the robot on the White Line for +5 Points during Autonomous. Press the \"Show the Task\" button to see what you need to do or \"Video Hint\" for an introduction." +
+            "\n\nYou'll Learn:\nBasic Motor Powering\nMovement Timing";
+          break;
+        case "1":
+          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
+            "The next stage will now be to add power to all 4 Wheels in your program. This will require a bit more precision, but will benefit with the added Torque and Speed the motors will provide. Your robot can have a max of 8 motors and 12 servos for full movement!" +
+            "\n\nYou'll Learn:\nBalance between Speed and Reliability\nMore Motor Control";
+          break;
+        case "2":
+          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
+            "For this lesson, we will be adding more than just forwards and backwards and introducing rotation! This may require alot more precision than you initially think. If only there was a way of consistently moving..." +
+            "\n\nYou'll Learn:\nThe Limits to using Timing\nRotation Basics";
+          break;
+        case "3":
+          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
+            "Let's make the robot go along the path of the strongest shape: the Square! Or was it the triangle? Either way it may be useful to use loops for this program so the code looks cleaner and changes can be made faster. Maybe using a sensor for reliable rotation may be in order!" +
+            "\n\nYou'll Learn:\nThe Joys of Clean Code\nUsing Loop Blocks & the IMU Sensor";
+          break;
+        case "4":
+          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
+            "Are those mecanum wheels on your robot there? Great! That means you have another mode of movement called strafing where the robot can move directly left and right without turning. The wheels just need to spin a certain way..." +
+            "\n\nYou'll Learn:\nThe Art of Expirementing\nStrafing Movement";
+          break;
+        case "5":
+          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
+            "Alright, now let's start getting some actual autonomous points. First off, let's put the wobble goal in the first position earning +15 points. For right now, we can stick to timing but we can see it becomes a bit more unreliable the more we move." +
+            "\n\nYou'll Learn:\nHow to Handle Large Amounts of Code\nComplex Movement";
+          break;
+        case "6":
+          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
+            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motor Encoders: 560 Ticks per Revolution, Wheels' Circumfrence: 4π Inches" +
+            "\n\nYou'll Learn:\nMotor Encoders\nVariables";
+          break;
+        case "7":
+          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
+            "Great, we have cracked the code for motor encoders! But... the code looks all messy and complicated and would be a pain to make slight changes to. Let's try and compact the 3 movements the robot can make into 3 functions we can call from the main runOpMode function." +
+            "\n\nYou'll Learn:\nKeeping Code Simple\nFunctions";
+          break;
+        case "8":
+          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
+            "Looks like the engineering team has just slapped a shooting mechanism onto your robot. Time to learn how that works. It seems they have wired in a new \"ringLoader\" and \"ringShooter\" motor. Maybe you could even drop off a wobble goal into one of the positions in the same program!" +
+            "\n\nYou'll Learn:\nHandling Multiple Tasks\nComplex Motors";
+          break;
+        case "9":
+          document.getElementById('lessonText').innerText = "Difficulty: Extreme!\n" +
+            "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous! Try and shoot at each powershot while either rotating or strafing to change trajectory. Get as many points as possible with *correct* wobble goal position included!" +
+            "\n\nYou'll Learn:\nScoring Big with Extra Sensors\nHow to Code! (hopefully...)";
+          break;
+        default:
+          document.getElementById('lessonButtons').style.display = "none";
+          document.getElementById('lessonText').innerText = "[Select Lesson]";
+          document.getElementById('lessonText').parentElement.style.height = '';
+          break;
+      }
+    }
+
+    function runLessonCode() {
+      var lessonName = "";
+      switch (document.getElementById('lessonSelect').value) {
+        case "0": lessonName = "WhiteLine2Motors"; break;
+        case "1": lessonName = "WhiteLine4Motors"; break;
+        case "2": lessonName = "DriveRotate90"; break;
+        case "3": lessonName = "DriveRotateSquare"; break;
+        case "4": lessonName = "DriveStrafeSquare"; break;
+        case "5": lessonName = "WobblePos1"; break;
+        case "6": lessonName = "WobblePos2"; break;
+        case "7": lessonName = "WobblePos3"; break;
+        case "8": lessonName = "ShootHighGoal"; break;
+        case "9": lessonName = "ShootPowerShots"; break;
+      }
+      stopProgram();
+      resetField();
+      //Load Lesson Code to Run
+      var client = new XMLHttpRequest();
+      client.open('GET', './blocks/lessons/' + lessonName + '.ftccode');
+      client.onload = function () {
+        var lessonCode = client.responseText;
+        if (lessonCode !== '')
+          initProgram(lessonCode);
+      }
+      client.send();
+    }
+
+    function playVideo(videoType) {
+      link = "";
+      //videoType: 0 = howTo, 1 = hint, 2 = solution
+      if (videoType == 1) {
+        switch (document.getElementById('lessonSelect').value) {
+          case "0": link = "https://www.youtube.com/embed/x7BokrnYRVQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "1": link = "https://www.youtube.com/embed/c4eEeLBST9A?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "2": link = "https://www.youtube.com/embed/Mwt1i6DcoAw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "3": link = "https://www.youtube.com/embed/T7qsSIdD1d4?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "4": link = "https://www.youtube.com/embed/GrotP67WXic?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "5": link = "https://www.youtube.com/embed/9jmv3Qa42sQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "6": link = "https://www.youtube.com/embed/Bks7X4O9m84?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "7": link = "https://www.youtube.com/embed/aqcV63eJp5M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "8": link = "https://www.youtube.com/embed/t43pUXOM0Xk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "9": link = "https://www.youtube.com/embed/SEw5JmZKjJQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+        }
+      }
+      else if (videoType == 2) {
+        switch (document.getElementById('lessonSelect').value) {
+          case "0": link = "https://www.youtube.com/embed/ZgVQHswMonk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "1": link = "https://www.youtube.com/embed/Q-C3vVFQS10?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "2": link = "https://www.youtube.com/embed/nx4PnIYA7ns?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "3": link = "https://www.youtube.com/embed/MXjoF2XXLAE?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "4": link = "https://www.youtube.com/embed/IGs1DomVS3w?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "5": link = "https://www.youtube.com/embed/j7tnpOZ_xDw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "6": link = "https://www.youtube.com/embed/iCbP_eR3QAU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "7": link = "https://www.youtube.com/embed/qqN5xwUKk3M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "8": link = "https://www.youtube.com/embed/VwxFRgVVlGs?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+          case "9": link = "https://www.youtube.com/embed/THkZypgWRhg?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
+        }
+      }
+      else
+        link = 'https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz';
+      document.getElementById('tabOptions').children[3].src = link;
+      switchTab(document.getElementById('videoButton'), 3);
+    }
+
   </script>
 
   <!-- FTC Copied Files w/ slight modifications -->
+  <script src="./robotConfigs/programConfigSetup.js"></script>
+  <script src="./blocks/ftcblockly.js"></script>
+  <script src="./blocks/ftcjava.js"></script>
+  <script src="./blocks/blocks/acceleration.js"></script>
+  <script src="./blocks/blocks/angular_velocity.js"></script>
+  <script src="./blocks/blocks/bno055imu.js"></script>
+  <script src="./blocks/blocks/bno055imu_parameters.js"></script>
+  <script src="./blocks/blocks/color.js"></script>
+  <script src="./blocks/blocks/cr_servo.js"></script>
+  <script src="./blocks/blocks/dbg_log.js"></script>
   <script src="./blocks/blocks/dc_motor.js"></script>
+  <script src="./blocks/blocks/distance_sensor.js"></script>
+  <script src="./blocks/blocks/elapsed_time2.js"></script>
   <script src="./blocks/blocks/gamepad.js"></script>
   <script src="./blocks/blocks/linear_op_mode.js"></script>
+  <script src="./blocks/blocks/lists.js"></script>
   <script src="./blocks/blocks/locale.js"></script>
+  <script src="./blocks/blocks/logic.js"></script>
+  <script src="./blocks/blocks/loops.js"></script>
+  <script src="./blocks/blocks/magnetic_flux.js"></script>
+  <script src="./blocks/blocks/math.js"></script>
+  <script src="./blocks/blocks/matrix_f.js"></script>
   <script src="./blocks/blocks/misc.js"></script>
   <script src="./blocks/blocks/navigation.js"></script>
+  <script src="./blocks/blocks/open_gl_matrix.js"></script>
+  <script src="./blocks/blocks/orientation.js"></script>
+  <script src="./blocks/blocks/pidf_coefficients.js"></script>
+  <script src="./blocks/blocks/position.js"></script>
+  <script src="./blocks/blocks/quaternion.js"></script>
+  <script src="./blocks/blocks/range.js"></script>
+  <script src="./blocks/blocks/servo.js"></script>
+  <script src="./blocks/blocks/system.js"></script>
   <script src="./blocks/blocks/telemetry.js"></script>
+  <script src="./blocks/blocks/temperature.js"></script>
+  <script src="./blocks/blocks/text.js"></script>
+  <script src="./blocks/blocks/variables.js"></script>
   <script src="./blocks/blocks/vars.js"></script>
+  <script src="./blocks/blocks/vector_f.js"></script>
+  <script src="./blocks/blocks/velocity.js"></script>
+  <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
-    <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="30">
+    <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="#987654">
       <block type="linearOpMode_waitForStart"></block>
       <block type="linearOpMode_idle"></block>
       <block type="linearOpMode_sleep_Number">
@@ -837,8 +1495,8 @@
         <field name="PROP">Y</field>
       </block>
     </category>
-    <category css-icon="customIcon fa fa-caret-right" name="Actuators" colour="#f58a42">
-      <category css-icon="customIcon fa fa-caret-right" name="DcMotor">
+    <category css-icon="customIcon fa fa-cog" name="Actuators" colour="#f58a42" toolboxitemid="Actuators">
+      <category css-icon="customIcon fa fa-caret-right" name="DcMotor" toolboxitemid="Motor">
         <block type="dcMotor_getProperty_Number">
           <field name="IDENTIFIER">dcMotor0</field>
           <field name="PROP">CurrentPosition</field>
@@ -918,7 +1576,7 @@
         <block type="dcMotor_isBusy">
           <field name="IDENTIFIER">dcMotor0</field>
         </block>
-        <category css-icon="" name="Dual">
+        <category css-icon="" name="Dual" toolboxitemid="MotorDual">
           <block type="dcMotor_setDualProperty_Number">
             <field name="PROP">Power</field>
             <field name="IDENTIFIER1">dcMotor0</field>
@@ -987,7 +1645,128 @@
             </value>
           </block>
         </category>
-        <category css-icon="customIcon fa fa-caret-right" name="Extended">
+        <category css-icon="" name="Quad" toolboxitemid="MotorQuad">
+          <block type="dcMotor_setQuadProperty_Number">
+            <field name="PROP">Power</field>
+            <field name="IDENTIFIER1">dcMotor0</field>
+            <field name="IDENTIFIER2">dcMotor1</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER4">dcMotor3</field>
+            <value name="VALUE1">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="VALUE2">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="VALUE3">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <value name="VALUE4">
+              <shadow type="math_number">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="dcMotor_setQuadProperty_Number">
+            <field name="PROP">Power</field>
+            <field name="IDENTIFIER1">dcMotor0</field>
+            <field name="IDENTIFIER2">dcMotor1</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER4">dcMotor3</field>
+            <value name="VALUE1">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE2">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE3">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE4">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="dcMotor_setQuadProperty_RunMode">
+            <field name="PROP">Mode</field>
+            <field name="IDENTIFIER1">dcMotor0</field>
+            <field name="IDENTIFIER2">dcMotor1</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER4">dcMotor3</field>
+            <value name="VALUE1">
+              <shadow type="dcMotor_typedEnum_runMode" />
+            </value>
+            <value name="VALUE2">
+              <shadow type="dcMotor_typedEnum_runMode" />
+            </value>
+            <value name="VALUE3">
+              <shadow type="dcMotor_typedEnum_runMode" />
+            </value>
+            <value name="VALUE4">
+              <shadow type="dcMotor_typedEnum_runMode" />
+            </value>
+          </block>
+          <block type="dcMotor_setQuadProperty_Number">
+            <field name="PROP">TargetPosition</field>
+            <field name="IDENTIFIER1">dcMotor0</field>
+            <field name="IDENTIFIER2">dcMotor1</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER4">dcMotor3</field>
+            <value name="VALUE1">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE2">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE3">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+            <value name="VALUE4">
+              <shadow type="math_number">
+                <field name="NUM">0</field>
+              </shadow>
+            </value>
+          </block>
+          <block type="dcMotor_setQuadProperty_ZeroPowerBehavior">
+            <field name="PROP">ZeroPowerBehavior</field>
+            <field name="IDENTIFIER1">dcMotor0</field>
+            <field name="IDENTIFIER2">dcMotor1</field>
+            <field name="IDENTIFIER3">dcMotor2</field>
+            <field name="IDENTIFIER4">dcMotor3</field>
+            <value name="VALUE1">
+              <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
+            </value>
+            <value name="VALUE2">
+              <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
+            </value>
+            <value name="VALUE3">
+              <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
+            </value>
+            <value name="VALUE4">
+              <shadow type="dcMotor_typedEnum_zeroPowerBehavior" />
+            </value>
+          </block>
+        </category>
+        <category css-icon="customIcon fa fa-caret-right" name="Extended" toolboxitemid="MotorEx">
           <block type="dcMotor_setProperty_Number">
             <field name="IDENTIFIER">dcMotor0</field>
             <field name="PROP">TargetPositionTolerance</field>
@@ -1014,7 +1793,7 @@
             <field name="IDENTIFIER">dcMotor0</field>
             <field name="PROP">Velocity</field>
           </block>
-          <category css-icon="" name="Dual">
+          <category css-icon="" name="Dual" toolboxitemid="MotorExDual">
             <block type="dcMotor_setDualProperty_Number">
               <field name="PROP">TargetPositionTolerance</field>
               <field name="IDENTIFIER1">dcMotor0</field>
@@ -1040,6 +1819,62 @@
                 </shadow>
               </value>
               <value name="VALUE2">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+            </block>
+          </category>
+          <category css-icon="" name="Quad" toolboxitemid="MotorExQuad">
+            <block type="dcMotor_setQuadProperty_Number">
+              <field name="PROP">TargetPositionTolerance</field>
+              <field name="IDENTIFIER1">dcMotor0</field>
+              <field name="IDENTIFIER2">dcMotor1</field>
+              <field name="IDENTIFIER3">dcMotor2</field>
+              <field name="IDENTIFIER4">dcMotor3</field>
+              <value name="VALUE1">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE2">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE3">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE4">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+            </block>
+            <block type="dcMotor_setQuadProperty_Number">
+              <field name="PROP">Velocity</field>
+              <field name="IDENTIFIER1">dcMotor0</field>
+              <field name="IDENTIFIER2">dcMotor1</field>
+              <field name="IDENTIFIER3">dcMotor2</field>
+              <field name="IDENTIFIER4">dcMotor3</field>
+              <value name="VALUE1">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE2">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE3">
+                <shadow type="math_number">
+                  <field name="NUM">10</field>
+                </shadow>
+              </value>
+              <value name="VALUE4">
                 <shadow type="math_number">
                   <field name="NUM">10</field>
                 </shadow>
@@ -1072,7 +1907,7 @@
               <shadow type="navigation_typedEnum_angleUnit" />
             </value>
           </block>
-          <block type="dcMotor_setVelocityPIDFCoefficients">
+          <block type="dcMotor_setVelocityPIDFCoefficients" disabled=true>
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="P">
               <shadow type="math_number">
@@ -1095,7 +1930,7 @@
               </shadow>
             </value>
           </block>
-          <block type="dcMotor_setPositionPIDFCoefficients">
+          <block type="dcMotor_setPositionPIDFCoefficients" disabled=true>
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="P">
               <shadow type="math_number">
@@ -1103,7 +1938,7 @@
               </shadow>
             </value>
           </block>
-          <block type="dcMotor_setPIDFCoefficients">
+          <block type="dcMotor_setPIDFCoefficients" disabled=true>
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="RUN_MODE">
               <shadow type="dcMotor_typedEnum_runMode">
@@ -1116,7 +1951,7 @@
               </block>
             </value>
           </block>
-          <block type="dcMotor_getPIDFCoefficients">
+          <block type="dcMotor_getPIDFCoefficients" disabled=true>
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="RUN_MODE">
               <shadow type="dcMotor_typedEnum_runMode">
@@ -1152,20 +1987,47 @@
           </block>
         </category>
       </category>
-      <category css-icon="" name="Servo" hidden="true">
+      <category css-icon="" name="CRServo" toolboxitemid="CRServo">
+        <block type="crServo_setProperty_Direction">
+          <field name="PROP">Direction</field>
+          <value name="VALUE">
+            <shadow type="crServo_typedEnum_direction" />
+          </value>
+        </block>
+        <block type="crServo_getProperty_Direction">
+          <field name="PROP">Direction</field>
+        </block>
+        <block type="crServo_setProperty_Number">
+          <field name="PROP">Power</field>
+          <value name="VALUE">
+            <shadow type="math_number">
+              <field name="NUM">1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="crServo_setProperty_Number">
+          <field name="PROP">Power</field>
+          <value name="VALUE">
+            <shadow type="math_number">
+              <field name="NUM">0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type="crServo_getProperty_Number">
+          <field name="PROP">Power</field>
+        </block>
+      </category>
+      <category css-icon="" name="Servo" toolboxitemid="Servo">
         <block type="servo_setProperty_Direction">
-          <field name="IDENTIFIER">left_handAsServo</field>
           <field name="PROP">Direction</field>
           <value name="VALUE">
             <shadow type="servo_typedEnum_direction" />
           </value>
         </block>
         <block type="servo_getProperty_Direction">
-          <field name="IDENTIFIER">left_handAsServo</field>
           <field name="PROP">Direction</field>
         </block>
         <block type="servo_setProperty_Number">
-          <field name="IDENTIFIER">left_handAsServo</field>
           <field name="PROP">Position</field>
           <value name="VALUE">
             <shadow type="math_number">
@@ -1174,11 +2036,9 @@
           </value>
         </block>
         <block type="servo_getProperty_Number">
-          <field name="IDENTIFIER">left_handAsServo</field>
           <field name="PROP">Position</field>
         </block>
         <block type="servo_scaleRange_Number">
-          <field name="IDENTIFIER">left_handAsServo</field>
           <value name="MIN">
             <shadow type="math_number">
               <field name="NUM">0.2</field>
@@ -1192,38 +2052,46 @@
         </block>
       </category>
     </category>
-    <category css-icon="customIcon fa fa-caret-right" name="Sensors" colour="#87CEEB">
-      <category css-icon="" name="IMU-BNO055" hidden="true">
+    <category css-icon="customIcon fa fa-dashboard" name="Sensors" colour="#2E8B57" toolboxitemid="Sensors">
+      <category css-icon="" name="DistanceSensor" toolboxitemid="DistanceSensor">
+        <block type="distanceSensor_getDistance">
+          <field name="IDENTIFIER">distanceSensor0</field>
+          <value name="DISTANCE_UNIT">
+            <shadow type="navigation_typedEnum_distanceUnit" />
+          </value>
+        </block>
+      </category>
+      <category css-icon="" name="IMU-BNO055" toolboxitemid="IMUSensor">
         <block type="bno055imu_getProperty_Acceleration">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Acceleration</field>
         </block>
         <block type="bno055imu_getProperty_Orientation">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">AngularOrientation</field>
         </block>
         <block type="bno055imu_getProperty_Array">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">AngularOrientationAxes</field>
         </block>
         <block type="bno055imu_getProperty_AngularVelocity">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">AngularVelocity</field>
         </block>
         <block type="bno055imu_getProperty_Array">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">AngularVelocityAxes</field>
         </block>
         <block type="bno055imu_getProperty_String">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">CalibrationStatus</field>
         </block>
         <block type="bno055imu_getProperty_Acceleration">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Gravity</field>
         </block>
         <block type="bno055imu_setProperty_Number">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">I2cAddress7Bit</field>
           <value name="VALUE">
             <shadow type="math_number">
@@ -1232,11 +2100,11 @@
           </value>
         </block>
         <block type="bno055imu_getProperty_Number">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">I2cAddress7Bit</field>
         </block>
         <block type="bno055imu_setProperty_Number">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">I2cAddress8Bit</field>
           <value name="VALUE">
             <shadow type="math_number">
@@ -1245,48 +2113,48 @@
           </value>
         </block>
         <block type="bno055imu_getProperty_Number">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">I2cAddress8Bit</field>
         </block>
         <block type="bno055imu_getProperty_Acceleration">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">LinearAcceleration</field>
         </block>
         <block type="bno055imu_getProperty_MagneticFlux">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">MagneticFieldStrength</field>
         </block>
         <block type="bno055imu_getProperty_Acceleration">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">OverallAcceleration</field>
         </block>
         <block type="bno055imu_getProperty_Position">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Position</field>
         </block>
         <block type="bno055imu_getProperty_Quaternion">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">QuaternionOrientation</field>
         </block>
         <block type="bno055imu_getProperty_String">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">SystemError</field>
         </block>
         <block type="bno055imu_getProperty_SystemStatus">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">SystemStatus</field>
         </block>
-        <block type="bno055imu_typedEnum_systemStatus" />
+        <block type="bno055imu_typedEnum_systemStatus"></block>
         <block type="bno055imu_getProperty_Temperature">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Temperature</field>
         </block>
         <block type="bno055imu_getProperty_Velocity">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Velocity</field>
         </block>
         <block type="bno055imu_getAngularOrientation">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="AXES_REFERENCE">
             <shadow type="navigation_typedEnum_axesReference" />
           </value>
@@ -1298,13 +2166,13 @@
           </value>
         </block>
         <block type="bno055imu_getAngularVelocity">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="ANGLE_UNIT">
             <shadow type="navigation_typedEnum_angleUnit" />
           </value>
         </block>
         <block type="bno055imu_initialize">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="PARAMETERS">
             <block type="variables_get">
               <field name="VAR">{parametersVariable}</field>
@@ -1312,19 +2180,19 @@
           </value>
         </block>
         <block type="bno055imu_isAccelerometerCalibrated">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
         </block>
         <block type="bno055imu_isGyroCalibrated">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
         </block>
         <block type="bno055imu_isMagnetometerCalibrated">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
         </block>
         <block type="bno055imu_isSystemCalibrated">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
         </block>
         <block type="bno055imu_saveCalibrationData">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="FILE_NAME">
             <shadow type="text">
               <field name="TEXT">IMUCalibration.json</field>
@@ -1332,7 +2200,7 @@
           </value>
         </block>
         <block type="bno055imu_startAccelerationIntegration_with1">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="MS_POLL_INTERVAL">
             <shadow type="math_number">
               <field name="NUM">1000</field>
@@ -1340,7 +2208,7 @@
           </value>
         </block>
         <block type="bno055imu_startAccelerationIntegration_with3">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
           <value name="INITIAL_POSITION">
             <block type="variables_get">
               <field name="VAR">{positionVariable}</field>
@@ -1358,11 +2226,11 @@
           </value>
         </block>
         <block type="bno055imu_stopAccelerationIntegration">
-          <field name="IDENTIFIER">imuAsBNO055IMU</field>
+          <field name="IDENTIFIER">imu0</field>
         </block>
       </category>
-      <category css-icon="" name="IMU-BNO055.Parameters" hidden="true">
-        <block type="bno055imuParameters_create" />
+      <category css-icon="" name="IMU-BNO055.Parameters" toolboxitemid="IMUParamSensor">
+        <block type="bno055imuParameters_create"></block>
         <block type="bno055imuParameters_setAccelUnit">
           <value name="BNO055IMU_PARAMETERS">
             <block type="variables_get">
@@ -1437,7 +2305,6 @@
           </value>
           <value name="LOGGING_ENABLED">
             <shadow type="logic_boolean">
-              <field name="BOOL">true</field>
             </shadow>
           </value>
         </block>
@@ -1561,8 +2428,8 @@
         </block>
       </category>
     </category>
-    <category css-icon="customIcon fa fa-caret-right" name="Utilities" colour="250">
-      <category css-icon="" name="Acceleration" hidden="true">
+    <category css-icon="customIcon fa fa-wrench" name="Utilities" colour="250">
+      <category css-icon="" name="Acceleration">
         <block type="acceleration_getProperty_DistanceUnit">
           <field name="PROP">DistanceUnit</field>
           <value name="ACCELERATION">
@@ -1620,7 +2487,7 @@
             </block>
           </value>
         </block>
-        <block type="acceleration_create" />
+        <block type="acceleration_create"></block>
         <block type="acceleration_create_withArgs">
           <value name="DISTANCE_UNIT">
             <shadow type="navigation_typedEnum_distanceUnit" />
@@ -1665,7 +2532,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="AngleUnit" hidden="true">
+      <category css-icon="" name="AngleUnit">
         <block type="navigation_angleUnit_normalize">
           <value name="ANGLE">
             <shadow type="math_number">
@@ -1696,7 +2563,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="AngularVelocity" hidden="true">
+      <category css-icon="" name="AngularVelocity">
         <block type="angularVelocity_getProperty_AngleUnit">
           <field name="PROP">AngleUnit</field>
           <value name="ANGULAR_VELOCITY">
@@ -1757,7 +2624,7 @@
             <shadow type="navigation_typedEnum_angleUnit" />
           </value>
         </block>
-        <block type="angularVelocity_create" />
+        <block type="angularVelocity_create"></block>
         <block type="angularVelocity_create_withArgs">
           <value name="ANGLE_UNIT">
             <shadow type="navigation_typedEnum_angleUnit" />
@@ -1782,7 +2649,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Axis" hidden="true">
+      <category css-icon="" name="Axis">
         <block type="navigation_typedEnum_axis">
           <field name="AXIS">X</field>
         </block>
@@ -1793,7 +2660,7 @@
           <field name="AXIS">Z</field>
         </block>
       </category>
-      <category css-icon="" name="Color" hidden="true">
+      <category css-icon="" name="Color">
         <block type="color_rgbToHue">
           <value name="RED">
             <shadow type="math_number">
@@ -1852,7 +2719,7 @@
             </block>
           </value>
         </block>
-        <block type="color_showColor">
+        <block type="color_showColor" disabled=true>
           <value name="COLOR">
             <block type="variables_get">
               <field name="VAR">{colorVariable}</field>
@@ -2014,7 +2881,7 @@
             </shadow>
           </value>
         </block>
-        <block type="normalizedColors_getProperty_Number">
+        <block type="normalizedColors_getProperty_Number" disabled=true>
           <field name="PROP">Red</field>
           <value name="NORMALIZED_COLORS">
             <block type="variables_get">
@@ -2022,7 +2889,7 @@
             </block>
           </value>
         </block>
-        <block type="normalizedColors_getProperty_Number">
+        <block type="normalizedColors_getProperty_Number" disabled=true>
           <field name="PROP">Green</field>
           <value name="NORMALIZED_COLORS">
             <block type="variables_get">
@@ -2030,7 +2897,7 @@
             </block>
           </value>
         </block>
-        <block type="normalizedColors_getProperty_Number">
+        <block type="normalizedColors_getProperty_Number" disabled=true>
           <field name="PROP">Blue</field>
           <value name="NORMALIZED_COLORS">
             <block type="variables_get">
@@ -2038,7 +2905,7 @@
             </block>
           </value>
         </block>
-        <block type="normalizedColors_getProperty_Number">
+        <block type="normalizedColors_getProperty_Number" disabled="true">
           <field name="PROP">Alpha</field>
           <value name="NORMALIZED_COLORS">
             <block type="variables_get">
@@ -2046,7 +2913,7 @@
             </block>
           </value>
         </block>
-        <block type="normalizedColors_getProperty_Number">
+        <block type="normalizedColors_getProperty_Number" disabled="true">
           <field name="PROP">Color</field>
           <value name="NORMALIZED_COLORS">
             <block type="variables_get">
@@ -2071,7 +2938,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="MagneticFlux" hidden="true">
+      <category css-icon="" name="MagneticFlux">
         <block type="magneticFlux_getProperty_Number">
           <field name="PROP">X</field>
           <value name="MAGNETIC_FLUX">
@@ -2111,7 +2978,7 @@
             </block>
           </value>
         </block>
-        <block type="magneticFlux_create" />
+        <block type="magneticFlux_create"></block>
         <block type="magneticFlux_create_withArgs">
           <value name="X">
             <shadow type="math_number">
@@ -2134,7 +3001,7 @@
         </block>
       </category>
       <category css-icon="" name="Matrix" hidden="true">
-        <block type="openGLMatrix_identityMatrix" />
+        <block type="openGLMatrix_identityMatrix"></block>
         <block type="openGLMatrix_multiplied">
           <value name="MATRIX1">
             <block type="variables_get">
@@ -2461,7 +3328,7 @@
             </shadow>
           </value>
         </block>
-        <block type="openGLMatrix_create" />
+        <block type="openGLMatrix_create"></block>
         <block type="openGLMatrix_create_withMatrixF">
           <value name="MATRIX">
             <block type="variables_get">
@@ -2840,7 +3707,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Orientation" hidden="true">
+      <category css-icon="" name="Orientation">
         <block type="orientation_getProperty_AxesReference">
           <field name="PROP">AxesReference</field>
           <value name="ORIENTATION">
@@ -2907,7 +3774,7 @@
             <shadow type="navigation_typedEnum_angleUnit" />
           </value>
         </block>
-        <block type="orientation_toAxesReference">
+        <block type="orientation_toAxesReference" disabled=true>
           <value name="ORIENTATION">
             <block type="variables_get">
               <field name="VAR">{orientationVariable}</field>
@@ -2917,7 +3784,7 @@
             <shadow type="navigation_typedEnum_axesReference" />
           </value>
         </block>
-        <block type="orientation_toAxesOrder">
+        <block type="orientation_toAxesOrder" disabled=true>
           <value name="ORIENTATION">
             <block type="variables_get">
               <field name="VAR">{orientationVariable}</field>
@@ -2934,14 +3801,14 @@
             </block>
           </value>
         </block>
-        <block type="orientation_getRotationMatrix">
+        <block type="orientation_getRotationMatrix" disabled=true>
           <value name="ORIENTATION">
             <block type="variables_get">
               <field name="VAR">{orientationVariable}</field>
             </block>
           </value>
         </block>
-        <block type="orientation_getRotationMatrix_withArgs">
+        <block type="orientation_getRotationMatrix_withArgs" disabled=true>
           <value name="AXES_REFERENCE">
             <shadow type="navigation_typedEnum_axesReference" />
           </value>
@@ -2967,7 +3834,7 @@
             </shadow>
           </value>
         </block>
-        <block type="orientation_create" />
+        <block type="orientation_create"></block>
         <block type="orientation_create_withArgs">
           <value name="AXES_REFERENCE">
             <shadow type="navigation_typedEnum_axesReference" />
@@ -2997,7 +3864,7 @@
             <shadow type="system_nanoTime" />
           </value>
         </block>
-        <block type="orientation_getOrientation">
+        <block type="orientation_getOrientation" disabled="true">
           <value name="AXES_REFERENCE">
             <shadow type="navigation_typedEnum_axesReference" />
           </value>
@@ -3009,8 +3876,8 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="PIDFCoefficients" hidden="true">
-        <block type="pidfCoefficients_create" />
+      <category css-icon="" name="PIDFCoefficients">
+        <block type="pidfCoefficients_create"> </block>
         <block type="pidfCoefficients_create_withPIDFAlgorithm">
           <value name="P">
             <shadow type="math_number">
@@ -3180,7 +4047,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Position" hidden="true">
+      <category css-icon="" name="Position">
         <block type="position_getProperty_DistanceUnit">
           <field name="PROP">DistanceUnit</field>
           <value name="POSITION">
@@ -3238,7 +4105,7 @@
             </block>
           </value>
         </block>
-        <block type="position_create" />
+        <block type="position_create"></block>
         <block type="position_create_withArgs">
           <value name="DISTANCE_UNIT">
             <shadow type="navigation_typedEnum_distanceUnit" />
@@ -3263,7 +4130,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Quaternion" hidden="true">
+      <category css-icon="" name="Quaternion">
         <block type="quaternion_getProperty_Number">
           <field name="PROP">W</field>
           <value name="QUATERNION">
@@ -3318,7 +4185,7 @@
             </block>
           </value>
         </block>
-        <block type="quaternion_create" />
+        <block type="quaternion_create"></block>
         <block type="quaternion_create_withArgs">
           <value name="W">
             <shadow type="math_number">
@@ -3345,7 +4212,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Range" hidden="true">
+      <category css-icon="" name="Range">
         <block type="range_clip">
           <value name="MIN">
             <shadow type="math_number">
@@ -3381,7 +4248,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Telemetry">
+      <category css-icon="customIcon fa fa-code" name="Telemetry">
         <block type="telemetry_addNumericData_Number">
           <value name="KEY">
             <shadow type="text">
@@ -3449,14 +4316,14 @@
           </value>
         </block>
         <block type="telemetry_update"></block>
-        <block type="telemetry_speak">
+        <block type="telemetry_speak" disabled=true>
           <value name="TEXT">
             <shadow type="text">
               <field name="TEXT">text</field>
             </shadow>
           </value>
         </block>
-        <block type="telemetry_speak_withLanguage">
+        <block type="telemetry_speak_withLanguage" disabled=true>
           <value name="TEXT">
             <shadow type="text">
               <field name="TEXT">text</field>
@@ -3475,13 +4342,13 @@
             <block type="locale_countryCode"></block>
           </value>
         </block>
-        <block type="telemetry_setDisplayFormat">
+        <block type="telemetry_setDisplayFormat" disabled=true>
           <value name="DISPLAY_FORMAT">
             <shadow type="telemetry_typedEnum_displayFormat" />
           </value>
         </block>
       </category>
-      <category css-icon="" name="Temperature" hidden="true">
+      <category css-icon="" name="Temperature">
         <block type="temperature_getProperty_TempUnit">
           <field name="PROP">TempUnit</field>
           <value name="TEMPERATURE">
@@ -3506,7 +4373,7 @@
             </block>
           </value>
         </block>
-        <block type="temperature_create" />
+        <block type="temperature_create"></block>
         <block type="temperature_create_withArgs">
           <value name="TEMP_UNIT">
             <shadow type="navigation_typedEnum_tempUnit" />
@@ -3804,10 +4671,10 @@
           </block>
         </category>
       </category>
-      <category css-icon="customIcon fa fa-caret-right" name="Time" hidden="true">
-        <block type="system_nanoTime" />
-        <category name="ElapsedTime">
-          <block type="elapsedTime2_create" />
+      <category css-icon="customIcon fa fa-caret-right" name="Time">
+        <block type="system_nanoTime"></block>
+        <category css-icon="" name="ElapsedTime">
+          <block type="elapsedTime2_create"></block>
           <block type="elapsedTime2_create_withStartTime">
             <value name="START_TIME">
               <shadow type="system_nanoTime" />
@@ -3865,7 +4732,7 @@
               </block>
             </value>
           </block>
-          <block type="elapsedTime2_log">
+          <block type="elapsedTime2_log" disabled=true>
             <value name="ELAPSED_TIME">
               <block type="variables_get">
                 <field name="VAR">{elapsedTimeVariable}</field>
@@ -3886,7 +4753,7 @@
           </block>
         </category>
       </category>
-      <category css-icon="" name="Vector" hidden="true">
+      <category css-icon="" name="Vector">
         <block type="vectorF_getProperty_Number">
           <field name="PROP">Length</field>
           <value name="VECTOR">
@@ -3958,7 +4825,7 @@
             </block>
           </value>
         </block>
-        <block type="vectorF_multiplied">
+        <block type="vectorF_multiplied" disabled=true>
           <value name="VECTOR">
             <block type="variables_get">
               <field name="VAR">{vectorVariable}</field>
@@ -3970,7 +4837,7 @@
             </block>
           </value>
         </block>
-        <block type="vectorF_added_withMatrix">
+        <block type="vectorF_added_withMatrix" disabled=true>
           <value name="VECTOR">
             <block type="variables_get">
               <field name="VAR">{vectorVariable}</field>
@@ -4006,7 +4873,7 @@
             </block>
           </value>
         </block>
-        <block type="vectorF_subtracted_withMatrix">
+        <block type="vectorF_subtracted_withMatrix" disabled=true>
           <value name="VECTOR">
             <block type="variables_get">
               <field name="VAR">{vectorVariable}</field>
@@ -4074,7 +4941,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="Velocity" hidden="true">
+      <category css-icon="" name="Velocity">
         <block type="velocity_getProperty_DistanceUnit">
           <field name="PROP">DistanceUnit</field>
           <value name="VELOCITY">
@@ -4132,7 +4999,7 @@
             </block>
           </value>
         </block>
-        <block type="velocity_create" />
+        <block type="velocity_create"></block>
         <block type="velocity_create_withArgs">
           <value name="DISTANCE_UNIT">
             <shadow type="navigation_typedEnum_distanceUnit" />
@@ -5030,583 +5897,8 @@
     </category>
   </xml>
 
-
   <script>
-    localStorage.setItem('startMatch', false);
-    localStorage.setItem('stopMatch', false);
-    localStorage.setItem('resetField', false);
-
-    window.addEventListener("gamepadconnected", (event) => {
-      if (event.gamepad.index < 2) {
-        document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
-      }
-    });
-
-    window.addEventListener("gamepaddisconnected", (event) => {
-      if (event.gamepad.index < 2) {
-        document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
-      }
-    });
-
-    var isUsingBlocks = true;
-    var delayTime = 0;
-    // var motorEncoderBaseValues = { "m1": 0.0, "m2": 0.0, "m3": 0.0, "m4": 0.0, "m5": 0.0, "m6": 0.0, "m7": 0.0, "m8": 0.0 };
-    // // TODO: THESE TWO VALUES (ENCBASE, REVERSE) NEED TO BE STORED IN LOCALSTORAGE
-    // var motorReverseValues = { "m1": 1.0, "m2": 1.0, "m3": 1.0, "m4": 1.0, "m5": 1.0, "m6": 1.0, "m7": 1.0, "m8": 1.0 };
-
-    resetSendableMotorProperties();
-    function resetSendableMotorProperties() {
-      var zeroValues = { "m1": 0.0, "m2": 0.0, "m3": 0.0, "m4": 0.0, "m5": 0.0, "m6": 0.0, "m7": 0.0, "m8": 0.0 };
-      var directions = { "m1": 'FORWARD', "m2": 'FORWARD', "m3": 'FORWARD', "m4": 'FORWARD', "m5": 'FORWARD', "m6": 'FORWARD', "m7": 'FORWARD', "m8": 'FORWARD' };
-      localStorage.setItem('motorDirections', JSON.stringify(directions));
-      var maxSpeeds = { "m1": 4320.0, "m2": 4320.0, "m3": 4320.0, "m4": 4320.0, "m5": 4320.0, "m6": 4320.0, "m7": 4320.0, "m8": 4320.0 }; //This may be changed (1440 * 3)
-      localStorage.setItem('motorMaxSpeeds', JSON.stringify(maxSpeeds));
-      var modes = {
-        "m1": 'RUN_WITHOUT_ENCODER', "m2": 'RUN_WITHOUT_ENCODER', "m3": 'RUN_WITHOUT_ENCODER', "m4": 'RUN_WITHOUT_ENCODER',
-        "m5": 'RUN_WITHOUT_ENCODER', "m6": 'RUN_WITHOUT_ENCODER', "m7": 'RUN_WITHOUT_ENCODER', "m8": 'RUN_WITHOUT_ENCODER'
-      };
-      localStorage.setItem('motorModes', JSON.stringify(modes));
-      localStorage.setItem('motorPowers', JSON.stringify(zeroValues));
-      localStorage.setItem('motorTargetPositions', JSON.stringify(zeroValues));
-      var targetPositonTolerances = { "m1": 10.0, "m2": 10.0, "m3": 10.0, "m4": 10.0, "m5": 10.0, "m6": 10.0, "m7": 10.0, "m8": 10.0 };
-      localStorage.setItem('motorTargetPositionTolerances', JSON.stringify(targetPositonTolerances));
-      localStorage.setItem('motorVelocitys', JSON.stringify(zeroValues));
-      var zeroPowerBehaviors = { "m1": 'BRAKE', "m2": 'BRAKE', "m3": 'BRAKE', "m4": 'BRAKE', "m5": 'BRAKE', "m6": 'BRAKE', "m7": 'BRAKE', "m8": 'BRAKE' };
-      localStorage.setItem('motorZeroPowerBehaviors', JSON.stringify(zeroPowerBehaviors));
-    }
-
-    localStorage.setItem('playMode', "Autonomous")
-
-    var shouldBeUpdatingLoadingText = true;
-    var counterForLoadingText = 1;
-    document.getElementById('controlPanel').style.height = screen.height / 2 - 30 + "px";
-    document.getElementById('fieldView').style.height = screen.height / 2 - 30 + "px";
-    document.getElementById('onBotJavaDiv').style.height = screen.height - 48 + "px";
-
-    setTimeout(function () {
-      shouldBeUpdatingLoadingText = false;
-      document.getElementById('fieldViewiframe').hidden = false;
-      document.getElementById('loadingText').remove();
-      document.getElementById('loadingTextDiv').remove();
-    }, 3000);
-
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
-    const updateLoadingText = async () => {
-      while (shouldBeUpdatingLoadingText) {
-        if (counterForLoadingText == 1) {
-          document.getElementById('loadingText').innerHTML = "Loading Field."
-        } else if (counterForLoadingText == 2) {
-          document.getElementById('loadingText').innerHTML = "Loading Field.."
-        } else if (counterForLoadingText == 3) {
-          document.getElementById('loadingText').innerHTML = "Loading Field..."
-          counterForLoadingText = 0;
-        }
-        counterForLoadingText++;
-        await delay(500);
-      }
-    }
-    updateLoadingText();
-
-    function switchToBlocks() {
-      document.getElementById('blocklyDiv').hidden = false;
-      document.getElementById('onBotJavaDiv').hidden = true;
-      isUsingBlocks = true;
-    }
-
-    function switchToOnBotJava() {
-      document.getElementById('blocklyDiv').hidden = true;
-      document.getElementById('onBotJavaDiv').hidden = false;
-      isUsingBlocks = false;
-      setUpOnBotJava();
-    }
-    var editor;
-    function setUpOnBotJava() {
-      editor = CodeMirror(function (elt) {
-        document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('loadingOBJText'));
-      }, {
-        value: "public class MyOpMode extends LinearOpMode {\n@Override\npublic void runOpMode() {\n// NOTE: ONBOTJAVA IS STILL UNDER CONSTRUCTION\nwhile (opModeIsActive()) {\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\nfrontLeft.setPower(1.0);\n}\n}\n}\n",
-        mode: "text/x-java",
-        lineNumbers: true,
-        theme: "darcula",
-        scrollbarStyle: null,
-        autocorrect: true,
-        autoCloseBrackets: true,
-      });
-      autoFormatSelection();
-    }
-
-    function getSelectedRange() {
-      return { from: editor.getCursor(true), to: editor.getCursor(false) };
-    }
-
-    function autoFormatSelection() {
-      var cursor = editor.getCursor();
-      CodeMirror.commands["selectAll"](editor);
-      var range = getSelectedRange();
-      editor.autoFormatRange(range.from, range.to);
-      editor.setCursor(cursor);
-    }
-
-    function prepareUiToLoadProgram() {
-      var keys = Object.keys(localStorage),
-        i = keys.length;
-
-      document.getElementById("programSelect").options.length = 1;
-
-      while (i--) {
-        console.log(keys[i]);
-        if (keys[i].includes("Program Name: ")) {
-          var option = document.createElement("option");
-          option.value = keys[i].replace("Program Name: ", "");
-          option.text = keys[i].replace("Program Name: ", "");
-          document.getElementById("programSelect").appendChild(option);
-        }
-      }
-    }
-
-    prepareUiToLoadProgram();
-
-    document.getElementById('filePrompt').addEventListener('change', function () {
-      var fileReader = new FileReader();
-      fileReader.onload = function () {
-        uploadProgram(document.getElementById('filePrompt').files[0].name, fileReader.result);
-      }
-      fileReader.readAsText(document.getElementById('filePrompt').files[0]);
-    });
-
-    function uploadProgram(programName, blocksContent) {
-      document.getElementById('filePrompt').value = '';
-      programName = programName.split('.')[0];
-      Blockly.mainWorkspace.clear();
-      var i = blocksContent.indexOf('</xml>');
-      blocksContent = blocksContent.substring(0, i + 6);
-      Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
-      resetInterpreter();
-      document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-      localStorage.setItem("Program Name: " + programName, blocksContent);
-      prepareUiToLoadProgram();
-      document.getElementById("programSelect").value = programName;
-      document.getElementById('save').disabled = false;
-      document.getElementById('delete').disabled = false;
-      document.getElementById('download').disabled = false;
-      overlay(false, 0);
-    }
-
-    function sampleProgram() {
-      newProgram(document.getElementById('sampleSelect').value);
-    }
-
-    function newProgram(sampleProgram) {
-      document.getElementById("programSelect").value = "Load Program";
-      document.getElementById('save').disabled = true;
-      document.getElementById('delete').disabled = true;
-      document.getElementById('download').disabled = true;
-      //Load Basic Program From Files
-      var client = new XMLHttpRequest();
-      client.open('GET', './blocks/samples/' + sampleProgram + '.blk');
-      client.onreadystatechange = function () {
-        var blocksContent = client.responseText;
-        if (blocksContent !== '') {
-          var i = blocksContent.indexOf('</xml>');
-          blocksContent = blocksContent.substring(0, i + 6);
-          Blockly.mainWorkspace.clear();
-          Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
-          resetInterpreter();
-          if (sampleProgram != 'BasicOpMode')
-            document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-          else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-') {
-            document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-          }
-        }
-      }
-      client.send();
-      overlay(false, 0);
-    }
-
-    function saveProgram() {
-      var programName = document.getElementById('saveProgramName').value;
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
-      prepareUiToLoadProgram();
-      document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
-      document.getElementById('save').disabled = false;
-      document.getElementById('delete').disabled = false;
-      document.getElementById('download').disabled = false;
-      overlay(false, 0);
-      document.getElementById("telemetryText").innerText = 'Saved new "' + programName + '" Program \n';
-    }
-
-    function loadProgram() {
-      Blockly.mainWorkspace.clear();
-      var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
-      if (nameOfProject == "Program Name: Load Program") {
-        newProgram('BasicOpMode');
-      } else if (typeof (Storage) !== "undefined") {
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
-        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-        resetInterpreter();
-        document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
-      }
-    }
-
-    function autoSave() {
-      var programName = document.getElementById('programSelect').value;
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
-      document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
-    }
-
-    function deleteProgram() {
-      var programName = document.getElementById('programSelect').value;
-      localStorage.removeItem("Program Name: " + programName);
-      newProgram('BasicOpMode');
-      prepareUiToLoadProgram();
-      resetInterpreter();
-      document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
-      overlay(false, 0);
-    }
-
-    function downloadProgram(button) {
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      console.log(button.parentElement);
-      button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(Blockly.Xml.domToText(xml)));
-      button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
-    }
-
-
-    //Custom Block JavaScript
-    function initApi(interpreter, globalObject) {
-      //LinearOpMode Blocks
-      var linearOpMode = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'linearOpMode', linearOpMode);
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'waitForStart', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'idle', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (millis) {
-        pauseTime = Math.max(100, Math.min(10000, millis));
-        return Math.max(100, Math.min(10000, millis));
-      };
-      interpreter.setProperty(linearOpMode, 'sleep', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'opModeIsActive', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'isStarted', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return false; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'isStopRequested', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(linearOpMode, 'getRuntime', interpreter.createNativeFunction(wrapper));
-
-      //Gamepad Blocks
-      var gamepad = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'gamepad', gamepad);
-
-      var wrapper = function (gamepadNum, buttonId, controllerType) {
-        if (navigator.getGamepads()[gamepadNum] != null && (controllerType == "Both" || navigator.getGamepads()[gamepadNum].id.startsWith(controllerType))) {
-          if (buttonId == -1) {
-            var atRest = true;
-            for (var i = 0; i < navigator.getGamepads()[gamepadNum].buttons.length; i++)
-              if (navigator.getGamepads()[gamepadNum].buttons[i].pressed)
-                atRest = false;
-            for (var i = 0; i < navigator.getGamepads()[gamepadNum].axes.length; i++)
-              if (Math.abs(navigator.getGamepads()[gamepadNum].axes[i]) > .2)
-                atRest = false;
-            return atRest;
-          }
-          return navigator.getGamepads()[gamepadNum].buttons[buttonId].pressed;
-        }
-        return false;
-      };
-      interpreter.setProperty(gamepad, 'boolValue', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (gamepadNum, buttonAxis) {
-        if (navigator.getGamepads()[gamepadNum] != null) {
-          if (buttonAxis < 4)
-            return navigator.getGamepads()[gamepadNum].axes[buttonAxis];
-          else
-            return navigator.getGamepads()[gamepadNum].buttons[buttonAxis].value;
-        }
-        return 0;
-      };
-      interpreter.setProperty(gamepad, 'numberValue', interpreter.createNativeFunction(wrapper));
-
-      //Motor Blocks
-      var motor = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'motor', motor);
-
-      var wrapper = function (motorNums, property, values) {
-        var motorProperties = JSON.parse(localStorage.getItem('motor' + property + 's'));
-        for (var i = 0; i < motorNums.g.length; i++) {
-          //Translates Power to Velocity
-          if (property == 'Power') {
-            values.g[i] = Math.min(1, Math.max(values.g[i], -1));
-            var motorVel = JSON.parse(localStorage.getItem('motorVelocitys'));
-            motorVel[Object.keys(motorProperties)[motorNums.g[i]]] = values.g[i] * JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums.g[i]]];
-            localStorage.setItem('motorVelocitys', JSON.stringify(motorVel));
-          }
-          //Translates Velocity to Power
-          if (property == 'Velocity') {
-            var motorPow = JSON.parse(localStorage.getItem('motorPowers'));
-            motorPow[Object.keys(motorProperties)[motorNums.g[i]]] = Math.min(1, Math.max(values.g[i] / JSON.parse(localStorage.getItem('motorMaxSpeeds'))[Object.keys(motorProperties)[motorNums.g[i]]], -1));
-            localStorage.setItem('motorPowers', JSON.stringify(motorPow));
-            motorProperties[Object.keys(motorProperties)[motorNums.g[i]]] = Math.min(5760, Math.max(values.g[i], -5760)); //This value may change (1440 * 4)
-          }
-          else
-            motorProperties[Object.keys(motorProperties)[motorNums.g[i]]] = values.g[i];
-        }
-        return localStorage.setItem('motor' + property + 's', JSON.stringify(motorProperties));
-      };
-      interpreter.setProperty(motor, 'setProperty', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (motorNum, property) {
-        var returnVar;
-        if (property == 'PowerFloat') {
-          var motorPowers = JSON.parse(localStorage.getItem('motorPowers'));
-          var motorPower = motorPowers[Object.keys(motorPowers)[motorNum]];
-          returnVar = (Math.round(motorPower) != motorPower);
-        }
-        else if (property == 'Velocity') {
-          var motorProperties = JSON.parse(localStorage.getItem('motorReturnVelocitys'));
-          returnVar = motorProperties[Object.keys(motorProperties)[motorNum]];
-        }
-        else {
-          var motorProperties = JSON.parse(localStorage.getItem('motor' + property + 's'));
-          returnVar = motorProperties[Object.keys(motorProperties)[motorNum]];
-        }
-        return returnVar;
-      };
-      interpreter.setProperty(motor, 'getProperty', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (motorNum) {
-        var motorProp = JSON.parse(localStorage.getItem('motorCurrentPositions'));
-        var motorPosition = motorProp[Object.keys(motorProp)[motorNum]];
-        motorProp = JSON.parse(localStorage.getItem('motorTargetPositions'));
-        var motorTarget = motorProp[Object.keys(motorProp)[motorNum]];
-        motorProp = JSON.parse(localStorage.getItem('motorTargetPositionTolerances'));
-        var motorTolerance = motorProp[Object.keys(motorProp)[motorNum]];
-        return (Math.abs(motorPosition - motorTarget) > motorTolerance);
-      };
-      interpreter.setProperty(motor, 'isBusy', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setMotorEnable', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setMotorDisable', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return true; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'isMotorEnabled', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setVelocity_withAngleUnit', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getVelocity_withAngleUnit', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setVelocityPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setPositionPIDFCoefficients', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getCurrent', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return 0; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'getCurrentAlert', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'setCurrentAlert', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return false; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(motor, 'isOverCurrent', interpreter.createNativeFunction(wrapper));
-
-      //Telemetry Blocks
-      var telemetry = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'telemetry', telemetry);
-
-      var wrapper = function (key, data) {
-        return (telemetryData += key + ": " + data + "\n");
-      };
-      interpreter.setProperty(telemetry, 'addData', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        document.getElementById("telemetryText").innerText = telemetryData;
-        telemetryData = "";
-        return;
-      };
-      interpreter.setProperty(telemetry, 'update', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(telemetry, 'speak', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function () {
-        return; //NON FUNCTIONAL
-      };
-      interpreter.setProperty(telemetry, 'setDisplayFormat', interpreter.createNativeFunction(wrapper));
-
-      //Miscellaneous Blocks
-      var misc = interpreter.nativeToPseudo({});
-      interpreter.setProperty(globalObject, 'misc', misc);
-
-      var wrapper = function () {
-        return null;
-      };
-      interpreter.setProperty(misc, 'getNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (value) {
-        return null == value;
-      };
-      interpreter.setProperty(misc, 'isNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (value) {
-        return null !== value;
-      };
-      interpreter.setProperty(misc, 'isNotNull', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (number, precision) {
-        var string = "" + Math.round((number + Number.EPSILON) * (10 ** precision)) / (10 ** precision);
-        if (precision > 0) {
-          if (!string.includes('.'))
-            string += '.';
-          string += (10 ** (precision - string.split('.')[1].length)).toString().substring(1);
-        }
-        return string;
-      };
-      interpreter.setProperty(misc, 'formatNumber', interpreter.createNativeFunction(wrapper));
-
-      var wrapper = function (number, precision) {
-        return Math.round((number + Number.EPSILON) * (10 ** precision)) / (10 ** precision);
-      };
-      interpreter.setProperty(misc, 'roundDecimal', interpreter.createNativeFunction(wrapper));
-    }
-
-    var telemetryData = "";
-
-    var myInterpreter = null;
-    var runner;
-    var pauseTime = 0;
-
-    function resetInterpreter() {
-      telemetryData = "";
-      resetSendableMotorProperties();
-      myInterpreter = null;
-      pauseTime = 0;
-      if (runner) {
-        clearTimeout(runner);
-        runner = null;
-      }
-    }
-
-    function startProgram() {
-      resetInterpreter();
-      setTimeout(delayStartProgram, 100);
-    }
-
-    function delayStartProgram() {
-      var code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-      var finalCode = "runOpMode();\n";
-
-      var inFunction = false;
-      for (var line of code.split('\n')) {
-        if (line.startsWith('function '))
-          inFunction = true;
-        if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
-          finalCode += line + '\n';
-        else
-          finalCode += '//' + line + '\n';
-        if (line == '}')
-          inFunction = false;
-      }
-
-      console.log(finalCode);
-      localStorage.setItem('startMatch', true);
-      document.getElementById("telemetryText").innerText = "Program Started \n";
-      myInterpreter = new Interpreter(finalCode, initApi);
-      nextStep();
-      return;
-    }
-
-    function nextStep() {
-      if (myInterpreter.step()) {
-        setTimeout(nextStep, pauseTime);
-        if (pauseTime != 0) {
-          pauseTime = 0;
-        }
-      } else {
-        resetInterpreter();
-        document.getElementById("telemetryText").innerText = "Program Ended \n";
-      }
-    }
-
-    function stopProgram() {
-      localStorage.setItem('stopMatch', true);
-      resetInterpreter();
-      document.getElementById("telemetryText").innerText = "Program Aborted \n";
-    }
-
-    function resetField() {
-      localStorage.setItem('resetField', true);
-      document.getElementById("telemetryText").innerText = "Field Reset \n";
-    }
-
+    //---Sets up Blockly Interface---
     Blockly.JavaScript.addReservedWords('exit');
 
     var workspace = Blockly.inject('blocklyDiv',
@@ -5650,8 +5942,6 @@
         }
 
       });
-
-    newProgram('BasicOpMode');
   </script>
 </body>
 

@@ -7,8 +7,8 @@
     <style>
         body {
             background-color: #242424;
-            margin-bottom: 0px;
-            overflow: hidden;
+            margin-bottom: 10px;
+            overflow-x: hidden;
         }
 
         h1 {
@@ -40,6 +40,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .center-horizontal a button {
+            overflow: hidden;
+        }
+
+        @media screen and (max-width: 1175px) {
+            .center-horizontal .desc {
+                font-size: 30px;
+            }
+        }
+
+        @media screen and (max-width: 750px) {
+            .center-horizontal .desc {
+                font-size: 25px;
+            }
         }
 
         @font-face {
@@ -219,13 +235,8 @@
 
 <body>
 
-    <div style="display: flex;">
-        <span onclick="quitApp(); return false" class="xButton"></span>
-    </div>
-
-
     <div class="center-horizontal">
-        <h1 style="margin-bottom: 7.5px;">Welcome to the Virtual Robot Simulator Platform</h1>
+        <h1 style="margin-bottom: 7.5px; text-align: center;">Welcome to the Virtual Robot Simulator Platform</h1>
     </div>
 
     <div class="center-horizontal" style=" padding-bottom: 2.5px">
@@ -260,17 +271,19 @@
     </div>
 
     <div class="center-horizontal">
-        <a href="settings.html"><button class="button1">Settings</button></a>
+        <a href="robotConfig.html"><button class="button1">Robot Configuration</button></a>
     </div>
 
     <div class="center-horizontal">
-        <h2>Version 0.7 | 8/24/2021</h2>
+        <h2>Version 1.0.1 | 2/4/2022</h2>
     </div>
 
     <div class="center-horizontal">
-        <button class="button2" onClick="overlay('https://www.youtube.com/embed/bKFBm2jqFpI', true)">How To Use</button>
-        <button class="button2" onClick="overlay('virtualftc_website/about-us.html', true)">Meet the Team</button>
-        <button class="button2" onClick="overlay('virtualftc_website/contact-us.html', true)">Contact Us</button>
+        <button class="button2"
+            onClick="overlay('https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz', true)">How
+            To Use</button>
+        <button class="button2" onClick="overlay('http://vrobotsim.org/about-us/', true)">Meet the Team</button>
+        <button class="button2" onClick="overlay('http://vrobotsim.org/contact-us/', true)">Contact Us</button>
         <button class="button2"
             onClick="overlay('https://virtualftc.jasonbennett.work/courses/basic-movement-with-blocks/', true)">Lessons</button>
     </div>
@@ -292,19 +305,22 @@
     </div>
 
     <script>
-        document.getElementById('fieldView').style.height = screen.height - 42 + "px";
+        document.getElementById('fieldView').style.height = window.innerHeight - 42 + "px";
 
+        window.addEventListener('resize', function () {
+            document.getElementById('fieldView').style.height = window.innerHeight - 42 + "px";
+        });
         function overlay(link, open) {
             document.getElementById('overlay').lastElementChild.firstElementChild.firstElementChild.firstElementChild.src = link;
-            if (open)
+            if (open) {
                 document.getElementById('overlay').style.visibility = "visible";
-            else
+                document.body.style.overflowY = "hidden";
+                window.scrollTo(0, 0);
+            }
+            else {
                 document.getElementById('overlay').style.visibility = "hidden";
-
-            if (link == 'virtualftc_website/contact-us.html')
-                document.getElementById('overlay').lastElementChild.firstElementChild.firstElementChild.firstElementChild.scrolling = "no";
-            else
-                document.getElementById('overlay').lastElementChild.firstElementChild.firstElementChild.firstElementChild.scrolling = "";
+                document.body.style.overflowY = "inherit";
+            }
         }
     </script>
 
@@ -315,11 +331,8 @@
         document.getElementById('multiplayerButton').style.backgroundImage = "url('./multiplayer.png')";
         document.getElementById('multiplayerButton').style.backgroundRepeat = "no-repeat";
 
-        document.getElementById('localButton').style.width = screen.width / 2 - 44 + "px";
-        document.getElementById('multiplayerButton').style.width = screen.width / 2 - 44 + "px";
-
-        document.getElementById('localButton').style.height = 1.55 * (screen.height / 3 - 44) + "px";
-        document.getElementById('multiplayerButton').style.height = 1.55 * (screen.height / 3 - 44) + "px";
+        document.getElementById('localButton').style.height = 1.65 * (screen.height / 3 - 44) + "px";
+        document.getElementById('multiplayerButton').style.height = 1.65 * (screen.height / 3 - 44) + "px";
 
         function quitApp() {
             window.close();

@@ -13,10 +13,27 @@
     border-radius: 6px;
   }
 
-  /* Changes color of the icon to white. */
-.customIcon {
-    color: white;
+  /* Added Styles */
+  .fa {
+	width: 18.5px;
+	text-align: center;
   }
+
+  .fa-caret-right {
+	width: 0px;
+	left: -10px;
+	top: .75px;
+	position: relative;
+  }
+	
+  .fa-code {
+	color: lightgrey;
+	width: 0px;
+	left: -15px;
+	top: .75px;
+	position: relative;
+  }
+
   /* Stacks the icon on top of the label. */
   .blocklyTreeRowContentContainer {
     display: flex;
