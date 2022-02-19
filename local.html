@@ -1116,6 +1116,7 @@
 
     function startProgram() {
       document.getElementById('startBttn').disabled = true;
+      document.getElementById("telemetryText").innerText = "Program Started \n";
       programStart = true;
     }
 
@@ -1140,7 +1141,7 @@
 
       //setup
       localStorage.setItem('startMatch', true);
-      document.getElementById("telemetryText").innerText = "Program Started \n";
+      document.getElementById("telemetryText").innerText = "Program Initialized \n";
 
       programExecController = new AbortController();
       // execution
