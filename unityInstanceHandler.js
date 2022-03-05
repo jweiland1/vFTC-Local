@@ -4,7 +4,7 @@ function check() {
     if (UnityInstance != null) {
         var playMode = localStorage.getItem('playMode');
         if (playMode == "Autonomous" && !alreadySetPlayMode) {
-            UnityInstance.SendMessage("Main Menu", "changeSinglePlayer");
+           UnityInstance.SendMessage("Main Menu", "changeSinglePlayer");
             alreadySetPlayMode = true;
         } else if (playMode == "TeleOp" && !alreadySetPlayMode) {
             // alert("VRS Multiplayer is optimized with fullscreen mode. Please click on the blue button below the game window.");
@@ -31,7 +31,7 @@ function writeMotorPowers() {
         UnityInstance.SendMessage("FieldManager", "resetField");
         localStorage.setItem('resetField', false);
     }
-	
+
 	if (localStorage.getItem('motorResetEncoders') == 'true') {
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "resetEncoders");
         localStorage.setItem('motorResetEncoders', false);
@@ -54,8 +54,8 @@ function writeMotorPowers() {
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor6", (motor6 != null) ? motor6 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor7", (motor7 != null) ? motor7 : 0);
     UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor8", (motor8 != null) ? motor8 : 0);
-	
+
 	//Implement Servos once Unity is ready
-	
+
     check();
 }
