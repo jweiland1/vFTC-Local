@@ -10,10 +10,13 @@
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml"> -->
   <title>Virtual Robot Simulator: Autonomous</title>
+  <link rel="icon" type="image/x-icon" href="./logo.ico">
   <style>
     body {
-      background-color: #242424;
+      background: linear-gradient(248.98deg, #b24505 2.75%, #8d1d17 114.64%);
       overflow: hidden;
+	  margin: 7.5px;
+	  margin-top: 5px;
     }
 
     h1 {
@@ -88,6 +91,26 @@
       margin-top: 5px !important;
     }
 
+	.blocklyToolboxCategory {
+	  cursor: pointer;
+	}
+
+	.blocklyToolboxCategory[disabled="true"] {
+	  position: relative;
+	  top: -7.5px;
+	  height: 27.5px;
+	  cursor: default;
+	}
+
+	#Title {
+	  background: transparent;
+	}
+
+	.noResultsText>.blocklyFlyoutLabelText {
+	  font-style: italic !important;
+	  fill: limegreen !important;
+	}
+
     input:focus,
     textarea:focus,
     div:focus,
@@ -97,6 +120,7 @@
 
 
     .button1 {
+	  height: 25px;
       background-color: white;
       border-radius: 6px;
       color: #242424;
@@ -119,6 +143,7 @@
     .button1:hover {
       background-color: white;
       color: #242424;
+	  border-color: white;
     }
 
     .button1:focus {
@@ -133,26 +158,35 @@
       cursor: inherit;
     }
 
-    .chevron::before {
-      border-style: solid;
-      border-width: 0.25em 0.25em 0 0;
-      content: '';
-      display: inline-block;
-      height: 0.45em;
-      left: 0.15em;
-      position: relative;
-      top: 0.15em;
-      transform: rotate(-45deg);
-      vertical-align: top;
-      width: 0.45em;
-      color: white;
-      cursor: pointer;
-    }
+	.button1Selected {
+      color: black;
+      background-color: darkgray;
+      border-color: darkgray;
+	}
 
-    .chevron.left:before {
-      left: 0.25em;
-      transform: rotate(-135deg);
-    }
+	#backButton {
+		width: 20px;
+		height: 20px;
+		margin-bottom: 10px;
+		padding: 2.5px;
+		padding-left: 1.5px;
+		padding-right: 3.5px;
+		font-size: 20px;
+		color: white;
+		border-radius: 100px;
+		cursor: pointer;
+		transition-duration: 0.4s;
+	}
+	
+	#backButton:hover {
+		background-color: white;
+		color: black;
+	}
+	
+	#backButton:focus {
+		background-color: white;
+		color: black;
+	}
 
     input[type=text] {
       width: 225px;
@@ -165,6 +199,17 @@
       background-color: #242424;
       color: white;
     }
+	
+	.searchInput[type=text] {
+	  width: 145px;
+	  font-size: 18.5px;
+	  padding-left: 5px;
+	  text-align: left;
+	}
+	
+	.searchInput::placeholder {
+	  color: white;
+	}
 
     .dropdown-select {
       font-family: Jura;
@@ -209,10 +254,19 @@
     }
 
     ::-webkit-scrollbar {
-      width: 0px;
+      width: 7.5px;
       background: transparent;
       /* make scrollbar transparent */
     }
+	
+	::-webkit-scrollbar-corner {
+	  background: transparent;
+	}
+	
+	::-webkit-scrollbar-thumb {
+	  background: grey;
+	  border-radius: 100px;
+	}
 
     .divider {
       width: 7.5px;
@@ -315,6 +369,31 @@
         margin-bottom: 250px;
       }
     }
+	
+	#LoadingScreen {
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		height: 100vh;
+		width: 100vw;
+		background: linear-gradient(248.98deg, #b24505 2.75%, #8d1d17 114.64%);;
+		z-index: 100;
+		
+		visibility: hidden;
+		animation: Intro_Loading 1s ease forwards;
+	}
+	
+	@keyframes Intro_Loading {
+		from {
+			visibility: visible;
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+			visibility: hidden;
+		}
+	}
+	
   </style>
 </head>
 
@@ -345,14 +424,15 @@
 
   <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
 
+  <div id="LoadingScreen"></div>
   <div style="display: flex; width: 100%; justify-content: space-between;">
-    <a href="homepage.html" id="backButton"><span class="chevron left"></span></a>
+    <a onclick="goBack()" id="backButton"><i class="fa fa-chevron-left"></i></a>
     <div style="min-width: 12.5px; display: inline-block;"></div>
-    <div id="topMenu" style="white-space: nowrap; overflow: hidden;">
+    <div id="topMenu" style="white-space: nowrap; overflow: hidden; margin-top: 5px;">
       <div style="width: 12.5px; display: inline-block;"></div>
-      <button class="button1" onclick="switchToBlocks()">Blocks</button>
+      <button id='blocksBttn' class="button1 button1Selected" onclick="switchToBlocks()">Blocks</button>
       <div style="width: 10px; display: inline-block;"></div>
-      <button class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
+      <button id='javaBttn' class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
 
       <div class="divider"></div>
 
@@ -388,11 +468,11 @@
       <div style="width: 12.5px; display: inline-block;"></div>
     </div>
     <div style="min-width: 12.5px; display: inline-block;"></div>
-    <button class="button1" onClick="playVideo(0)" style="min-width: 100px;">How to Use</button>
+    <button class="button1" onClick="playVideo(0)" style="min-width: 100px; height: 25px; margin-top: 2.5px;">How to Use</button>
   </div>
 
 
-  <div class="container" style="display: flex; height: 100%; padding-top: 5px;">
+  <div class="container" style="display: flex; height: 100%;">
     <div id="leftScreen" style="display: flex; min-windth: 10px; width: 50%;">
       <div id="blocklyDiv" style="width: 100%; border:1px solid white;"></div>
       <div id="onBotJavaDiv" style="width: 100%;border:1px solid white;">
@@ -409,9 +489,9 @@
           <div style="width: 20px; display: inline-block;"></div>
           <div id="firstTab" style="display: inline-block;" onclick="switchTab(this, 0)">Telemetry</div>
           <div class="divider"></div>
-          <div style="display: inline-block;" onclick="switchTab(this, 1)" class="textNormal">Lessons</div>
+          <div style="display: inline-block;" onclick="switchTab(this, 1)" class="textNormal">Field</div>
           <div class="divider"></div>
-          <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">LMS</div>
+          <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">Lessons</div>
           <div class="divider"></div>
           <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video
           </div>
@@ -424,12 +504,55 @@
               <h2 id="telemetryText" style="font-size: 20px; padding-right: 17.5px;">-Telemetry Output-</h2>
             </div>
           </div>
+          <div style="height: 100%; overflow: scroll;">
+            <div style="width:100%; overflow:hidden; overflow-wrap: break-word; background-color: #323232; display: flex; justify-content: space-between;">
+              <h2 style="font-size: 20px; padding-right: 17.5px;">
+				<u>Ultimate Goal Autonomous Actions:</u><br>
+				Park Robot on White Line in the middle<br><br>
+				Rings Scored in Tower Goal<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;Low<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;Mid<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;High<br><br>
+				Ring knocks over a center Powershot<br><br>
+				Wobble Goal Delivered to Correct Square<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;0 Rings in front of Robot<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;1 Ring in front of Robot<br>
+				&nbsp;&nbsp;&nbsp;&nbsp;4 Rings in front of Robot<br>
+			  </h2>
+			  <h2 style="font-size: 20px; padding-right: 17.5px;">
+				<br>
+				-<br><br>
+				<br>
+				-<br>
+				-<br>
+				-<br><br>
+				-<br><br>
+				-<br>
+				<i class="fa fa-angle-double-right" style="position: relative; left: -3.5px;"></i><br>
+				<i class="fa fa-angle-double-right" style="position: relative; left: -3.5px;"></i><br>
+				<i class="fa fa-angle-double-right" style="position: relative; left: -3.5px;"></i>
+			  </h2>
+			  <h2 style="font-size: 20px; padding-right: 17.5px; text-align: right;">
+				<u>Points:</u><br>
+				5<br><br>
+				<br>
+				3<br>
+				6<br>
+				12<br><br>
+				15 per Powershot<br><br>
+				15<br>
+				Closest Square<br>
+				Middle Square<br>
+				Furtherest Square<br>
+			  </h2>
+            </div>
+          </div>
           <div style="display: none; height: 100%;">
             <div style="display: flex; justify-content: center; overflow: hidden; height: 11%">
               <div class="dropdown dropdown-dark"
                 style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
                 <select id="lessonSelect" class="dropdown-select" onChange="loadLesson()" style="font-size:20px;">
-                  <option value=-1>Coding Lessons</option>
+                  <option value=-1>-Coding Lessons-</option>
                   <option value=0>Drive to White Line - 2 Motors</option> <!-- Timing			-->
                   <option value=1>Drive to White Line - 4 Motors</option> <!-- Timing x2		-->
                   <option value=2>Drive and Rotate 90 Degress</option> <!-- Precise Timing	-->
@@ -444,7 +567,7 @@
               </div>
             </div>
             <div style="width:100%; overflow:hidden; background-color: #323232;">
-              <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">[Select a Lesson]</h2>
+              <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">Select a Lesson to begin Learning!</h2>
             </div>
             <div id="lessonButtons"
               style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
@@ -458,9 +581,7 @@
                 style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
-          <iframe src="https://virtualftc.jasonbennett.work/courses/basic-movement-with-blocks/'" width="100%"
-            height="100%" frameBorder="0" style="display: none;"></iframe>
-          <iframe src="https://www.youtube.com/embed/bKFBm2jqFpI" width="100%" height="100%" frameBorder="0"
+          <iframe src='https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz' width="100%" height="100%" frameBorder="0"
             style="display: none;"></iframe>
         </div>
       </div>
@@ -484,41 +605,41 @@
   <div id="overlay">
     <div id="overlayInfo">
       <div style="display: flex; padding-top: 2.5px;">
-        <a id="backButton" style="padding: 7.5px;" onClick="overlay(false, 0)"><span class="chevron left"></span></a>
+        <a id="backButton" style="margin: 7.5px;" onClick="overlay(false, 0)"><i class="fa fa-chevron-left"></i></a>
         <h1 id="overlayName"
-          style="text-align: center; width: 347.6px; position: relative; top: 2.5px; margin-bottom: 10px;">Save Program
+          style="text-align: center; width: 320px; position: relative; top: 2.5px; margin-bottom: 10px;">Save Program
         </h1>
       </div>
       <div style="width:100%; height: 1px; background-color: #4B4B4B;"></div>
       <div id="overlayType">
         <div style="display: none;">
-          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 32.5px;">
+          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 38.5px;">
             <input type="text" id="saveProgramName" style="font-size: 20px;" placeholder="Enter Name..."
               autocomplete="off">
           </form>
           <button class="button1" onclick="saveProgram()"
-            style="font-size: 20px; margin-top: 35px; margin-left: 325px;">Save</button>
+            style="font-size: 18.5px; margin-top: 38.5px; margin-left: 315px; height: 30px; width: 75px;">Save</button>
         </div style="display: none;">
         <div>
-          <img src="./trashProgram.png" style="width: 33%; padding-left: 33%; padding-top: 15px;" />
+          <img src="./assets/trashProgram.png" style="width: 33%; padding-left: 33%; padding-top: 17.5px;" />
           <button class="button1" onclick="deleteProgram()"
-            style="font-size: 20px; margin-top: 10px; margin-left: 315px;">Delete</button>
+            style="font-size: 18.5px; margin-top: 17.5px; margin-left: 310px; height: 30px; width: 80px;">Delete</button>
         </div>
         <div style="display: none;">
-          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 32.5px;">
-            <input type="text" id="newVariableName" style="font-size: 20px;" placeholder="Enter Name..."
+          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 38.5px;">
+            <input type="text" id="newVariableName" style="font-size: 20px;" placeholder="Variable Name..."
               autocomplete="off">
           </form>
           <button class="button1" onclick="overlay(false, 1)"
-            style="font-size: 20px; margin-top: 35px; margin-left: 307.5px;">Create</button>
-        </div style="display: none;">
+            style="font-size: 18.5px; margin-top: 38.5px; margin-left: 310px; height: 30px; width: 80px;">Create</button>
+        </div>
         <div>
-          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 32.5px;">
-            <input type="text" id="changedVariableName" style="font-size: 20px;" placeholder="Enter Name..."
+          <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 38.5px;">
+            <input type="text" id="changedVariableName" style="font-size: 20px;" placeholder="Variable Name..."
               autocomplete="off">
           </form>
           <button class="button1" onclick="overlay(false, 2)"
-            style="font-size: 20px; margin-top: 35px; margin-left: 295px;">Rename</button>
+            style="font-size: 18.5px; margin-top: 38.5px; margin-left: 300px; height: 30px; width: 90px;">Rename</button>
         </div>
         <div style="display: none;">
           <div style="display: flex; justify-content: center; margin-top: 10px;">
@@ -537,9 +658,9 @@
                     <option value='BasicPOVDrive'>POVDrive</option>
                     <option value='BasicTankDrive'>TankDrive</option>
                   </optgroup>
-                  <optgroup label="Sensor">
+                  <!--<optgroup label="Sensor">
                     <option value='SensorIMU'>IMU</option>
-                  </optgroup>
+                  </optgroup>-->
                 </select>
               </div>
               <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
@@ -593,6 +714,21 @@
   </div>
 
   <script>
+	//Loading Screen Instructions
+	document.body.style.background = "#242424";
+	
+	setTimeout(() => {document.getElementById('LoadingScreen').style.animation = "none"}, 1000);
+	
+	function goBack () {
+		document.getElementById('LoadingScreen').style.animation = "Intro_Loading .5s ease reverse both";
+		
+		setTimeout(() => {
+			var bttnLink = document.createElement('a');
+			bttnLink.href = "homepage.html";
+			bttnLink.click();
+		}, 500);
+	}
+	
     //---TempVariable will be replaced by vars.js---
     var currentProjectName = "";
 
@@ -705,8 +841,8 @@
       }
     });
 
-    document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += event.deltaY * .5; });
-    document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += event.deltaY * .5; });
+    document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += (event.deltaY + event.deltaX) * .5; event.preventDefault(); });
+    document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += (event.deltaY + event.deltaX)* .5; event.preventDefault(); });
 
     //---Prompts---
     var overlayReturned = null;
@@ -725,7 +861,7 @@
             resolve(overlayReturned);
             clearInterval(returnChecker);
           }
-        }, 1000);
+        }, 250);
       });
     }
 
@@ -823,6 +959,9 @@
     var isUsingBlocks = true;
 
     function switchToBlocks() {
+	  document.getElementById('blocksBttn').classList.add('button1Selected');
+      document.getElementById('javaBttn').classList.remove('button1Selected');
+	
       document.getElementById('blocklyDiv').hidden = false;
       document.getElementById('onBotJavaDiv').hidden = true;
       document.getElementById('saveAs').disabled = false;
@@ -839,6 +978,9 @@
     }
 
     function switchToOnBotJava() {
+	  document.getElementById('javaBttn').classList.add('button1Selected');
+      document.getElementById('blocksBttn').classList.remove('button1Selected');
+	
       resetProgramExecution();
       document.getElementById('blocklyDiv').hidden = true;
       document.getElementById('onBotJavaDiv').hidden = false;
@@ -1116,6 +1258,7 @@
 
     function startProgram() {
       document.getElementById('startBttn').disabled = true;
+	  document.getElementById("telemetryText").innerText = "Program Started \n";
       programStart = true;
     }
 
@@ -1140,7 +1283,7 @@
 
       //setup
       localStorage.setItem('startMatch', true);
-      document.getElementById("telemetryText").innerText = "Program Started \n";
+      document.getElementById("telemetryText").innerText = "Program Initialized \n";
 
       programExecController = new AbortController();
       // execution
@@ -1244,7 +1387,7 @@
           break;
         default:
           document.getElementById('lessonButtons').style.display = "none";
-          document.getElementById('lessonText').innerText = "[Select Lesson]";
+          document.getElementById('lessonText').innerText = "Select a Lesson to begin Learning!";
           document.getElementById('lessonText').parentElement.style.height = '';
           break;
       }
@@ -1273,6 +1416,7 @@
         var lessonCode = client.responseText;
         if (lessonCode !== '')
           initProgram(lessonCode);
+		  startProgram();
       }
       client.send();
     }
@@ -1358,6 +1502,9 @@
   <script src="./blocks/blocks/velocity.js"></script>
   <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
+    <category css-icon="" name="Coding Blocks" toolboxitemid="Title"></category>
+    <category css-icon="searchIcon fa fa-search" custom="SearchResults" toolboxitemid="Searcher"></category>
+	<sep></sep>
     <category css-icon="customIcon fa fa-long-arrow-right" name="LinearOpMode" colour="#987654">
       <block type="linearOpMode_waitForStart"></block>
       <block type="linearOpMode_idle"></block>
@@ -5942,6 +6089,81 @@
         }
 
       });
+	  
+	  Blockly.getMainWorkspace().getToolbox().getToolboxItemById('Title').setDisabled('true');
+	  
+	  searchInput = document.createElement('input');
+	  searchInput.type = "text";
+	  searchInput.placeholder = "Search";
+	  searchInput.classList.add("searchInput");
+	  searchInput.addEventListener("input", searchFor);
+	  searchInput.addEventListener("focus", searchFor);
+	  
+	  document.getElementById('Searcher.label').parentElement.appendChild(searchInput);
+	  document.getElementById('Searcher.label').parentElement.style.pointerEvents = "all";
+	  
+	  var blockList = [];
+	  
+	  function searchFor () {
+		searchItem = searchInput.value;
+		
+		blockList = [];
+		
+		if (searchItem !== "")
+			searchCategory(document.getElementById('toolbox').childNodes, searchItem);
+		if (Blockly.getMainWorkspace().getToolbox().getSelectedItem())
+			Blockly.getMainWorkspace().getToolbox().deselectItem_(Blockly.getMainWorkspace().getToolbox().getSelectedItem());
+		Blockly.getMainWorkspace().getToolbox().setSelectedItem(Blockly.getMainWorkspace().getToolbox().getToolboxItemById('Searcher'));
+	  }
+	  
+	  function searchCategory (childNodes, searchItem) {
+	  	parser = new XMLSerializer();
+	    for (var i = 0; i < childNodes.length; i++) {
+		  if (childNodes[i].nodeName == "CATEGORY") {
+			if (childNodes[i].attributes.hidden)
+			  continue;
+			if (!childNodes[i].attributes.toolboxitemid) {
+			  searchCategory(childNodes[i].childNodes, searchItem);
+			  continue;
+			}
+			categoryId = childNodes[i].attributes.toolboxitemid.value;
+			if (categoryId == "DcMotor" && robotConfig["motors"].length == 0)
+			  continue;
+			if ((categoryId == "CRServo" || categoryId == "Servo") && robotConfig["servos"].length == 0)
+			  continue;
+			if (categoryId == "DistanceSensor" && robotConfig["distSensor"].length == 0)
+			  continue;
+			if ((categoryId == "IMUSensor" || categoryId == "IMUParamSensor") && robotConfig["IMU"].length == 0)
+			  continue;
+		  	searchCategory(childNodes[i].childNodes, searchItem);
+		  }
+		  else if (childNodes[i].attributes && childNodes[i].attributes.type) {
+		    if (childNodes[i].attributes.type.value.toLowerCase().search(searchItem.toLowerCase()) > -1) {
+			  if (blockList.length < 25)
+				blockList.push({
+				  'kind': 'block',
+				  'blockxml': parser.serializeToString(childNodes[i])
+				  });
+			}
+		  }
+	    }
+	  }
+	  
+	  // Returns an array of objects.
+	  var searchFlyout = function(workspace) {
+		if (blockList.length == 0) {
+		  blockList.push({
+			'kind': 'label',
+			'text': 'No Results Found',
+			'web-class': 'noResultsText'
+		  });
+		}
+		return blockList;
+	  };
+	
+	  // Associates the function with the string 'COLOUR_PALLET'
+	  Blockly.getMainWorkspace().registerToolboxCategoryCallback(
+		'SearchResults', searchFlyout);
   </script>
 </body>
 
