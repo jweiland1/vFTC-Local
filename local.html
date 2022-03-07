@@ -303,7 +303,7 @@
       z-index: 100;
     }
 
-    #overlay {
+    .overlay {
       visibility: hidden;
       position: absolute;
       top: 0px;
@@ -370,28 +370,61 @@
       }
     }
 	
+	#howToPopUp {
+	  width: 325px;
+	  height: 405px;
+	  border-radius: 20px;
+	  background-color: #242424;
+	  border: 3.5px solid #ff9800;
+	  overflow: hidden;
+	  
+	  display: flex;
+      flex-direction: column;
+      align-items: center;
+	}
+	
+	@keyframes popUpWindow {
+	  from {
+		width: 0px;
+		transform: scale(.5);
+	  }
+	  to {
+		width: 325px;
+		transform: scale(1);
+	  }
+	}
+	
+	@keyframes popUpClose {
+	  from {
+		width: 325px;
+	  }
+	  to {
+		width: 0px;
+	  }
+	}
+	
 	#LoadingScreen {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		height: 100vh;
-		width: 100vw;
-		background: linear-gradient(248.98deg, #b24505 2.75%, #8d1d17 114.64%);;
-		z-index: 100;
-		
-		visibility: hidden;
-		animation: Intro_Loading 1s ease forwards;
+	  position: absolute;
+	  top: 0px;
+	  left: 0px;
+	  height: 100vh;
+	  width: 100vw;
+	  background: linear-gradient(248.98deg, #b24505 2.75%, #8d1d17 114.64%);;
+	  z-index: 100;
+	  
+	  visibility: hidden;
+	  animation: Intro_Loading 1s ease forwards;
 	}
 	
 	@keyframes Intro_Loading {
-		from {
-			visibility: visible;
-			opacity: 1;
-		}
-		to {
-			opacity: 0;
-			visibility: hidden;
-		}
+	  from {
+	  	visibility: visible;
+	  	opacity: 1;
+	  }
+	  to {
+	  	opacity: 0;
+	  	visibility: hidden;
+	  }
 	}
 	
   </style>
@@ -454,21 +487,23 @@
 
       <div class="divider"></div>
 
-      <button class="button1" onclick="resetField()">Reset Field</button>
-      <div style="width: 10px; display: inline-block;"></div>
       <div id="programStartStop" style="display: none;">
         <button id="startBttn" class="button1" onclick="startProgram()">Start Program</button>
         <div style="width: 10px; display: inline-block;"></div>
         <button class="button1" onclick="stopProgram()">Stop Program</button>
+		<div style="width: 10px; display: inline-block;"></div>
+		<button class="button1" onclick="resetField()">Reset Field</button>
       </div>
       <div id="programInit" style="display: inline-block;">
         <button id="initBttn" class="button1" onclick="initProgram('')">Initialize Program</button>
+		<div style="width: 10px; display: inline-block;"></div>
+		<button class="button1" onclick="resetField()">Reset Field</button>
         <div style="width: 101.54px; display: inline-block;"></div>
       </div>
       <div style="width: 12.5px; display: inline-block;"></div>
     </div>
     <div style="min-width: 12.5px; display: inline-block;"></div>
-    <button class="button1" onClick="playVideo(0)" style="min-width: 100px; height: 25px; margin-top: 2.5px;">How to Use</button>
+    <button class="button1" onClick="displayPopUp(true)" style="min-width: 100px; height: 25px; margin-top: 2.5px;">How to Use</button>
   </div>
 
 
@@ -590,7 +625,7 @@
         style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
       <div id="rightSlider" style="height: 10px;"></div>
 
-      <div id="fieldView" style="height: 50%; background-color: #000000;">
+      <div id="fieldView" style="height: 50%; background-color: #231F20; border: 3.5px solid #ff9800">
         <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
           hidden></iframe>
         <div class="center" id="loadingTextDiv">
@@ -602,7 +637,7 @@
 
   <div id="scrollOverlay"></div>
 
-  <div id="overlay">
+  <div id="overlay" class="overlay">
     <div id="overlayInfo">
       <div style="display: flex; padding-top: 2.5px;">
         <a id="backButton" style="margin: 7.5px;" onClick="overlay(false, 0)"><i class="fa fa-chevron-left"></i></a>
@@ -713,6 +748,24 @@
     </div>
   </div>
 
+  <div class="overlay" style="text-align: center;">
+	<div id="howToPopUp">
+	  <div style="display: flex; width: 325px;">
+		<a id="backButton" style="margin: 7.5px; margin-right: 2.5px; flex: 0 0 auto;" onClick="displayPopUp(false)"><i class="fa fa-chevron-left"></i></a>
+		<h2 style="font-size: 30px; padding-left: 0px;">Welcome to the Simulator!</h2>
+	  </div>
+	  <div style="width:100%; height: 1px; background-color: #4B4B4B;"></div>
+	  <h2 style="padding: 15px; padding-top: 2.5px; padding-bottom: 10px; font-size: 20px; width: 295px;">Here, you will be able to control your robot through the programming language of Blocks!<br><br>
+	  If you wish to learn how everything works, you can either have these text boxes guide you or watch our explanatory video.</h2>
+	  <div style="display: flex; justify-content: space-around; width: 325px;">
+		<button class="button1" onclick="" style="font-size: 18.5px; height: 35px; width: 125px;" disabled>Text Guide</button>
+		<button class="button1" onclick="playVideo(0); displayPopUp(false);" style="font-size: 18.5px; height: 35px; width: 125px;">Video Guide</button>
+	  </div>
+	</div>
+  </div>
+
+  <div id="searchspace" style="display: none;"></div>
+
   <script>
 	//Loading Screen Instructions
 	document.body.style.background = "#242424";
@@ -727,6 +780,21 @@
 			bttnLink.href = "homepage.html";
 			bttnLink.click();
 		}, 500);
+	}
+	
+	//HowToPopUp Instructions
+	setTimeout(() => {if (localStorage.getItem('noPopUp') == null) displayPopUp(true);}, 750);
+	
+	function displayPopUp (show) {
+	  if (show) {
+		localStorage.setItem('noPopUp', 1);
+		document.getElementById('howToPopUp').parentElement.style.animation = "showOverlay 1s ease 1 normal forwards";
+		document.getElementById('howToPopUp').style.animation = "popUpWindow 1s ease forwards";
+	  }
+	  else {
+		document.getElementById('howToPopUp').parentElement.style.animation = "hideOverlay .75s ease 1 normal forwards";
+		document.getElementById('howToPopUp').style.animation = "popUpClose .5s ease forwards";
+	  }
 	}
 	
     //---TempVariable will be replaced by vars.js---
@@ -6048,6 +6116,8 @@
     //---Sets up Blockly Interface---
     Blockly.JavaScript.addReservedWords('exit');
 
+	var searchspace = Blockly.inject("searchspace");
+
     var workspace = Blockly.inject('blocklyDiv',
       {
         media: './blocks/media/',
@@ -6089,9 +6159,11 @@
         }
 
       });
+	 	  
+	  //Sets up Title Category
+	  workspace.getToolbox().getToolboxItemById('Title').setDisabled('true');
 	  
-	  Blockly.getMainWorkspace().getToolbox().getToolboxItemById('Title').setDisabled('true');
-	  
+	  //Sets up Search Category
 	  searchInput = document.createElement('input');
 	  searchInput.type = "text";
 	  searchInput.placeholder = "Search";
@@ -6102,8 +6174,10 @@
 	  document.getElementById('Searcher.label').parentElement.appendChild(searchInput);
 	  document.getElementById('Searcher.label').parentElement.style.pointerEvents = "all";
 	  
+	  //Search Functions in Work
 	  var blockList = [];
 	  
+	  //Function called upon input change
 	  function searchFor () {
 		searchItem = searchInput.value;
 		
@@ -6111,45 +6185,58 @@
 		
 		if (searchItem !== "")
 			searchCategory(document.getElementById('toolbox').childNodes, searchItem);
-		if (Blockly.getMainWorkspace().getToolbox().getSelectedItem())
-			Blockly.getMainWorkspace().getToolbox().deselectItem_(Blockly.getMainWorkspace().getToolbox().getSelectedItem());
-		Blockly.getMainWorkspace().getToolbox().setSelectedItem(Blockly.getMainWorkspace().getToolbox().getToolboxItemById('Searcher'));
+		if (workspace.getToolbox().getSelectedItem())
+			workspace.getToolbox().deselectItem_(workspace.getToolbox().getSelectedItem());
+		workspace.getToolbox().setSelectedItem(workspace.getToolbox().getToolboxItemById('Searcher'));
 	  }
-	  
+	  	  
+	  //Searches through all available blocks
 	  function searchCategory (childNodes, searchItem) {
-	  	parser = new XMLSerializer();
-	    for (var i = 0; i < childNodes.length; i++) {
-		  if (childNodes[i].nodeName == "CATEGORY") {
-			if (childNodes[i].attributes.hidden)
-			  continue;
-			if (!childNodes[i].attributes.toolboxitemid) {
-			  searchCategory(childNodes[i].childNodes, searchItem);
-			  continue;
-			}
-			categoryId = childNodes[i].attributes.toolboxitemid.value;
-			if (categoryId == "DcMotor" && robotConfig["motors"].length == 0)
-			  continue;
-			if ((categoryId == "CRServo" || categoryId == "Servo") && robotConfig["servos"].length == 0)
-			  continue;
-			if (categoryId == "DistanceSensor" && robotConfig["distSensor"].length == 0)
-			  continue;
-			if ((categoryId == "IMUSensor" || categoryId == "IMUParamSensor") && robotConfig["IMU"].length == 0)
-			  continue;
-		  	searchCategory(childNodes[i].childNodes, searchItem);
+		searchItem = searchItem.toLowerCase();
+		searchItems = searchItem.split(' ');
+		categories = workspace.getToolbox().getToolboxItems();
+		
+		//Goes through Categories
+		for (var c = 0; c < categories.length; c++) {
+		  //Ensures value is category and not hidden
+		  if (typeof categories[c].flyoutItems_ != "object" || categories[c].isHidden_ == true)
+			continue;
+			
+		  //Parse through Blocks in Category
+		  blocks = categories[c].flyoutItems_;
+		  for (var b = 0; b < blocks.length; b++) {
+		  		  
+			//Grabs Tooltip from Block
+			blockTip = searchspace.newBlock(blocks[b].type);
+			for (var i = 0; i < blocks[b].blockxml.children.length; i++)
+			  if (blocks[b].blockxml.children[i].tagName == "FIELD")
+				blockTip.setFieldValue(blocks[b].blockxml.children[i].innerHTML, blocks[b].blockxml.children[i].attributes[0].value);
+			tooltip = blockTip.getTooltip().toLowerCase();
+			blockTip.dispose();
+			
+			//Adds on bkgd name of block just in case (Matches what is shown on block more)
+			tooltip += blocks[b].type.toLowerCase();
+			
+			//Checks if all search queries are results
+			var match = true;
+			for (var i = 0; i < searchItems.length; i++)
+			  if (tooltip.search(searchItems[i]) == -1)
+				match = false;
+			
+			//Success! -> Put into List
+			if (match)
+			  blockList.push({
+				'kind': 'block',
+				'blockxml': blocks[b].blockxml
+				});
 		  }
-		  else if (childNodes[i].attributes && childNodes[i].attributes.type) {
-		    if (childNodes[i].attributes.type.value.toLowerCase().search(searchItem.toLowerCase()) > -1) {
-			  if (blockList.length < 25)
-				blockList.push({
-				  'kind': 'block',
-				  'blockxml': parser.serializeToString(childNodes[i])
-				  });
-			}
-		  }
-	    }
+		  //20 or more can cause some lag (Just refine your search)
+		  if (blockList.length > 20)
+			break;
+		}
 	  }
 	  
-	  // Returns an array of objects.
+	  //Returns array of searched blocks
 	  var searchFlyout = function(workspace) {
 		if (blockList.length == 0) {
 		  blockList.push({
@@ -6161,9 +6248,10 @@
 		return blockList;
 	  };
 	
-	  // Associates the function with the string 'COLOUR_PALLET'
-	  Blockly.getMainWorkspace().registerToolboxCategoryCallback(
+	  //Assigns new Blocks to SearchCategory when opened
+	  workspace.registerToolboxCategoryCallback(
 		'SearchResults', searchFlyout);
+
   </script>
 </body>
 
