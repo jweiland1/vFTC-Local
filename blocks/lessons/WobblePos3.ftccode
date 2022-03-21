@@ -8,6 +8,7 @@ async function runOpMode() {
   motor.setProperty([0, 1, 2, 3], 'TargetPositionTolerance', [50, 50, 50, 50]);
   motor.setProperty([0, 1, 2, 3], 'TargetPosition', [0, 0, 0, 0]);
   motor.setProperty([0, 1, 2, 3], 'Mode', ["RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION"]);
+  await linearOpMode.waitForStart();
   if (linearOpMode.opModeIsActive()) {
     motor.setProperty([7], 'Power', [1]);
     await Forward(150);
@@ -53,7 +54,7 @@ async function Strafe(Inches) {
 // Describe this function...
 async function Rotate(Degrees) {
   motor.setProperty([0, 1, 2, 3], 'Power', [-0.85 * Math.min(Math.max(Degrees, -1), 1), 0.85 * Math.min(Math.max(Degrees, -1), 1), -0.85 * Math.min(Math.max(Degrees, -1), 1), 0.85 * Math.min(Math.max(Degrees, -1), 1)]);
-  await linearOpMode.sleep((Degrees / 90) * 350);
+  await linearOpMode.sleep((Degrees / 90) * 250);
   motor.setProperty([0, 1, 2, 3], 'Power', [0, 0, 0, 0]);
   motor.setProperty([0, 1, 2, 3], 'TargetPosition', [motor.getProperty(0, 'CurrentPosition'), motor.getProperty(1, 'CurrentPosition'), motor.getProperty(2, 'CurrentPosition'), motor.getProperty(3, 'CurrentPosition')]);
 }
