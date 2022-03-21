@@ -99,31 +99,41 @@
       };
       document.body.appendChild(script);
       var frontLeftEncoder = 0;
-  var frontRightEncoder = 0;
-  var backLeftEncoder = 0;
-  var backRightEncoder = 0;
-
-  function setFrontLeftEncoders(encoders) {
-    frontLeftEncoder = encoders;
-    updateEncoderLocalStorage();
-  }
-  function setFrontRightEncoders(encoders) {
-    frontRightEncoder = encoders;
-    updateEncoderLocalStorage();
-  }
-  function setBackLeftEncoders(encoders) {
-    backLeftEncoder = encoders;
-    updateEncoderLocalStorage();
-  }
-  function setBackRightEncoders(encoders) {
-    backRightEncoder = encoders;
-    updateEncoderLocalStorage();
-  }
-
-  function updateEncoderLocalStorage() {
-  var motorPositions = "[" + frontLeftEncoder + ", " + frontRightEncoder + ", " + backLeftEncoder + ", " + backRightEncoder + ", 0, 0, 0, 0]";
-    localStorage.setItem('motorCurrentPositions', motorPositions);
-  }
+      var frontRightEncoder = 0;
+      var backLeftEncoder = 0;
+      var backRightEncoder = 0;
+      
+	  //WIP - Compile all incoming data into this function instead of seperate set[Motor]Encoders functions
+      function getUpdate(data) {
+        const obj = JSON.parse(data);
+        setFrontLeftEncoders(obj.motors[0]);
+        setFrontRightEncoders(obj.motors[1]);
+        setBackLeftEncoders(obj.motors[2]);
+        setBackRightEncoders(obj.motors[3]);
+        // Add more incoming data parsing methods once format is finalized.
+      }
+      
+      function setFrontLeftEncoders(encoders) {
+        frontLeftEncoder = encoders;
+        updateEncoderLocalStorage();
+      }
+      function setFrontRightEncoders(encoders) {
+        frontRightEncoder = encoders;
+        updateEncoderLocalStorage();
+      }
+      function setBackLeftEncoders(encoders) {
+        backLeftEncoder = encoders;
+        updateEncoderLocalStorage();
+      }
+      function setBackRightEncoders(encoders) {
+        backRightEncoder = encoders;
+        updateEncoderLocalStorage();
+      }
+      
+      function updateEncoderLocalStorage() {
+        var motorPositions = "[" + frontLeftEncoder + ", " + frontRightEncoder + ", " + backLeftEncoder + ", " + backRightEncoder + ", 0, 0, 0, 0]";
+        localStorage.setItem('motorCurrentPositions', motorPositions);
+      }
     </script>
   </body>
 </html>

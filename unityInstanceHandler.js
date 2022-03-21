@@ -41,14 +41,14 @@ function writeMotorPowers() {
     var motor6 = motorPowers[5];
     var motor7 = motorPowers[6];
     var motor8 = motorPowers[7];
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontLeftVel", (motor1 != null) ? motor1 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontRightVel", (motor2 != null) ? motor2 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackLeftVel", (motor3 != null) ? motor3 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackRightVel", (motor4 != null) ? motor4 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor5", (motor5 != null) ? motor5 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor6", (motor6 != null) ? motor6 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor7", (motor7 != null) ? motor7 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor8", (motor8 != null) ? motor8 : 0);
+	
+    var command = new Object();
+    command.motors = [motor1 ? motor1 : 0, motor2 ? motor2 : 0, motor3 ? motor3 : 0, motor4 ? motor4 : 0, motor5 ? motor5 : 0, motor6 ? motor6 : 0, motor7 ? motor7 : 0, motor8 ? motor8 : 0];
+    //To add more use: obj.<name> = array
+	
+	//WIP - Unity will need to respond to this one command and set values accordingly
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "receiveInfo", JSON.stringify(command));
+	//Sends the info: '{"motors":[0,0,0,0,0,0,0,0]}'
 	
 	//Implement Servos once Unity is ready
 	
