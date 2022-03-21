@@ -3,50 +3,50 @@
 		{
 			"name": "frontLeft",
 			"type": "extended",
-			"maxrpm": 340,
-			"encoder": 560
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "frontRight",
 			"type": "extended",
-			"maxrpm": 340,
-			"encoder": 560
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "backLeft",
 			"type": "extended",
-			"maxrpm": 340,
-			"encoder": 560
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "backRight",
 			"type": "extended",
-			"maxrpm": 340,
-			"encoder": 560
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "ringCollection",
-			"type": "normal",
-			"maxrpm": 340,
-			"encoder": 560
+			"type": "extended",
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "ringLoader",
-			"type": "normal",
-			"maxrpm": 340,
-			"encoder": 560
+			"type": "extended",
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "ringShooter",
-			"type": "normal",
-			"maxrpm": 340,
-			"encoder": 560
+			"type": "extended",
+			"maxrpm": 312,
+			"encoder": 537.7
 		},
 		{
 			"name": "wobbleActuator",
-			"type": "normal",
-			"maxrpm": 340,
-			"encoder": 560
+			"type": "extended",
+			"maxrpm": 312,
+			"encoder": 537.7
 		}
 	],
 	"servos": [

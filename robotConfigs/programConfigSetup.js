@@ -3,7 +3,7 @@ var robotConfig = null;
 
 var client = new XMLHttpRequest();
 client.open('GET', './robotConfigs/defaultConfig.robot');
-client.onload = function () {
+client.onreadystatechange = function () {
     var robotConfigTxt = client.responseText;
     if (robotConfigTxt !== '' && robotConfig == null) {
 		robotConfig = JSON.parse(robotConfigTxt);
@@ -13,6 +13,14 @@ client.onload = function () {
 client.send();
 
 //Dropdowns for Blocks Programs
+function createCRServoDropdown() {
+    var CHOICES = [];
+	for (i = 0; i < robotConfig["servos"].length; i++)
+		if (robotConfig["servos"][i]["type"] == "continous")
+			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
+    return new Blockly.FieldDropdown(CHOICES);
+}
+
 function createDcMotorDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["motors"].length; i++)
@@ -25,14 +33,6 @@ function createDcMotorExDropdown() {
 	for (i = 0; i < robotConfig["motors"].length; i++)
 		if (robotConfig["motors"][i]["type"] == "extended")
 			CHOICES[i] = [robotConfig["motors"][i]["name"], "dcMotor" + i];
-    return new Blockly.FieldDropdown(CHOICES);
-}
-
-function createCRServoDropdown() {
-    var CHOICES = [];
-	for (i = 0; i < robotConfig["servos"].length; i++)
-		if (robotConfig["servos"][i]["type"] == "continous")
-			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -81,36 +81,9 @@ var COUNTRY_CODE_TOOLTIPS = [
     ['US', 'The country code for United States.'],
 ];
 
-//String replacement for named devices
-function configNaming(str) {
-	for (var i = 0; i < robotConfig["motors"].length; i++)
-		str = str.replaceAll("dcMotor" + i, robotConfig["motors"][i].name);
-	for (var i = 0; i < robotConfig["servos"].length; i++)
-		str = str.replaceAll("servo" + i, robotConfig["servos"][i].name);
-	for (var i = 0; i < robotConfig["distSensor"].length; i++)
-		str = str.replaceAll("distanceSensor" + i, robotConfig["distSensor"][i].name);
-	for (var i = 0; i < robotConfig["IMU"].length; i++)
-		str = str.replaceAll("imu" + i, robotConfig["IMU"][i].name);
-	return str;
-}
-
-function blocklyNaming(str) {
-	for (var i = 0; i < robotConfig["motors"].length; i++)
-		str = str.replaceAll(robotConfig["motors"][i].name, "dcMotor" + i);
-	for (var i = 0; i < robotConfig["servos"].length; i++)
-		str = str.replaceAll(robotConfig["servos"][i].name, "servo" + i);
-	for (var i = 0; i < robotConfig["distSensor"].length; i++)
-		str = str.replaceAll(robotConfig["distSensor"][i].name, "distanceSensor" + i);
-	for (var i = 0; i < robotConfig["IMU"].length; i++)
-		str = str.replaceAll(robotConfig["IMU"][i].name, "imu" + i);
-	return str;
-}
-
-
 //Sets up workspace with actuators/sensors
 function setupCategories() {
-	document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-	sampleProgram(true);
+    newProgram('BasicOpMode');
 	
 	var toolbox = Blockly.getMainWorkspace().getToolbox();
 	

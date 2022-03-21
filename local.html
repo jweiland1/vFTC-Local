@@ -388,7 +388,7 @@
 	  <div style="width: 12.5px; display: inline-block;"></div>
 	</div>
     <div style="min-width: 12.5px; display: inline-block;"></div>
-    <button class="button1" onClick="playVideo(0)" style="min-width: 100px;">How to Use</button>
+    <button class="button1" onClick="playVideo(false)" style="min-width: 100px;">How to Use</button>
   </div>
 
 
@@ -445,10 +445,8 @@
             </div>
             <div id="lessonButtons" style="display: none; justify-content: center; align-items: center; overflow: hidden; height: 14.5%;">
               <button class="button1" onClick="runLessonCode()" style="font-size: 20px; white-space: nowrap; height: 29.2px;">Show the Task</button>
-			  <div style="width: 10%; display: inline-block;"></div>
-              <button class="button1" onClick="playVideo(1)" style="font-size: 20px; white-space: nowrap; height: 29.2px;">Video Hint</button>
-			  <div style="width: 10%; display: inline-block;"></div>
-              <button class="button1" onClick="playVideo(2)"
+			  <div style="width: 17.5%; display: inline-block;"></div>
+              <button class="button1" onClick="playVideo(true)"
                 style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
@@ -517,55 +515,23 @@
           <div style="display: flex; justify-content: center; margin-top: 10px;">
 			<div>
 			  <h1 style="text-align: center; font-size: 20px; color: lightgrey;">Create:</h1>
-			  <div class="dropdown dropdown-dark" onchange="sampleProgram(true)" style="display: flex; background-color: #FFFFFF;">
-				<select id="blockSelect" class="dropdown-select" style="font-size:20px; width: 200px; text-align-last:center;">
+			  <div class="dropdown dropdown-dark" onchange="sampleProgram()" style="display: flex; background-color: #FFFFFF;">
+				<select id="blockSelect" class="dropdown-select" style="font-size:20px;">
 				  <option value=''>-Block Program-</option>
-				  <optgroup label="Default OpMode">
-					<option value='BasicAutoOpMode'>Autonomous</option>
-					<option value='BasicOpMode'>DriverControl</option>
-				  </optgroup>
-				  <optgroup label="Driver Control">
-					<option value='BasicPOVDrive'>POVDrive</option>
-					<option value='BasicTankDrive'>TankDrive</option>
-				  </optgroup>
-				  <optgroup label="Sensor">
-					<option value='SensorIMU'>IMU</option>
-				  </optgroup>
+				  <option value='BasicOpMode' style="font-weight: bold;">BasicOpMode</option>
+				  <option value='BasicPOVDrive'>BasicPOVDrive</option>
+				  <option value='BasicTankDrive'>BasicTankDrive</option>
+				  <option value='SensorIMU'>SensorIMU</option>
 				</select>
 			  </div>
 			  <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
-			  <div class="dropdown dropdown-dark" onChange="sampleProgram(false)" style="display: inline-block; background-color: #FFFFFF;">
-				<select id="javaSelect" class="dropdown-select" style="font-size:20px; max-width: 200px; text-align-last:center;">
+			  <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
+				<select id="javaSelect" class="dropdown-select" style="font-size:20px;">
 				  <option value=''>-Java Program-</option>
-				  <optgroup label="Default OpMode">
-					<option value='BlankLinearOpMode'>Linear</option>
-					<option value='BlankIterativeOpMode'>Iterative</option>
-				  </optgroup>
-				  <optgroup label="Tank Drive">
-					<option value='BasicOpMode_Linear'>Linear</option>
-					<option value='BasicOpMode_Iterative'>Iterative</option>
-				  </optgroup>
-				  <optgroup label="Concept">
-					<option value='ConceptNullOp'>NullOp</option>
-					<option value='ConceptRampMotorSpeed'>RampMotorSpeed</option>
-					<option value='ConceptScanServo'>ScanServo</option>
-					<option value='ConceptTelemetry'>Telemetry</option>
-				  </optgroup>
-				  <optgroup label="Pushbot">
-					<option value='HardwarePushbot'>Hardware</option>
-					<option value='PushbotAutoDriveByEncoder_Linear'>AutoDriveByEncoder</option>
-					<option value='PushbotAutoDriveByTime_Linear'>AutoDriveByTime</option>
-					<option value='PushbotTeleOpPOV_Linear'>LinearPOVDrive</option>
-					<option value='PushbotTeleOpTank_Iterative'>IterativeTankDrive</option>
-				  </optgroup>
-				  <optgroup label="Sensor">
-					<option value='SensorBNO055IMU'>BNO055IMU</option>
-					<option value='SensorREV2mDistance'>REV2mDistance</option>
-				  </optgroup>
 				</select>
 			  </div>
 			</div>			
-			<div style="width: 35px; display:inline-block;"></div>
+			<div style="width: 40px; display:inline-block;"></div>
 			<div style="width: 130px;">
               <input id="filePrompt" type="file" accept=".blk,.java" style="display:none;">
 			  <button class="button1" onclick="promptFiles()" style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
@@ -683,7 +649,7 @@
       switch (document.getElementById('lessonSelect').value) {
         case "0":
           document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "In this first lesson, you will need to power the Front Left and Front Right Wheels for a certain amount of time in order to get the robot on the White Line for +5 Points during Autonomous. Press the \"Show the Task\" button to see what you need to do or \"Video Hint\" for an introduction." +
+            "In this first lesson, you will need to power the Front Left and Front Right Wheels for a certain amount of time in order to get the robot on the White Line for +5 Points during Autonomous. Press the \"Show the Task\" button to see what you need to do." +
             "\n\nYou'll Learn:\nBasic Motor Powering\nMovement Timing";
           break;
         case "1":
@@ -713,7 +679,7 @@
           break;
         case "6":
           document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motor Encoders: 560 Ticks per Revolution, Wheels' Circumfrence: 4π Inches" +
+            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motors: 1440 Ticks per Revolution & Wheels: 4π Inch Circumfrence." +
             "\n\nYou'll Learn:\nMotor Encoders\nVariables";
           break;
         case "7":
@@ -758,7 +724,7 @@
 	  //Load Lesson Code to Run
       var client = new XMLHttpRequest();
       client.open('GET', './blocks/lessons/' + lessonName + '.ftccode');
-      client.onload = function () {
+      client.onreadystatechange = function () {
 		var lessonCode = client.responseText;
 		if (lessonCode !== '')
 		  initProgram(lessonCode);
@@ -766,15 +732,9 @@
       client.send();
 	}
 
-	//videoType: 0 = howTo, 1 = hint, 2 = solution
-    function playVideo(videoType) {
+    function playVideo(lessonVideo) {
       link = "";
-      if (videoType == 1) {
-        switch (document.getElementById('lessonSelect').value) {
-			
-        }
-      }
-      else if (videoType == 2) {
+      if (lessonVideo) {
         switch (document.getElementById('lessonSelect').value) {
           case "0": link = "https://www.youtube.com/embed/zBjlgFOxw7A"; break;
           case "1": link = "https://www.youtube.com/embed/6VdMtwmT_Ms"; break;
@@ -1441,7 +1401,7 @@
               <shadow type="navigation_typedEnum_angleUnit" />
             </value>
           </block>
-          <block type="dcMotor_setVelocityPIDFCoefficients" disabled=true>
+          <block type="dcMotor_setVelocityPIDFCoefficients">
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="P">
               <shadow type="math_number">
@@ -1464,7 +1424,7 @@
               </shadow>
             </value>
           </block>
-          <block type="dcMotor_setPositionPIDFCoefficients" disabled=true>
+          <block type="dcMotor_setPositionPIDFCoefficients">
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="P">
               <shadow type="math_number">
@@ -1472,7 +1432,7 @@
               </shadow>
             </value>
           </block>
-          <block type="dcMotor_setPIDFCoefficients" disabled=true>
+          <block type="dcMotor_setPIDFCoefficients">
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="RUN_MODE">
               <shadow type="dcMotor_typedEnum_runMode">
@@ -1485,7 +1445,7 @@
               </block>
             </value>
           </block>
-          <block type="dcMotor_getPIDFCoefficients" disabled=true>
+          <block type="dcMotor_getPIDFCoefficients">
             <field name="IDENTIFIER">dcMotor0</field>
             <value name="RUN_MODE">
               <shadow type="dcMotor_typedEnum_runMode">
@@ -5512,7 +5472,7 @@
 	  document.getElementById("programSelect").value = "Load Program";
     }
 	
-	var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
+	var defaultText = 'package org.firstinspires.ftc.teamcode;\n\nimport com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;\nimport com.qualcomm.robotcore.eventloop.opmode.TeleOp;\n\n@TeleOp(name = "MyLinearOpMode (Blocks to Java)", group = "")\npublic class MyLinearOpMode extends LinearOpMode {\n\n  /**\n   * This function is executed when this Op Mode is selected.\n   */\n  @Override\n  public void runOpMode() {\n    // Put initialization blocks here.\n    waitForStart();\n    if (opModeIsActive()) {\n      // Put run blocks here.\n      while (opModeIsActive()) {\n        // Put loop blocks here.\n        telemetry.update();\n      }\n    }\n  }\n}\n';
     var editor;
 	
 	setUpOnBotJava();
@@ -5522,7 +5482,7 @@
       editor = CodeMirror(function (elt) {
 		document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
       }, {
-        value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block Code exported to Java\n * and some Sample Code given in the 'New Program' popup.\n */\n\n" + (javaCode || defaultText),
+        value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block code exported to Java for now.\n */\n\n" + (javaCode || defaultText),
         mode: "text/x-java",
         lineNumbers: true,
         theme: "darcula",
@@ -5536,7 +5496,7 @@
 	function convertToJava() {
 	  var javaCode = generateJavaCode();
 	  switchToOnBotJava();
-	  setUpOnBotJava(configNaming(javaCode));
+	  setUpOnBotJava(javaCode);
 	  overlay(false, 0);
 	}
 	
@@ -5599,32 +5559,7 @@
 		currentProjectName = programName;
 		Blockly.mainWorkspace.clear();
 		var i = content.indexOf('</xml>');
-		content = content.substring(0, i + 6);//Convert from names to config
-		//String to XML to Blockly
-		var parser = new DOMParser();
-		var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
-		//Convert 2 Duals to Quad
-		var blocks = xmlDoc.getElementsByTagName("block");
-		for (var i = 0; i < blocks.length - 1; i++) {
-		  if (blocks[i].getElementsByTagName("next")[0]) {
-			nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[0];
-			if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") && 
-				blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
-			  blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-		      for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
-				if (nextBlock.childNodes[c].getAttribute("name")) {
-				  var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
-				  nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
-				  blocks[i].appendChild(nextBlock.childNodes[c]);
-				}
-			  blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
-			  if (nextBlock.getElementsByTagName("next")[0])
-				blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
-			}
-		  }
-		}
-		content = new XMLSerializer().serializeToString(xmlDoc);
-		console.log(content);
+		content = content.substring(0, i + 6);
 		Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
 		resetProgramExecution();
 		document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
@@ -5644,12 +5579,11 @@
 	  }
     }
 
-    function sampleProgram(blockProgram) {
-	  var sampleProgram;
-	  if (blockProgram)
-		sampleProgram = document.getElementById('blockSelect').value;
-	  else
-		sampleProgram = document.getElementById('javaSelect').value;
+    function sampleProgram() {
+      newProgram(document.getElementById('blockSelect').value);
+    }
+
+    function newProgram(sampleProgram) {
       document.getElementById("programSelect").value = "Load Program";
 	  currentProjectName = "program";
       document.getElementById('save').disabled = true;
@@ -5657,27 +5591,21 @@
       document.getElementById('download').disabled = true;
       //Load Basic Program From Files
       var client = new XMLHttpRequest();
-      client.open('GET', './blocks/samples/' + sampleProgram + (blockProgram ? '.blk' : '.java'));
-      client.onload = function () {
-        var content = client.responseText;
-        if (content !== '') {
-		  if (blockProgram) {
-			var i = content.indexOf('</xml>');
-			content = content.substring(0, i + 6);
-			Blockly.mainWorkspace.clear();
-			Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-			resetProgramExecution();
-			if (sampleProgram != 'BasicAutoOpMode')
-              document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-			else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller")) {
-              document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-			}
-			switchToBlocks();
-		  }
-		  else {
-			switchToOnBotJava();
-			setUpOnBotJava(content);
-		  }
+      client.open('GET', './blocks/samples/' + sampleProgram + '.blk');
+      client.onreadystatechange = function () {
+        var blocksContent = client.responseText;
+        if (blocksContent !== '') {
+          var i = blocksContent.indexOf('</xml>');
+          blocksContent = blocksContent.substring(0, i + 6);
+          Blockly.mainWorkspace.clear();
+          Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(blocksContent), workspace);
+          resetProgramExecution();
+          if (sampleProgram != 'BasicOpMode')
+            document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
+          else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-') {
+            document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
+          }
+		  switchToBlocks();
         }
       }
       client.send();
@@ -5703,8 +5631,7 @@
       var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
 	  currentProjectName = document.getElementById('programSelect').value;
       if (nameOfProject == "Program Name: Load Program") {
-		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-		sampleProgram(true);
+        newProgram('BasicOpMode');
       } else if (typeof (Storage) !== "undefined") {
         document.getElementById('save').disabled = false;
         document.getElementById('delete').disabled = false;
@@ -5728,9 +5655,8 @@
       var programName = document.getElementById('programSelect').value;
 	  currentProjectName = "program";
       localStorage.removeItem("Program Name: " + programName);
-	  document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-	  sampleProgram(true);
-	  prepareUiToLoadProgram();
+      newProgram('BasicOpMode');
+      prepareUiToLoadProgram();
       resetProgramExecution();
       document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
       overlay(false, 0);
@@ -5738,32 +5664,8 @@
 
     function downloadProgram(button) {
       var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-	  //Blockly to XML to String
-	  var parser = new DOMParser();
-	  var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
-	  //Convert Quad to 2 Duals
-	  var blocks = xmlDoc.getElementsByTagName("block");
-	  for (var i = 0; i < blocks.length; i++)
-		if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
-		  var secondDual = blocks[i].cloneNode();
-		  blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
-		  secondDual.setAttribute("type", blocks[i].getAttribute("type"));
-		  secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
-		  for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
-			if (blocks[i].childNodes[c].getAttribute("name")) {
-			  var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
-			  if (num > 2) {
-				blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
-				secondDual.appendChild(blocks[i].childNodes[c]);
-			  }
-			}
-		  if (blocks[i].getElementsByTagName("next")[0])
-			secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
-		  blocks[i].appendChild(xmlDoc.createElement("next"));
-		  blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
-		}
-	  //Download Program
-      button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
+      console.log(button.parentElement);
+      button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(Blockly.Xml.domToText(xml)));
       button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
     }
 
@@ -5771,6 +5673,7 @@
 
     function resetProgramExecution() {
       programExecController.abort();
+      telemetryData = "";
       resetProperties();
 	  document.getElementById('programInit').style.display = 'inline-block';
 	  document.getElementById('programStartStop').style.display = 'none';
@@ -5788,9 +5691,6 @@
 	    var finalCode = "";
 		var inFunction = false;
 		for (var line of code.split('\n')) {
-		  if (line.startsWith('function ')) {
-			inFunction = true;
-		  }
 		  if (line.startsWith('async function '))
 			inFunction = true;
 		  if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
@@ -5830,18 +5730,13 @@
       catch(err){
         // anything other than abortedMsg is an actual error
         if( err != abortedMsg ){
-		  localStorage.setItem('stopMatch', true);
-		  document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
-		  resetProgramExecution();
           throw err;
         }
       }
 
       // end
-	  resetProperties();
       localStorage.setItem('stopMatch', true);
-	  if (!document.getElementById("telemetryText").innerText.startsWith("<Program has stopped!>"))
-		document.getElementById("telemetryText").innerText = "Program Ended \n";
+      document.getElementById("telemetryText").innerText = "Program Ended \n";
 	  document.getElementById('programInit').style.display = 'inline-block';
 	  document.getElementById('programStartStop').style.display = 'none';
     }
