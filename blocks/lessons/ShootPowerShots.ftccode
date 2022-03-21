@@ -1,4 +1,4 @@
-var Inches, Degrees, x, y, Ticks, fieldSetup, XValues;
+var Inches, Degrees, x, y, Ticks, fieldSetup, XValues, YValue;
 
 function mathRandomInt(a, b) {
   if (a > b) {
@@ -21,6 +21,7 @@ async function runOpMode() {
   motor.setProperty([0, 1, 2, 3], 'TargetPositionTolerance', [50, 50, 50, 50]);
   motor.setProperty([0, 1, 2, 3], 'TargetPosition', [0, 0, 0, 0]);
   motor.setProperty([0, 1, 2, 3], 'Mode', ["RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION"]);
+  await linearOpMode.waitForStart();
   if (linearOpMode.opModeIsActive()) {
     motor.setProperty([7], 'Power', [1]);
     await Forward(75);
@@ -28,14 +29,18 @@ async function runOpMode() {
     motor.setProperty([7], 'Power', [0]);
     await linearOpMode.sleep(250);
     motor.setProperty([6], 'Power', [0.9]);
-    XValues = [42, 45.35, 52];
-    await GoToPosition(XValues[((fieldSetup + 1) - 1)], 50);
+    XValues = [47, 51.35, 68];
+    YValue = 50;
+    if (fieldSetup == 2) {
+      YValue = 37;
+    }
+    await GoToPosition(XValues[((fieldSetup + 1) - 1)], YValue);
     await linearOpMode.sleep(250);
     for (var count = 0; count < 3; count++) {
       motor.setProperty([5], 'Power', [1]);
       await linearOpMode.sleep(250);
       motor.setProperty([5], 'Power', [0]);
-      await Strafe(10);
+      await Strafe(12);
       motor.setProperty([6], 'Power', [0.91]);
       await linearOpMode.sleep(750);
       await linearOpMode.sleep(1);

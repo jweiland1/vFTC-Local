@@ -719,64 +719,69 @@ var lastTime = 0;
 var currMotorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
 
 function variableUpdate() {
-	//Sends Motor Powers
-	try {
-		var motorPowers = "[";
-		for (i = 0; i < robotConfig["motors"].length; i++) {
-			
-			//Converts Raw Motor Power Inputs for Wheels to correct power according to Mode & other settings
-			
-			//Sets Power/Velocity to Variable
-			var motorPower = robotConfig["motors"][i]["Power"];
-			if (robotConfig["motors"][i]["Mode"] == "RUN_USING_ENCODER" || robotConfig["motors"][i]["Mode"] == "RUN_TO_POSITION")
-				motorPower = robotConfig["motors"][i]["Velocity"] / (robotConfig["motors"][i]["maxrpm"] * robotConfig["motors"][i]["encoder"] / 60);
-			if (isNaN(motorPower) && document.getElementById('programInit').style.display == "none") {
-				throw "TypeError: Cannot read a motor property of improper type";
-			}
-			
-			//Implements Realistic Reversed Motors on Right Side
-			if (i == 1 || i == 3)
-				motorPower *= -1;
-			//Implements REVERSE feature
-			if (robotConfig["motors"][i]["Direction"] == "REVERSE")
-				motorPower *= -1;
-			//If Disabled, no power
-			if (robotConfig["motors"][i]["Enabled"] == false)
-				currMotorPowers[i] = currMotorPowers[i] * .5;
-			//ZeroPowerBehavior things
-			else if (robotConfig["motors"][i]["ZeroPowerBehavior"] == "FLOAT" && motorPower < .1)
-				currMotorPowers[i] = currMotorPowers[i] * .975 + motorPower * .025;
-			//Different Mode Functionality
-			else if (robotConfig["motors"][i]["Mode"] == "RUN_WITHOUT_ENCODER")
-				currMotorPowers[i] = currMotorPowers[i] * .95 + motorPower * .05;
-			else if (robotConfig["motors"][i]["Mode"] == "RUN_USING_ENCODER")
-				currMotorPowers[i] = currMotorPowers[i] * .5 + motorPower * .5;
-			else if (robotConfig["motors"][i]["Mode"] == "RUN_TO_POSITION") {
-				if (motor.isBusy(i))
-					currMotorPowers[i] = (currMotorPowers[i] * .25 + motorPower * .75) * Math.min(Math.max(robotConfig["motors"][i]["TargetPosition"] - robotConfig["motors"][i]["CurrentPosition"], -1), 1);
+	//Sets Amount of Times to run
+	times = performance.now() - lastTime;
+	lastTime = performance.now();
+	for (var t = 0; t < times; t++) {
+		//Sends Motor Powers
+		try {
+			var motorPowers = "[";
+			for (i = 0; i < robotConfig["motors"].length; i++) {
+				
+				//Converts Raw Motor Power Inputs for Wheels to correct power according to Mode & other settings
+				
+				//Sets Power/Velocity to Variable
+				var motorPower = robotConfig["motors"][i]["Power"];
+				if (robotConfig["motors"][i]["Mode"] == "RUN_USING_ENCODER" || robotConfig["motors"][i]["Mode"] == "RUN_TO_POSITION")
+					motorPower = robotConfig["motors"][i]["Velocity"] / (robotConfig["motors"][i]["maxrpm"] * robotConfig["motors"][i]["encoder"] / 60);
+				if (isNaN(motorPower) && document.getElementById('programInit').style.display == "none") {
+					throw "TypeError: Cannot read a motor property of improper type";
+				}
+				
+				//Implements Realistic Reversed Motors on Right Side
+				if (i == 1 || i == 3)
+					motorPower *= -1;
+				//Implements REVERSE feature
+				if (robotConfig["motors"][i]["Direction"] == "REVERSE")
+					motorPower *= -1;
+				//If Disabled, no power
+				if (robotConfig["motors"][i]["Enabled"] == false)
+					currMotorPowers[i] = currMotorPowers[i] * .958;
+				//ZeroPowerBehavior things
+				else if (robotConfig["motors"][i]["ZeroPowerBehavior"] == "FLOAT" && motorPower < .1)
+					currMotorPowers[i] = currMotorPowers[i] * .998 + motorPower * .002;
+				//Different Mode Functionality
+				else if (robotConfig["motors"][i]["Mode"] == "RUN_WITHOUT_ENCODER")
+					currMotorPowers[i] = currMotorPowers[i] * .9958 + motorPower * .0042;
+				else if (robotConfig["motors"][i]["Mode"] == "RUN_USING_ENCODER")
+					currMotorPowers[i] = currMotorPowers[i] * .958 + motorPower * .042;
+				else if (robotConfig["motors"][i]["Mode"] == "RUN_TO_POSITION") {
+					if (motor.isBusy(i))
+						currMotorPowers[i] = Math.max(motorPower * .5, (currMotorPowers[i] * .9375 + motorPower * .0625)) * Math.min(Math.max((robotConfig["motors"][i]["TargetPosition"] - robotConfig["motors"][i]["CurrentPosition"]) * 100, -1), 1);
+					else
+						currMotorPowers[i] = 0;
+				}
+		
+				//Wobble Goal motor can't interpolate
+				if (i == 7)
+					currMotorPowers[i] = motorPower;
+		
+				
+				//Sets up Powers to JSON to send to Unity
+				if (i == 6)
+					motorPowers += currMotorPowers[i] * 1.015; //I could not program the robot to shoot in the top goal :(
 				else
-					currMotorPowers[i] = 0;
+					motorPowers += currMotorPowers[i];
+				if (i + 1 < robotConfig["motors"].length)
+					motorPowers += ", ";
 			}
-	
-			//Wobble Goal motor can't interpolate
-			if (i == 7)
-				currMotorPowers[i] = motorPower;
-	
-			
-			//Sets up Powers to JSON to send to Unity
-			if (i == 6)
-				motorPowers += currMotorPowers[i] * 1.015; //I could not program the robot to shoot in the top goal :(
-			else
-				motorPowers += currMotorPowers[i];
-			if (i + 1 < robotConfig["motors"].length)
-				motorPowers += ", ";
+			motorPowers += "]";
+			localStorage.setItem("motorPowers", motorPowers);
+		} catch (err) {
+			document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
+			resetProgramExecution();
+			throw err;
 		}
-		motorPowers += "]";
-		localStorage.setItem("motorPowers", motorPowers);
-	} catch (err) {
-		document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
-		resetProgramExecution();
-		throw err;
 	}
 	
 	//Receives Motor Positions

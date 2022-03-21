@@ -370,13 +370,23 @@
       }
     }
 	
-	#howToPopUp {
+	#howToScreen {
+	  position: absolute;
+	  width: 100%;
+	  height: 100%;
+	  background-color: #00000088;
+	  transition-duration: 1s;
+	  clip-path: polygon(0% 0%, 0% 100%, 75% 100%, 75% 75%, 75% 75%, 75% 75%, 75% 75%, 75% 100%, 100% 100%, 100% 0%);
+	}
+	
+	.howToPopUp {
 	  width: 325px;
 	  height: 405px;
 	  border-radius: 20px;
 	  background-color: #242424;
 	  border: 3.5px solid #ff9800;
 	  overflow: hidden;
+	  z-index: 1;
 	  
 	  display: flex;
       flex-direction: column;
@@ -397,9 +407,11 @@
 	@keyframes popUpClose {
 	  from {
 		width: 325px;
+		opacity: 1;
 	  }
 	  to {
 		width: 0px;
+		opacity: 0;
 	  }
 	}
 	
@@ -577,7 +589,7 @@
 				15 per Powershot<br><br>
 				15<br>
 				Closest Square<br>
-				Middle Square<br>
+				Center Square<br>
 				Furtherest Square<br>
 			  </h2>
             </div>
@@ -748,8 +760,9 @@
     </div>
   </div>
 
-  <div class="overlay" style="text-align: center;">
-	<div id="howToPopUp">
+  <div id="howToOverlay" class="overlay" style="text-align: center; background-color: transparent; z-index: 98;">
+	<div id="howToScreen"></div>
+	<div id="howToIntro" class="howToPopUp">
 	  <div style="display: flex; width: 325px;">
 		<a id="backButton" style="margin: 7.5px; margin-right: 2.5px; flex: 0 0 auto;" onClick="displayPopUp(false)"><i class="fa fa-chevron-left"></i></a>
 		<h2 style="font-size: 30px; padding-left: 0px;">Welcome to the Simulator!</h2>
@@ -758,8 +771,19 @@
 	  <h2 style="padding: 15px; padding-top: 2.5px; padding-bottom: 10px; font-size: 20px; width: 295px;">Here, you will be able to control your robot through the programming language of Blocks!<br><br>
 	  If you wish to learn how everything works, you can either have these text boxes guide you or watch our explanatory video.</h2>
 	  <div style="display: flex; justify-content: space-around; width: 325px;">
-		<button class="button1" onclick="" style="font-size: 18.5px; height: 35px; width: 125px;" disabled>Text Guide</button>
+		<button class="button1" onclick="runHowTo()" style="font-size: 18.5px; height: 35px; width: 125px;">Text Guide</button>
 		<button class="button1" onclick="playVideo(0); displayPopUp(false);" style="font-size: 18.5px; height: 35px; width: 125px;">Video Guide</button>
+	  </div>
+	</div>
+	<div id="howToText" class="howToPopUp" style="width: 475px; height: auto; position: absolute; opacity: 0; display: none; transition-duration: .25s;">
+	  <div style="display: flex; width: 100%;">
+		<h2 style="font-size: 15px; padding-left: 40px; padding-right: 0px; flex: 1; color: darkgrey;">Step (1/15)</h2>
+		<a id="backButton" style="margin: 7.5px; flex: 0 0 auto; font-size: 22px; padding: 2.5px; padding-top: .5px; padding-bottom: 4.5px;" onClick="stopHowTo()"><i class="fa fa-times"></i></a>
+	  </div>
+	  <h2 style="padding: 10px; margin-top: 2.5px; padding-top: 0px; padding-bottom: 10px; font-size: 20px;"></h2>
+	  <div style="display: flex;">
+	  <button class="button1" onclick="howToReset()" style="font-size: 18.5px; height: 32.5px; margin-bottom: 10px; margin-right: 20px; display: none; width: 100px;">Reset</button>
+	  <button class="button1" onclick="runHowTo()" style="font-size: 18.5px; height: 32.5px; margin-bottom: 10px;  width: 100px;">Next ></button>
 	  </div>
 	</div>
   </div>
@@ -767,7 +791,7 @@
   <div id="searchspace" style="display: none;"></div>
 
   <script>
-	//Loading Screen Instructions
+	//---Loading Screen Instructions---
 	document.body.style.background = "#242424";
 	
 	setTimeout(() => {document.getElementById('LoadingScreen').style.animation = "none"}, 1000);
@@ -781,793 +805,12 @@
 			bttnLink.click();
 		}, 500);
 	}
-	
-	//HowToPopUp Instructions
-	setTimeout(() => {if (localStorage.getItem('noPopUp') == null) displayPopUp(true);}, 750);
-	
-	function displayPopUp (show) {
-	  if (show) {
-		localStorage.setItem('noPopUp', 1);
-		document.getElementById('howToPopUp').parentElement.style.animation = "showOverlay 1s ease 1 normal forwards";
-		document.getElementById('howToPopUp').style.animation = "popUpWindow 1s ease forwards";
-	  }
-	  else {
-		document.getElementById('howToPopUp').parentElement.style.animation = "hideOverlay .75s ease 1 normal forwards";
-		document.getElementById('howToPopUp').style.animation = "popUpClose .5s ease forwards";
-	  }
-	}
-	
-    //---TempVariable will be replaced by vars.js---
-    var currentProjectName = "";
-
-    //---Sending Data to Unity---
-    const abortedMsg = "aborted";
-    localStorage.setItem('startMatch', false);
-    localStorage.setItem('stopMatch', false);
-    localStorage.setItem('resetField', false);
-    localStorage.setItem('playMode', "Autonomous")
-
-    //---Loading Screen for Unity---
-    var shouldBeUpdatingLoadingText = true;
-    var counterForLoadingText = 1;
-    setTimeout(function () {
-      shouldBeUpdatingLoadingText = false;
-      document.getElementById('fieldViewiframe').hidden = false;
-      document.getElementById('loadingText').remove();
-      document.getElementById('loadingTextDiv').remove();
-    }, 3000);
-
-    const delay = ms => new Promise(res => setTimeout(res, ms));
-
-    const updateLoadingText = async () => {
-      while (shouldBeUpdatingLoadingText) {
-        if (counterForLoadingText == 1) {
-          document.getElementById('loadingText').innerHTML = "Loading Field."
-        } else if (counterForLoadingText == 2) {
-          document.getElementById('loadingText').innerHTML = "Loading Field.."
-        } else if (counterForLoadingText == 3) {
-          document.getElementById('loadingText').innerHTML = "Loading Field..."
-          counterForLoadingText = 0;
-        }
-        counterForLoadingText++;
-        await delay(500);
-      }
-    }
-    updateLoadingText();
-
-    //---Resize Screens---
-    var xScreenSize = .5 * document.body.clientWidth;
-    document.getElementById('leftScreen').style.width = xScreenSize + "px";
-    document.getElementById('rightScreen').style.width = xScreenSize + "px";
-    var yScreenSize = window.innerHeight / 2 - 30;
-    document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-    document.getElementById('controlPanel').style.height = yScreenSize + "px";
-    document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
-    document.getElementById('fieldView').style.height = yScreenSize + "px";
-    var mouseClicked = 0;
-
-    document.getElementById('middleSlider').addEventListener('mousedown', function () {
-      document.getElementById('scrollOverlay').style.cursor = "e-resize";
-      document.getElementById('scrollOverlay').style.visibility = "visible";
-      mouseClicked = 1;
-    });
-
-    document.getElementById('rightSlider').addEventListener('mousedown', function () {
-      document.getElementById('scrollOverlay').style.cursor = "n-resize";
-      document.getElementById('scrollOverlay').style.visibility = "visible";
-      mouseClicked = 2;
-    });
-
-    document.getElementById('multiSlider').addEventListener('mousedown', function () {
-      document.getElementById('scrollOverlay').style.cursor = "move";
-      document.getElementById('scrollOverlay').style.visibility = "visible";
-      mouseClicked = 3;
-    });
-
-    window.addEventListener('mouseup', function () {
-      document.getElementById('scrollOverlay').style.visibility = "hidden";
-      xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
-      yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
-      mouseClicked = 0;
-    });
-
-    window.addEventListener('resize', function () {
-      //Width Consideration
-      xScreenSize = document.getElementById('leftScreen').clientWidth;
-      if (xScreenSize < 10) {
-        document.getElementById('leftScreen').style.width = '10px';
-        xScreenSize = 10;
-      }
-      document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
-      //Height Consideration
-      if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
-        yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-        document.getElementById('controlPanel').style.height = yScreenSize + "px";
-        document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
-      }
-      document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
-      document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-    });
-
-    window.addEventListener('mousemove', function (event) {
-      if (mouseClicked != 0) {
-        if (mouseClicked != 2) {
-          xScreenSize += event.movementX * .8;
-          var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
-          document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
-          document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
-          Blockly.svgResize(Blockly.mainWorkspace);
-        }
-        if (mouseClicked != 1) {
-          yScreenSize += event.movementY * .8;
-          var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-          document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
-          document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
-          document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
-        }
-        event.preventDefault();
-      }
-    });
-
-    document.getElementById('textSelection').addEventListener('wheel', function (event) { document.getElementById('textSelection').scrollLeft += (event.deltaY + event.deltaX) * .5; event.preventDefault(); });
-    document.getElementById('topMenu').addEventListener('wheel', function (event) { document.getElementById('topMenu').scrollLeft += (event.deltaY + event.deltaX)* .5; event.preventDefault(); });
-
-    //---Prompts---
-    var overlayReturned = null;
-
-    //Overrides Window.Prompt for Variable Renaming
-    window.prompt = function overlayPrompt(message, placeholder) {
-      overlayReturned = null;
-      overlay(true, (message == "New variable name:" ? 2 : 3));
-      return new Promise(function (resolve, reject) {
-        var returnChecker = setInterval(function () {
-          if (overlayReturned == -1) {
-            reject();
-            clearInterval(returnChecker);
-          }
-          else if (overlayReturned != null) {
-            resolve(overlayReturned);
-            clearInterval(returnChecker);
-          }
-        }, 250);
-      });
-    }
-
-    //---Gamepad Connections---
-    window.addEventListener("gamepadconnected", (event) => {
-      if (event.gamepad.index < 2) {
-        document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
-      }
-    });
-
-    window.addEventListener("gamepaddisconnected", (event) => {
-      if (event.gamepad.index < 2) {
-        document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
-      }
-    });
-
-    //---Miscellaneous Functions---
-    //Overlay
-    function overlay(show, activity) {
-      if (show) {
-        document.getElementById('overlay').style.animation = "showOverlay .25s ease 1 normal forwards";
-        document.getElementById('overlayInfo').style.animation = "showOverlayInfo .5s ease 1 normal forwards";
-        switch (activity) {
-          case 0:
-            document.getElementById('saveProgramName').value = "";
-            document.getElementById('overlayName').innerHTML = "Save Program";
-            break;
-          case 1:
-            document.getElementById('overlayName').innerHTML = "Delete Program?";
-            break;
-          case 2:
-            document.getElementById('newVariableName').value = "";
-            document.getElementById('overlayName').innerHTML = "Create Variable";
-            break;
-          case 3:
-            document.getElementById('changedVariableName').value = "";
-            document.getElementById('overlayName').innerHTML = "Rename Variable";
-            break;
-          case 4:
-            document.getElementById('blockSelect').value = "";
-            document.getElementById('javaSelect').value = "";
-            document.getElementById('overlayName').innerHTML = "New Program";
-            document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
-            break;
-        }
-        for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
-          document.getElementById('overlayType').children[i].style.display = "none";
-        document.getElementById('overlayType').children[activity].style.display = "inherit";
-      }
-      else if (document.getElementById('overlay').style.animation !== '') {
-        document.getElementById('overlay').style.animation = "hideOverlay .25s ease 1 normal forwards";
-        document.getElementById('overlayInfo').style.animation = "hideOverlayInfo .5s ease 1 normal forwards";
-        if (activity == 0)
-          overlayReturned = -1;
-        else if (activity == 1)
-          overlayReturned = document.getElementById('newVariableName').value;
-        else
-          overlayReturned = document.getElementById('changedVariableName').value;
-      }
-    }
-
-    //Functions for OnBotJava
-    function getSelectedRange() {
-      return { from: editor.getCursor(true), to: editor.getCursor(false) };
-    }
-
-    function autoFormatSelection() {
-      var cursor = editor.getCursor();
-      CodeMirror.commands["selectAll"](editor);
-      var range = getSelectedRange();
-      editor.autoFormatRange(range.from, range.to);
-      editor.setCursor(cursor);
-    }
-
-    //(re)loads dropdown of saved programs
-    function prepareUiToLoadProgram() {
-      var keys = Object.keys(localStorage).sort();
-
-      document.getElementById("programSelect").options.length = 1;
-
-      for (var i = 0; i < keys.length; i++) {
-        console.log(keys[i]);
-        if (keys[i].includes("Program Name: ")) {
-          var option = document.createElement("option");
-          option.value = keys[i].replace("Program Name: ", "");
-          option.text = keys[i].replace("Program Name: ", "");
-          document.getElementById("programSelect").appendChild(option);
-        }
-      }
-    }
-
-    prepareUiToLoadProgram();
-
-    //---Switching between Blocks and Java---
-    var isUsingBlocks = true;
-
-    function switchToBlocks() {
-	  document.getElementById('blocksBttn').classList.add('button1Selected');
-      document.getElementById('javaBttn').classList.remove('button1Selected');
-	
-      document.getElementById('blocklyDiv').hidden = false;
-      document.getElementById('onBotJavaDiv').hidden = true;
-      document.getElementById('saveAs').disabled = false;
-      document.getElementById('initBttn').disabled = false;
-      isUsingBlocks = true;
-      if (Blockly.mainWorkspace)
-        Blockly.svgResize(Blockly.mainWorkspace);
-      if (currentProjectName != 'program') {
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        document.getElementById("programSelect").value = currentProjectName;
-      }
-    }
-
-    function switchToOnBotJava() {
-	  document.getElementById('javaBttn').classList.add('button1Selected');
-      document.getElementById('blocksBttn').classList.remove('button1Selected');
-	
-      resetProgramExecution();
-      document.getElementById('blocklyDiv').hidden = true;
-      document.getElementById('onBotJavaDiv').hidden = false;
-      document.getElementById('saveAs').disabled = true;
-      document.getElementById('initBttn').disabled = true;
-      document.getElementById('save').disabled = true;
-      document.getElementById('delete').disabled = true;
-      document.getElementById('download').disabled = true;
-      isUsingBlocks = false;
-      document.getElementById("programSelect").value = "Load Program";
-    }
-
-    var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
-    var editor;
-
-    setUpOnBotJava();
-    switchToBlocks();
-
-    function setUpOnBotJava(javaCode) {
-      editor = CodeMirror(function (elt) {
-        document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
-      }, {
-        value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block Code exported to Java\n * and some Sample Code given in the 'New Program' popup.\n */\n\n" + (javaCode || defaultText),
-        mode: "text/x-java",
-        lineNumbers: true,
-        theme: "darcula",
-        scrollbarStyle: null,
-        autocorrect: true,
-        autoCloseBrackets: true,
-      });
-      //autoFormatSelection();
-    }
-
-    //---Functionality for New Program Overlay Buttons---
-    //"Sample Program"
-    function sampleProgram(blockProgram) {
-      var sampleProgram;
-      if (blockProgram)
-        sampleProgram = document.getElementById('blockSelect').value;
-      else
-        sampleProgram = document.getElementById('javaSelect').value;
-      document.getElementById("programSelect").value = "Load Program";
-      currentProjectName = "program";
-      document.getElementById('save').disabled = true;
-      document.getElementById('delete').disabled = true;
-      document.getElementById('download').disabled = true;
-      //Load Basic Program From Files
-      var client = new XMLHttpRequest();
-      client.open('GET', './blocks/samples/' + sampleProgram + (blockProgram ? '.blk' : '.java'));
-      client.onload = function () {
-        var content = client.responseText;
-        if (content !== '') {
-          if (blockProgram) {
-            var i = content.indexOf('</xml>');
-            content = content.substring(0, i + 6);
-            Blockly.mainWorkspace.clear();
-            Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-            resetProgramExecution();
-            if (sampleProgram != 'BasicAutoOpMode')
-              document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-            else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller")) {
-              document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-            }
-            switchToBlocks();
-          }
-          else {
-            switchToOnBotJava();
-            setUpOnBotJava(content);
-          }
-        }
-      }
-      client.send();
-      overlay(false, 0);
-    }
-
-    //"Upload Program"
-    document.getElementById('filePrompt').addEventListener('change', function () {
-      var fileReader = new FileReader();
-      fileReader.onload = function () {
-        uploadProgram(document.getElementById('filePrompt').files[0].name, fileReader.result);
-      }
-      fileReader.readAsText(document.getElementById('filePrompt').files[0]);
-    });
-
-    function uploadProgram(programName, content) {
-      document.getElementById('filePrompt').value = '';
-      var fileType = programName.split('.')[programName.split('.').length - 1]
-      if (fileType == "blk") {
-        programName = programName.substring(0, programName.length - fileType.length - 1);
-        currentProjectName = programName;
-        Blockly.mainWorkspace.clear();
-        var i = content.indexOf('</xml>');
-        content = content.substring(0, i + 6);//Convert from names to config
-        //String to XML to Blockly
-        var parser = new DOMParser();
-        var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
-        //Convert 2 Duals to Quad
-        var blocks = xmlDoc.getElementsByTagName("block");
-        for (var i = 0; i < blocks.length - 1; i++) {
-          if (blocks[i].getElementsByTagName("next")[0]) {
-            nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[0];
-            if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
-              blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
-              blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-              for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
-                if (nextBlock.childNodes[c].getAttribute("name")) {
-                  var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
-                  nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
-                  blocks[i].appendChild(nextBlock.childNodes[c]);
-                }
-              blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
-              if (nextBlock.getElementsByTagName("next")[0])
-                blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
-            }
-          }
-        }
-        content = new XMLSerializer().serializeToString(xmlDoc);
-        console.log(content);
-        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-        resetProgramExecution();
-        document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-        localStorage.setItem("Program Name: " + programName, content);
-        prepareUiToLoadProgram();
-        document.getElementById("programSelect").value = programName;
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        switchToBlocks();
-        overlay(false, 0);
-      }
-      else if (fileType == "java") {
-        switchToOnBotJava();
-        setUpOnBotJava(content);
-        overlay(false, 0);
-      }
-    }
-
-    //"Export to OnBotJava"
-    function convertToJava() {
-      var javaCode = generateJavaCode();
-      switchToOnBotJava();
-      setUpOnBotJava(configNaming(javaCode));
-      overlay(false, 0);
-    }
-
-    //Coped from FTC Code
-    function generateJavaCode() {
-      // Get the blocks as xml (text).
-      Blockly.FtcJava.setClassNameForFtcJava_((currentProjectName != "program") ? currentProjectName : null);
-      var blocksContent = Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace));
-      // Don't bother exporting if there are no blocks.
-      if (blocksContent.indexOf('<block') > -1) {
-        // Generate Java code.
-        return Blockly.FtcJava.workspaceToCode(workspace);
-      }
-      return '';
-    }
-
-    //---Functionality of Middle Buttons---
-    function saveProgram() {
-      var programName = document.getElementById('saveProgramName').value;
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
-      prepareUiToLoadProgram();
-      document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
-      currentProjectName = document.getElementById('saveProgramName').value;
-      document.getElementById('save').disabled = false;
-      document.getElementById('delete').disabled = false;
-      document.getElementById('download').disabled = false;
-      overlay(false, 0);
-      document.getElementById("telemetryText").innerText = 'Saved new "' + programName + '" Program \n';
-    }
-
-    function loadProgram() {
-      Blockly.mainWorkspace.clear();
-      var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
-      currentProjectName = document.getElementById('programSelect').value;
-      if (nameOfProject == "Program Name: Load Program") {
-        document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-        sampleProgram(true);
-      } else if (typeof (Storage) !== "undefined") {
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
-        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-        resetProgramExecution();
-        document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
-      }
-      switchToBlocks();
-    }
-
-    function autoSave() {
-      var programName = document.getElementById('programSelect').value;
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
-      document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
-    }
-
-    function deleteProgram() {
-      var programName = document.getElementById('programSelect').value;
-      currentProjectName = "program";
-      localStorage.removeItem("Program Name: " + programName);
-      document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-      sampleProgram(true);
-      prepareUiToLoadProgram();
-      resetProgramExecution();
-      document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
-      overlay(false, 0);
-    }
-
-    function downloadProgram(button) {
-      var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-      //Blockly to XML to String
-      var parser = new DOMParser();
-      var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
-      //Convert Quad to 2 Duals
-      var blocks = xmlDoc.getElementsByTagName("block");
-      for (var i = 0; i < blocks.length; i++)
-        if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
-          var secondDual = blocks[i].cloneNode();
-          blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
-          secondDual.setAttribute("type", blocks[i].getAttribute("type"));
-          secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
-          for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
-            if (blocks[i].childNodes[c].getAttribute("name")) {
-              var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
-              if (num > 2) {
-                blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
-                secondDual.appendChild(blocks[i].childNodes[c]);
-              }
-            }
-          if (blocks[i].getElementsByTagName("next")[0])
-            secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
-          blocks[i].appendChild(xmlDoc.createElement("next"));
-          blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
-        }
-      //Download Program
-      button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
-      button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
-    }
-
-    //---Functionality for Top Right Buttons---
-    function initProgram(code) {
-      resetProgramExecution();
-      programStart = false;
-      document.getElementById('programInit').style.display = 'none';
-      document.getElementById('programStartStop').style.display = 'inline-block';
-      document.getElementById('startBttn').disabled = false;
-      startTime = performance.now();
-      if (code == "") {
-        code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-        var finalCode = "";
-        var inFunction = false;
-        for (var line of code.split('\n')) {
-          if (line.startsWith('function ')) {
-            inFunction = true;
-          }
-          if (line.startsWith('async function '))
-            inFunction = true;
-          if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
-            finalCode += line + '\n';
-          else
-            finalCode += '//' + line + '\n';
-          if (line == '}')
-            inFunction = false;
-        }
-
-        finalCode += "\nawait runOpMode();\n";
-        runProgram(finalCode);
-      }
-      else
-        runProgram(code);
-    }
-
-    function startProgram() {
-      document.getElementById('startBttn').disabled = true;
-	     document.getElementById("telemetryText").innerText = "Program Started \n";
-    }
-
-    function stopProgram() {
-      localStorage.setItem('stopMatch', true);
-      resetProgramExecution();
-      document.getElementById("telemetryText").innerText = "Program Aborted \n";
-    }
-
-    function resetField() {
-      localStorage.setItem('resetField', true);
-      document.getElementById("telemetryText").innerText = "Field Reset \n";
-    }
-
-    //---Funcionality for Running Blockly Code---
-    var programExecController = new AbortController();
-
-    async function runProgram(code) {
-      console.log(code);
-      let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
-      let program = new AsyncFunctionCtor(code);
-
-      //setup
-      localStorage.setItem('startMatch', true);
-      document.getElementById("telemetryText").innerText = "Program Initialized \n";
-
-      programExecController = new AbortController();
-      // execution
-      try {
-        await program();
-      }
-      catch (err) {
-        // anything other than abortedMsg is an actual error
-        if (err != abortedMsg) {
-          localStorage.setItem('stopMatch', true);
-          document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
-          resetProgramExecution();
-          throw err;
-        }
-      }
-
-      // end
-      resetProperties();
-      localStorage.setItem('stopMatch', true);
-      if (!document.getElementById("telemetryText").innerText.startsWith("<Program has stopped!>"))
-        document.getElementById("telemetryText").innerText = "Program Ended \n";
-      document.getElementById('programInit').style.display = 'inline-block';
-      document.getElementById('programStartStop').style.display = 'none';
-    }
-
-    function resetProgramExecution() {
-      programExecController.abort();
-      resetProperties();
-      document.getElementById('programInit').style.display = 'inline-block';
-      document.getElementById('programStartStop').style.display = 'none';
-    }
-
-    //---Switch Between Top Right Tabs---
-    var prevTabButton = document.getElementById('firstTab');
-
-    function switchTab(button, tabNum) {
-      if (button.className == 'textNormal') {
-        for (var i = 0; i < document.getElementById('tabOptions').children.length; i++)
-          document.getElementById('tabOptions').children[i].style.display = "none";
-        document.getElementById('tabOptions').children[tabNum].style.display = "inherit";
-        prevTabButton.classList.add('textNormal');
-        button.classList.remove('textNormal');
-        prevTabButton = button;
-      }
-    }
-
-    //---Load Lessons---
-    function loadLesson() {
-      document.getElementById('lessonButtons').style.display = "flex";
-      document.getElementById('lessonText').parentElement.style.height = '75%';
-      switch (document.getElementById('lessonSelect').value) {
-        case "0":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "In this first lesson, you will need to power the Front Left and Front Right Wheels for a certain amount of time in order to get the robot on the White Line for +5 Points during Autonomous. Press the \"Show the Task\" button to see what you need to do or \"Video Hint\" for an introduction." +
-            "\n\nYou'll Learn:\nBasic Motor Powering\nMovement Timing";
-          break;
-        case "1":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "The next stage will now be to add power to all 4 Wheels in your program. This will require a bit more precision, but will benefit with the added Torque and Speed the motors will provide. Your robot can have a max of 8 motors and 12 servos for full movement!" +
-            "\n\nYou'll Learn:\nBalance between Speed and Reliability\nMore Motor Control";
-          break;
-        case "2":
-          document.getElementById('lessonText').innerText = "Difficulty: Easy\n" +
-            "For this lesson, we will be adding more than just forwards and backwards and introducing rotation! This may require alot more precision than you initially think. If only there was a way of consistently moving..." +
-            "\n\nYou'll Learn:\nThe Limits to using Timing\nRotation Basics";
-          break;
-        case "3":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Let's make the robot go along the path of the strongest shape: the Square! Or was it the triangle? Either way it may be useful to use loops for this program so the code looks cleaner and changes can be made faster. Maybe using a sensor for reliable rotation may be in order!" +
-            "\n\nYou'll Learn:\nThe Joys of Clean Code\nUsing Loop Blocks & the IMU Sensor";
-          break;
-        case "4":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Are those mecanum wheels on your robot there? Great! That means you have another mode of movement called strafing where the robot can move directly left and right without turning. The wheels just need to spin a certain way..." +
-            "\n\nYou'll Learn:\nThe Art of Expirementing\nStrafing Movement";
-          break;
-        case "5":
-          document.getElementById('lessonText').innerText = "Difficulty: Medium\n" +
-            "Alright, now let's start getting some actual autonomous points. First off, let's put the wobble goal in the first position earning +15 points. For right now, we can stick to timing but we can see it becomes a bit more unreliable the more we move." +
-            "\n\nYou'll Learn:\nHow to Handle Large Amounts of Code\nComplex Movement";
-          break;
-        case "6":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Moving onto the next wobble goal position, we know we need a different system of navigation. Let's try out using motor encoders which can tell us the wheel's current position. Motor Encoders: 560 Ticks per Revolution, Wheels' Circumfrence: 4π Inches" +
-            "\n\nYou'll Learn:\nMotor Encoders\nVariables";
-          break;
-        case "7":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Great, we have cracked the code for motor encoders! But... the code looks all messy and complicated and would be a pain to make slight changes to. Let's try and compact the 3 movements the robot can make into 3 functions we can call from the main runOpMode function." +
-            "\n\nYou'll Learn:\nKeeping Code Simple\nFunctions";
-          break;
-        case "8":
-          document.getElementById('lessonText').innerText = "Difficulty: Hard\n" +
-            "Looks like the engineering team has just slapped a shooting mechanism onto your robot. Time to learn how that works. It seems they have wired in a new \"ringLoader\" and \"ringShooter\" motor. Maybe you could even drop off a wobble goal into one of the positions in the same program!" +
-            "\n\nYou'll Learn:\nHandling Multiple Tasks\nComplex Motors";
-          break;
-        case "9":
-          document.getElementById('lessonText').innerText = "Difficulty: Extreme!\n" +
-            "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous! Try and shoot at each powershot while either rotating or strafing to change trajectory. Get as many points as possible with *correct* wobble goal position included!" +
-            "\n\nYou'll Learn:\nScoring Big with Extra Sensors\nHow to Code! (hopefully...)";
-          break;
-        default:
-          document.getElementById('lessonButtons').style.display = "none";
-          document.getElementById('lessonText').innerText = "Select a Lesson to begin Learning!";
-          document.getElementById('lessonText').parentElement.style.height = '';
-          break;
-      }
-    }
-
-    function runLessonCode() {
-      var lessonName = "";
-      switch (document.getElementById('lessonSelect').value) {
-        case "0": lessonName = "WhiteLine2Motors"; break;
-        case "1": lessonName = "WhiteLine4Motors"; break;
-        case "2": lessonName = "DriveRotate90"; break;
-        case "3": lessonName = "DriveRotateSquare"; break;
-        case "4": lessonName = "DriveStrafeSquare"; break;
-        case "5": lessonName = "WobblePos1"; break;
-        case "6": lessonName = "WobblePos2"; break;
-        case "7": lessonName = "WobblePos3"; break;
-        case "8": lessonName = "ShootHighGoal"; break;
-        case "9": lessonName = "ShootPowerShots"; break;
-      }
-      stopProgram();
-      resetField();
-      //Load Lesson Code to Run
-      var client = new XMLHttpRequest();
-      client.open('GET', './blocks/lessons/' + lessonName + '.ftccode');
-      client.onload = function () {
-        var lessonCode = client.responseText;
-        if (lessonCode !== '')
-          initProgram(lessonCode);
-		  startProgram();
-      }
-      client.send();
-    }
-
-    function playVideo(videoType) {
-      link = "";
-      //videoType: 0 = howTo, 1 = hint, 2 = solution
-      if (videoType == 1) {
-        switch (document.getElementById('lessonSelect').value) {
-          case "0": link = "https://www.youtube.com/embed/x7BokrnYRVQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "1": link = "https://www.youtube.com/embed/c4eEeLBST9A?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "2": link = "https://www.youtube.com/embed/Mwt1i6DcoAw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "3": link = "https://www.youtube.com/embed/T7qsSIdD1d4?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "4": link = "https://www.youtube.com/embed/GrotP67WXic?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "5": link = "https://www.youtube.com/embed/9jmv3Qa42sQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "6": link = "https://www.youtube.com/embed/Bks7X4O9m84?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "7": link = "https://www.youtube.com/embed/aqcV63eJp5M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "8": link = "https://www.youtube.com/embed/t43pUXOM0Xk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "9": link = "https://www.youtube.com/embed/SEw5JmZKjJQ?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-        }
-      }
-      else if (videoType == 2) {
-        switch (document.getElementById('lessonSelect').value) {
-          case "0": link = "https://www.youtube.com/embed/ZgVQHswMonk?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "1": link = "https://www.youtube.com/embed/Q-C3vVFQS10?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "2": link = "https://www.youtube.com/embed/nx4PnIYA7ns?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "3": link = "https://www.youtube.com/embed/MXjoF2XXLAE?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "4": link = "https://www.youtube.com/embed/IGs1DomVS3w?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "5": link = "https://www.youtube.com/embed/j7tnpOZ_xDw?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "6": link = "https://www.youtube.com/embed/iCbP_eR3QAU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "7": link = "https://www.youtube.com/embed/qqN5xwUKk3M?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "8": link = "https://www.youtube.com/embed/VwxFRgVVlGs?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-          case "9": link = "https://www.youtube.com/embed/THkZypgWRhg?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz"; break;
-        }
-      }
-      else
-        link = 'https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz';
-      document.getElementById('tabOptions').children[3].src = link;
-      switchTab(document.getElementById('videoButton'), 3);
-    }
-
   </script>
+  
+  <script src="./assets/programExecution.js"></script>
+  <script src="./assets/localScript.js"></script>
 
   <!-- FTC Copied Files w/ slight modifications -->
-  <script src="./robotConfigs/programConfigSetup.js"></script>
-  <script src="./blocks/ftcblockly.js"></script>
-  <script src="./blocks/ftcjava.js"></script>
-  <script src="./blocks/blocks/acceleration.js"></script>
-  <script src="./blocks/blocks/angular_velocity.js"></script>
-  <script src="./blocks/blocks/bno055imu.js"></script>
-  <script src="./blocks/blocks/bno055imu_parameters.js"></script>
-  <script src="./blocks/blocks/color.js"></script>
-  <script src="./blocks/blocks/cr_servo.js"></script>
-  <script src="./blocks/blocks/dbg_log.js"></script>
-  <script src="./blocks/blocks/dc_motor.js"></script>
-  <script src="./blocks/blocks/distance_sensor.js"></script>
-  <script src="./blocks/blocks/elapsed_time2.js"></script>
-  <script src="./blocks/blocks/gamepad.js"></script>
-  <script src="./blocks/blocks/linear_op_mode.js"></script>
-  <script src="./blocks/blocks/lists.js"></script>
-  <script src="./blocks/blocks/locale.js"></script>
-  <script src="./blocks/blocks/logic.js"></script>
-  <script src="./blocks/blocks/loops.js"></script>
-  <script src="./blocks/blocks/magnetic_flux.js"></script>
-  <script src="./blocks/blocks/math.js"></script>
-  <script src="./blocks/blocks/matrix_f.js"></script>
-  <script src="./blocks/blocks/misc.js"></script>
-  <script src="./blocks/blocks/navigation.js"></script>
-  <script src="./blocks/blocks/open_gl_matrix.js"></script>
-  <script src="./blocks/blocks/orientation.js"></script>
-  <script src="./blocks/blocks/pidf_coefficients.js"></script>
-  <script src="./blocks/blocks/position.js"></script>
-  <script src="./blocks/blocks/quaternion.js"></script>
-  <script src="./blocks/blocks/range.js"></script>
-  <script src="./blocks/blocks/servo.js"></script>
-  <script src="./blocks/blocks/system.js"></script>
-  <script src="./blocks/blocks/telemetry.js"></script>
-  <script src="./blocks/blocks/temperature.js"></script>
-  <script src="./blocks/blocks/text.js"></script>
-  <script src="./blocks/blocks/variables.js"></script>
-  <script src="./blocks/blocks/vars.js"></script>
-  <script src="./blocks/blocks/vector_f.js"></script>
-  <script src="./blocks/blocks/velocity.js"></script>
-  <script src="./blocks/blocks/procedures.js"></script>
   <xml id="toolbox" style="display: none">
     <category css-icon="" name="Coding Blocks" toolboxitemid="Title"></category>
     <category css-icon="searchIcon fa fa-search" custom="SearchResults" toolboxitemid="Searcher"></category>
@@ -6158,7 +5401,7 @@
         }
 
       });
-	 	  
+	  
 	  //Sets up Title Category
 	  workspace.getToolbox().getToolboxItemById('Title').setDisabled('true');
 	  
@@ -6252,6 +5495,47 @@
 		'SearchResults', searchFlyout);
 
   </script>
+
+  <script src="./robotConfigs/configSetup.js"></script>
+  <script src="./blocks/ftcblockly.js"></script>
+  <script src="./blocks/ftcjava.js"></script>
+  <script src="./blocks/blocks/acceleration.js"></script>
+  <script src="./blocks/blocks/angular_velocity.js"></script>
+  <script src="./blocks/blocks/bno055imu.js"></script>
+  <script src="./blocks/blocks/bno055imu_parameters.js"></script>
+  <script src="./blocks/blocks/color.js"></script>
+  <script src="./blocks/blocks/cr_servo.js"></script>
+  <script src="./blocks/blocks/dbg_log.js"></script>
+  <script src="./blocks/blocks/dc_motor.js"></script>
+  <script src="./blocks/blocks/distance_sensor.js"></script>
+  <script src="./blocks/blocks/elapsed_time2.js"></script>
+  <script src="./blocks/blocks/gamepad.js"></script>
+  <script src="./blocks/blocks/linear_op_mode.js"></script>
+  <script src="./blocks/blocks/lists.js"></script>
+  <script src="./blocks/blocks/locale.js"></script>
+  <script src="./blocks/blocks/logic.js"></script>
+  <script src="./blocks/blocks/loops.js"></script>
+  <script src="./blocks/blocks/magnetic_flux.js"></script>
+  <script src="./blocks/blocks/math.js"></script>
+  <script src="./blocks/blocks/matrix_f.js"></script>
+  <script src="./blocks/blocks/misc.js"></script>
+  <script src="./blocks/blocks/navigation.js"></script>
+  <script src="./blocks/blocks/open_gl_matrix.js"></script>
+  <script src="./blocks/blocks/orientation.js"></script>
+  <script src="./blocks/blocks/pidf_coefficients.js"></script>
+  <script src="./blocks/blocks/position.js"></script>
+  <script src="./blocks/blocks/quaternion.js"></script>
+  <script src="./blocks/blocks/range.js"></script>
+  <script src="./blocks/blocks/servo.js"></script>
+  <script src="./blocks/blocks/system.js"></script>
+  <script src="./blocks/blocks/telemetry.js"></script>
+  <script src="./blocks/blocks/temperature.js"></script>
+  <script src="./blocks/blocks/text.js"></script>
+  <script src="./blocks/blocks/variables.js"></script>
+  <script src="./blocks/blocks/vars.js"></script>
+  <script src="./blocks/blocks/vector_f.js"></script>
+  <script src="./blocks/blocks/velocity.js"></script>
+  <script src="./blocks/blocks/procedures.js"></script>
 </body>
 
 </html>

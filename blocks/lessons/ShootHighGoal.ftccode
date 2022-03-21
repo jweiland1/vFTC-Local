@@ -8,6 +8,7 @@ async function runOpMode() {
   motor.setProperty([0, 1, 2, 3], 'TargetPositionTolerance', [50, 50, 50, 50]);
   motor.setProperty([0, 1, 2, 3], 'TargetPosition', [0, 0, 0, 0]);
   motor.setProperty([0, 1, 2, 3], 'Mode', ["RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION"]);
+  await linearOpMode.waitForStart();
   if (linearOpMode.opModeIsActive()) {
     motor.setProperty([7], 'Power', [1]);
     await Forward(65);

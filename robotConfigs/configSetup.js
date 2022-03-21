@@ -2,7 +2,7 @@
 var robotConfig = null;
 
 var client = new XMLHttpRequest();
-client.open('GET', './robotConfigs/defaultConfig.robot');
+client.open('GET', './robotConfigs/defaultRobot.json');
 client.onload = function () {
     var robotConfigTxt = client.responseText;
     if (robotConfigTxt !== '' && robotConfig == null) {
@@ -18,6 +18,8 @@ function createDcMotorDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["motors"].length; i++)
 		CHOICES[i] = [robotConfig["motors"][i]["name"], "dcMotor" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "dcMotor0"];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -26,6 +28,8 @@ function createDcMotorExDropdown() {
 	for (i = 0; i < robotConfig["motors"].length; i++)
 		if (robotConfig["motors"][i]["type"] == "extended")
 			CHOICES[i] = [robotConfig["motors"][i]["name"], "dcMotor" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "dcMotor0"];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -34,6 +38,8 @@ function createCRServoDropdown() {
 	for (i = 0; i < robotConfig["servos"].length; i++)
 		if (robotConfig["servos"][i]["type"] == "continous")
 			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "servo" + robotConfig["servos"].length];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -42,6 +48,8 @@ function createServoDropdown() {
 	for (i = 0; i < robotConfig["servos"].length; i++)
 		if (robotConfig["servos"][i]["type"] == "180degrees")
 			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "servo" + robotConfig["servos"].length];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -49,6 +57,8 @@ function createDistanceSensorDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["distSensor"].length; i++)
 		CHOICES[i] = [robotConfig["distSensor"][i]["name"], "distanceSensor" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "distanceSensor0"];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -56,6 +66,8 @@ function createBNO055IMUDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["IMU"].length; i++)
 		CHOICES[i] = [robotConfig["IMU"][i]["name"], "imu" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "imu0"];
     return new Blockly.FieldDropdown(CHOICES);
 }
 
@@ -113,7 +125,11 @@ function setupCategories() {
 	document.getElementById("blockSelect").value = 'BasicAutoOpMode';
 	sampleProgram(true);
 	
-	var toolbox = Blockly.getMainWorkspace().getToolbox();
+	try {
+		var toolbox = Blockly.getMainWorkspace().getToolbox();
+	} catch (e) {
+		location.reload();
+	}
 	
 	var crServos = 0;
 	for (i = 0; i < robotConfig["servos"].length; i++)

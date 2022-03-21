@@ -8,6 +8,7 @@ async function runOpMode() {
   motor.setProperty([0, 1, 2, 3], 'TargetPositionTolerance', [50, 50, 50, 50]);
   motor.setProperty([0, 1, 2, 3], 'TargetPosition', [0, 0, 0, 0]);
   motor.setProperty([0, 1, 2, 3], 'Mode', ["RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION", "RUN_TO_POSITION"]);
+  await linearOpMode.waitForStart();
   if (linearOpMode.opModeIsActive()) {
     motor.setProperty([7], 'Power', [1]);
     motor.setProperty([0, 1, 2, 3], 'Power', [0.85, 0.85, 0.85, 0.85]);
@@ -19,7 +20,7 @@ async function runOpMode() {
     while (motor.isBusy(0) || motor.isBusy(1)) {
       await linearOpMode.sleep(1);
     }
-    motor.setProperty([0, 1, 2, 3], 'TargetPosition', [motor.getProperty(0, 'TargetPosition') + await InchesToTicks(15), motor.getProperty(1, 'TargetPosition') + await InchesToTicks(15), motor.getProperty(2, 'TargetPosition') + await InchesToTicks(15), motor.getProperty(3, 'TargetPosition') + await InchesToTicks(15)]);
+    motor.setProperty([0, 1, 2, 3], 'TargetPosition', [motor.getProperty(0, 'TargetPosition') + await InchesToTicks(20), motor.getProperty(1, 'TargetPosition') + await InchesToTicks(20), motor.getProperty(2, 'TargetPosition') + await InchesToTicks(20), motor.getProperty(3, 'TargetPosition') + await InchesToTicks(20)]);
     while (motor.isBusy(0) || motor.isBusy(1)) {
       await linearOpMode.sleep(1);
     }
