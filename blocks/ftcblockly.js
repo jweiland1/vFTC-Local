@@ -22,7 +22,7 @@ function resetProperties() {
 		robotConfig["motors"][i]["CurrentAlert"] = 5;
 	}
 	
-	currMotorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+	motorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
 }
 
 var programStart = false;
@@ -155,7 +155,9 @@ let motor = {
 			else if (property == 'Mode' && values[i] == 'STOP_AND_RESET_ENCODER') {
 				robotConfig["motors"][motorNums[i]]["Power"] = 0;
 				robotConfig["motors"][motorNums[i]]["Velocity"] = 0;
-				localStorage.setItem("motorResetEncoders", true); //Unfortunately Unity is setup to reset all encoders instead of seperately
+				var resetValues = JSON.parse(localStorage.getItem("motorResetEncoders"));
+				resetValues[motorNums[i]] = true;
+				localStorage.setItem("motorResetEncoders", JSON.stringify(resetValues));
 			}
 			else
                 robotConfig["motors"][motorNums[i]][property] = values[i];
@@ -168,7 +170,7 @@ let motor = {
             var motorPower = robotConfig["motors"][motorNum]["Power"];
             returnVar = (Math.round(motorPower) != motorPower);
         } else if (property == 'Velocity') {
-            returnVar = robotConfig["motors"][motorNum]["CurrVelocity"]; //Later this will be a constantly updated value from Unity
+            returnVar = robotConfig["motors"][motorNum]["CurrVelocity"];
         } else {
             returnVar = robotConfig["motors"][motorNum][property];
         }
@@ -227,23 +229,12 @@ let servo = {
 		return robotConfig["servos"][servoNum][property] = value;
 	},
     getProperty: function(servoNum, property) {
-		var returnValue;
-		if (property == "Position")
-			returnValue = (robotConfig["servos"][servoNum]["Position"] - robotConfig["servos"][servoNum]["LimitLower"]) / (robotConfig["servos"][servoNum]["LimitUpper"] - robotConfig["servos"][servoNum]["LimitLower"]);
-		else
-			returnValue = robotConfig["servos"][servoNum][property];
-		return returnValue;
+		return robotConfig["servos"][servoNum][property];
 	},
-	//This may change
 	scaleRange: function (servoNum, lowerLimit, upperLimit) {
-		//Convert Position to between 0-1
-		var servoPos = robotConfig["servos"][servoNum]["Position"];
-		var currentRatio = (servoPos - robotConfig["servos"][servoNum]["LimitLower"]) / (robotConfig["servos"][servoNum]["LimitUpper"] - robotConfig["servos"][servoNum]["LimitLower"]);
 		//Apply New Limits
 		robotConfig["servos"][servoNum]["LimitLower"] = Math.max(0, Math.min(.9, lowerLimit));
 		robotConfig["servos"][servoNum]["LimitUpper"] = Math.max(robotConfig["servos"][servoNum]["LimitLower"] + .05, Math.min(1, upperLimit));
-		//Convert Position to between lower&upper limits
-		robotConfig["servos"][servoNum]["Position"] = currentRatio * (robotConfig["servos"][servoNum]["LimitUpper"] - robotConfig["servos"][servoNum]["LimitLower"]) + robotConfig["servos"][servoNum]["LimitLower"];
 		return;
 	}
 }
@@ -716,7 +707,8 @@ let system = {
 }
 
 var lastTime = 0;
-var currMotorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+var motorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+localStorage.setItem("motorResetEncoders", "[false, false, false, false, false, false, false, false]")
 
 function variableUpdate() {
 	//Sets Amount of Times to run
@@ -725,7 +717,6 @@ function variableUpdate() {
 	for (var t = 0; t < times; t++) {
 		//Sends Motor Powers
 		try {
-			var motorPowers = "[";
 			for (i = 0; i < robotConfig["motors"].length; i++) {
 				
 				//Converts Raw Motor Power Inputs for Wheels to correct power according to Mode & other settings
@@ -746,37 +737,32 @@ function variableUpdate() {
 					motorPower *= -1;
 				//If Disabled, no power
 				if (robotConfig["motors"][i]["Enabled"] == false)
-					currMotorPowers[i] = currMotorPowers[i] * .958;
+					motorPowers[i] = motorPowers[i] * .958;
 				//ZeroPowerBehavior things
 				else if (robotConfig["motors"][i]["ZeroPowerBehavior"] == "FLOAT" && motorPower < .1)
-					currMotorPowers[i] = currMotorPowers[i] * .998 + motorPower * .002;
+					motorPowers[i] = motorPowers[i] * .998 + motorPower * .002;
 				//Different Mode Functionality
 				else if (robotConfig["motors"][i]["Mode"] == "RUN_WITHOUT_ENCODER")
-					currMotorPowers[i] = currMotorPowers[i] * .9958 + motorPower * .0042;
+					motorPowers[i] = motorPowers[i] * .9958 + motorPower * .0042;
 				else if (robotConfig["motors"][i]["Mode"] == "RUN_USING_ENCODER")
-					currMotorPowers[i] = currMotorPowers[i] * .958 + motorPower * .042;
+					motorPowers[i] = motorPowers[i] * .958 + motorPower * .042;
 				else if (robotConfig["motors"][i]["Mode"] == "RUN_TO_POSITION") {
 					if (motor.isBusy(i))
-						currMotorPowers[i] = Math.max(motorPower * .5, (currMotorPowers[i] * .9375 + motorPower * .0625)) * Math.min(Math.max((robotConfig["motors"][i]["TargetPosition"] - robotConfig["motors"][i]["CurrentPosition"]) * 100, -1), 1);
+						motorPowers[i] = Math.max(motorPower * .5, (motorPowers[i] * .9375 + motorPower * .0625)) * Math.min(Math.max((robotConfig["motors"][i]["TargetPosition"] - robotConfig["motors"][i]["CurrentPosition"]) * 100, -1), 1);
 					else
-						currMotorPowers[i] = 0;
+						motorPowers[i] = 0;
 				}
 		
 				//Wobble Goal motor can't interpolate
 				if (i == 7)
-					currMotorPowers[i] = motorPower;
+					motorPowers[i] = motorPower;
 		
-				
 				//Sets up Powers to JSON to send to Unity
 				if (i == 6)
-					motorPowers += currMotorPowers[i] * 1.015; //I could not program the robot to shoot in the top goal :(
-				else
-					motorPowers += currMotorPowers[i];
-				if (i + 1 < robotConfig["motors"].length)
-					motorPowers += ", ";
+					motorPowers[i] *= 1.015; //I could not program the robot to shoot in the top goal :(
 			}
-			motorPowers += "]";
-			localStorage.setItem("motorPowers", motorPowers);
+			localStorage.setItem("motorPowers", JSON.stringify(motorPowers));
+			motorPowers[6] /= 1.015;
 		} catch (err) {
 			document.getElementById("telemetryText").innerText = "<Program has stopped!>\n" + err;
 			resetProgramExecution();
@@ -785,14 +771,19 @@ function variableUpdate() {
 	}
 	
 	//Sends Servo Info
-	var servoPositions = "[";
+	var servoPositions = [];
 	for (var i = 0; i < robotConfig["servos"].length; i++) {
-		servoPositions += robotConfig["servos"][i]["Position"];
-		if (i + 1 < robotConfig["servos"].length)
-			servoPositions += ", ";
+		servoPositions[i] = robotConfig["servos"][i]["Position"];
+		//Applys lower and upper limits
+		servoPositions[i] = servoPositions[i] * (robotConfig["servos"][i]["LimitUpper"] - robotConfig["servos"][i]["LimitLower"]) + robotConfig["servos"][i]["LimitLower"];
+		//Reverse if set in reverse
+		if (robotConfig["servos"][i]["Direction"] == "REVERSE")
+			if (robotConfig["servos"][i]["type"] == "continous")
+				servoPositions[i] *= -1;
+			else
+				servoPositions[i] = 1 - servoPositions[i];
 	}
-	servoPositions += "]";
-	localStorage.setItem("servoPositions", servoPositions);
+	localStorage.setItem("servoPositions", JSON.stringify(servoPositions));
 	
 	//Receives Motor Positions
 	var motorPositions = JSON.parse(localStorage.getItem("motorCurrentPositions"));
@@ -800,7 +791,7 @@ function variableUpdate() {
 		//Converts change in position to returned velocity
 		if (motorPositions[i] - robotConfig["motors"][i]["CurrentPosition"] != 0)
 			robotConfig["motors"][i]["CurrVelocity"] = Math.round((motorPositions[i] - robotConfig["motors"][i]["CurrentPosition"]) / .0002) / 100;
-		else if (currMotorPowers[i] == 0)
+		else if (motorPowers[i] == 0)
 			robotConfig["motors"][i]["CurrVelocity"] = 0;
 		//Saves Current Position
 		robotConfig["motors"][i]["CurrentPosition"] = motorPositions[i];

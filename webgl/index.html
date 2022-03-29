@@ -103,64 +103,28 @@
       var backLeftEncoder = 0;
       var backRightEncoder = 0;
       
-	  getUpdate("{}");
+	  //Example Input into function           IMU Values: acceleration, angular orientation, gravity... (maybe more?)         Color Values: RGBA Proximity
+	  getUpdate('{"motors":[0,0,0,0,0,0,0,0],"distanceSensorReadings":[0],"imuReadings":[[0,0,0,0,0]],"colorSensorReadings":[[0,0,0,0,0]],"touchSensorReadings":[false]}');
 	  
 	  //WIP - Compile all incoming data into this function instead of seperate set[Motor]Encoders functions
       function getUpdate(data) {
         const obj = JSON.parse(data);
-		var motors = "[";
-		if (obj.motors)
-			for (var i = 0; i < obj.motors.length; i++) {
-				motors += obj.motors[i];
-				if (i + 1 < obj.motors.length)
-					motors += ", ";
-			}
-		motors += "]";
-        localStorage.setItem('motorCurrentPositions', motors);
-		
-		var distSens = "[";
-		if (obj.distSens)
-			for (var i = 0; i < obj.distSens.length; i++) {
-				distSens += obj.distSens[i];
-				if (i + 1 < obj.distSens.length)
-					distSens += ", ";
-			}
-		distSens += "]";
-        localStorage.setItem('distanceSensorReadings', distSens);
-		
-		var imus = "[";
-		if (obj.imu)
-			for (var i = 0; i < obj.imu.length; i++) {
-				imus += obj.imu[i];
-				if (i + 1 < obj.imu.length)
-					imus += ", ";
-			}
-		imus += "]";
-        localStorage.setItem('imuReadings', imus);
-		
-		var colSens = "[";
-		if (obj.colSens)
-			for (var i = 0; i < obj.colSens.length; i++) {
-				colSens += obj.colSens[i];
-				if (i + 1 < obj.colSens.length)
-					colSens += ", ";
-			}
-		colSens += "]";
-        localStorage.setItem('colorSensorReadings', colSens);
-		
-		var touchSens = "[";
-		if (obj.touchSens)
-			for (var i = 0; i < obj.touchSens.length; i++) {
-				touchSens += obj.touchSens[i];
-				if (i + 1 < obj.touchSens.length)
-					touchSens += ", ";
-			}
-		touchSens += "]";
-        localStorage.setItem('touchSensorReadings', touchSens);
+        localStorage.setItem('motorCurrentPositions', JSON.stringify(obj.motors));
+        localStorage.setItem('distanceSensorReadings', JSON.stringify(obj.distanceSensorReadings));
+        localStorage.setItem('imuReadings', JSON.stringify(obj.imuReadings));
+        localStorage.setItem('colorSensorReadings', JSON.stringify(obj.colorSensorReadings));
+        localStorage.setItem('touchSensorReadings', JSON.stringify(obj.touchSensorReadings));
 		
         // Add more incoming data parsing methods once format is finalized.
+		
+		//Sensor Javascript functions not setup currently so have this instead to test
+		console.log("DistanceValues: " + obj.distanceSensorReadings);
+		console.log("IMUValues: " + obj.imuReadings);
+		console.log("ColorSensorValues: " + obj.colorSensorReadings);
+		console.log("TOuchSensorValues: " + obj.touchSensorReadings);
       }
       
+	  
 	  //Old Code (Lean off of using this)
       function setFrontLeftEncoders(encoders) {
         frontLeftEncoder = encoders;
@@ -178,11 +142,13 @@
         backRightEncoder = encoders;
         updateEncoderLocalStorage();
       }
-      
       function updateEncoderLocalStorage() {
         var motorPositions = "[" + frontLeftEncoder + ", " + frontRightEncoder + ", " + backLeftEncoder + ", " + backRightEncoder + "]";
         localStorage.setItem('motorCurrentPositions', motorPositions);
       }
+	  //Old Code (Lean off of using this)
+	  
+	  
     </script>
   </body>
 </html>
