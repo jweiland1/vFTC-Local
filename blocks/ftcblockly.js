@@ -784,6 +784,16 @@ function variableUpdate() {
 		}
 	}
 	
+	//Sends Servo Info
+	var servoPositions = "[";
+	for (var i = 0; i < robotConfig["servos"].length; i++) {
+		servoPositions += robotConfig["servos"][i]["Position"];
+		if (i + 1 < robotConfig["servos"].length)
+			servoPositions += ", ";
+	}
+	servoPositions += "]";
+	localStorage.setItem("servoPositions", servoPositions);
+	
 	//Receives Motor Positions
 	var motorPositions = JSON.parse(localStorage.getItem("motorCurrentPositions"));
 	for (i = 0; i < robotConfig["motors"].length; i++) {

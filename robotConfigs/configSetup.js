@@ -71,6 +71,24 @@ function createBNO055IMUDropdown() {
     return new Blockly.FieldDropdown(CHOICES);
 }
 
+function createColorRangeSensorDropdown() {
+    var CHOICES = [];
+	for (i = 0; i < robotConfig["colorSensor"].length; i++)
+		CHOICES[i] = [robotConfig["colorSensor"][i]["name"], "colorSensor" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "colorSensor0"];
+    return new Blockly.FieldDropdown(CHOICES);
+}
+
+function createTouchSensorDropdown() {
+    var CHOICES = [];
+	for (i = 0; i < robotConfig["touchSensor"].length; i++)
+		CHOICES[i] = [robotConfig["touchSensor"][i]["name"], "touchSensor" + i];
+	if (CHOICES.length == 0)
+		CHOICES[0] = ["<None>", "touchSensor0"];
+    return new Blockly.FieldDropdown(CHOICES);
+}
+
 //Other Dropdowns
 function createLanguageCodeDropdown() {
     var CHOICES = [
@@ -97,25 +115,33 @@ var COUNTRY_CODE_TOOLTIPS = [
 //String replacement for named devices
 function configNaming(str) {
 	for (var i = 0; i < robotConfig["motors"].length; i++)
-		str = str.replaceAll("dcMotor" + i, robotConfig["motors"][i].name);
+		str = str.replaceAll("dcMotor" + i, robotConfig["motors"][i].name + "AsDcMotor");
 	for (var i = 0; i < robotConfig["servos"].length; i++)
-		str = str.replaceAll("servo" + i, robotConfig["servos"][i].name);
+		str = str.replaceAll("servo" + i, robotConfig["servos"][i].name + "AsServo");
 	for (var i = 0; i < robotConfig["distSensor"].length; i++)
-		str = str.replaceAll("distanceSensor" + i, robotConfig["distSensor"][i].name);
+		str = str.replaceAll("distanceSensor" + i, robotConfig["distSensor"][i].name + "AsDistanceSensor");
 	for (var i = 0; i < robotConfig["IMU"].length; i++)
-		str = str.replaceAll("imu" + i, robotConfig["IMU"][i].name);
+		str = str.replaceAll("imu" + i, robotConfig["IMU"][i].name + "AsBNO055IMU");
+	for (var i = 0; i < robotConfig["colorSensor"].length; i++)
+		str = str.replaceAll("colorSensor" + i, robotConfig["colorSensor"][i].name + "AsREVColorRangeSensor");
+	for (var i = 0; i < robotConfig["touchSensor"].length; i++)
+		str = str.replaceAll("touchSensor" + i, robotConfig["touchSensor"][i].name + "AsTouchSensor");
 	return str;
 }
 
 function blocklyNaming(str) {
 	for (var i = 0; i < robotConfig["motors"].length; i++)
-		str = str.replaceAll(robotConfig["motors"][i].name, "dcMotor" + i);
+		str = str.replaceAll(robotConfig["motors"][i].name + "AsDcMotor", "dcMotor" + i);
 	for (var i = 0; i < robotConfig["servos"].length; i++)
-		str = str.replaceAll(robotConfig["servos"][i].name, "servo" + i);
+		str = str.replaceAll(robotConfig["servos"][i].name + "AsServo", "servo" + i);
 	for (var i = 0; i < robotConfig["distSensor"].length; i++)
-		str = str.replaceAll(robotConfig["distSensor"][i].name, "distanceSensor" + i);
+		str = str.replaceAll(robotConfig["distSensor"][i].name + "AsDistanceSensor", "distanceSensor" + i);
 	for (var i = 0; i < robotConfig["IMU"].length; i++)
-		str = str.replaceAll(robotConfig["IMU"][i].name, "imu" + i);
+		str = str.replaceAll(robotConfig["IMU"][i].name + "AsBNO055IMU", "imu" + i);
+	for (var i = 0; i < robotConfig["colorSensor"].length; i++)
+		str = str.replaceAll(robotConfig["colorSensor"][i].name + "AsREVColorRangeSensor", "colorSensor" + i);
+	for (var i = 0; i < robotConfig["touchSensor"].length; i++)
+		str = str.replaceAll(robotConfig["touchSensor"][i].name + "AsTouchSensor", "touchSensor" + i);
 	return str;
 }
 
@@ -171,6 +197,12 @@ function setupCategories() {
 		toolbox.getToolboxItemById('IMUParamSensor').hide();
 	}
 	
-	if (robotConfig["distSensor"].length == 0 && robotConfig["IMU"].length == 0)
+	if (robotConfig["colorSensor"].length == 0)
+		toolbox.getToolboxItemById('ColorSensor').hide();
+	
+	if (robotConfig["touchSensor"].length == 0)
+		toolbox.getToolboxItemById('TouchSensor').hide();
+	
+	if (robotConfig["distSensor"].length == 0 && robotConfig["IMU"].length == 0 && robotConfig["colorSensor"].length == 0 && robotConfig["touchSensor"].length == 0)
         toolbox.getToolboxItemById('Sensors').hide();
 }

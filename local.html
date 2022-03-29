@@ -705,8 +705,12 @@
                     <option value='BasicPOVDrive'>POVDrive</option>
                     <option value='BasicTankDrive'>TankDrive</option>
                   </optgroup>
+                  <optgroup label="Concept">
+                    <option value='ConceptSmoothServo'>Servo</option>
+                  </optgroup>
                   <optgroup label="Sensor">
                     <option value='SensorIMU'>IMU</option>
+                    <option value='SensorREVColorDistance'>Color/Distance</option>
                   </optgroup>
                 </select>
               </div>
@@ -1510,7 +1514,85 @@
       </category>
     </category>
     <category css-icon="customIcon fa fa-dashboard" name="Sensors" colour="#2E8B57" toolboxitemid="Sensors">
-      <category css-icon="" name="DistanceSensor" toolboxitemid="DistanceSensor">
+		<category name="ColorSensor" hidden="true">
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Alpha</field>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Argb</field>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Blue</field>
+			</block>
+			<block type="colorSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Gain</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">2</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Gain</field>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Green</field>
+			</block>
+			<block type="colorSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">I2cAddress7Bit</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">8</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">I2cAddress7Bit</field>
+			</block>
+			<block type="colorSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">I2cAddress8Bit</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">16</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">I2cAddress8Bit</field>
+			</block>
+			<block type="colorSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<field name="PROP">Red</field>
+			</block>
+			<block type="colorSensor_enableLed_Boolean">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+				<value name="ENABLE">
+					<shadow type="logic_boolean">
+						<field name="BOOL">TRUE</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="colorSensor_getNormalizedColors">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+			</block>
+			<block type="colorSensor_isLightOn">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+			</block>
+			<block type="colorSensor_toText">
+				<field name="IDENTIFIER">colorAsColorSensor</field>
+			</block>
+		</category>
+      <category css-icon="customIcon fa fa-exchange" name="DistanceSensor" toolboxitemid="DistanceSensor">
         <block type="distanceSensor_getDistance">
           <field name="IDENTIFIER">distanceSensor0</field>
           <value name="DISTANCE_UNIT">
@@ -1518,7 +1600,7 @@
           </value>
         </block>
       </category>
-      <category css-icon="" name="IMU-BNO055" toolboxitemid="IMUSensor">
+      <category css-icon="customIcon fa fa-compass" name="IMU-BNO055" toolboxitemid="IMUSensor">
         <block type="bno055imu_getProperty_Acceleration">
           <field name="IDENTIFIER">imu0</field>
           <field name="PROP">Acceleration</field>
@@ -1686,7 +1768,7 @@
           <field name="IDENTIFIER">imu0</field>
         </block>
       </category>
-      <category css-icon="" name="IMU-BNO055.Parameters" toolboxitemid="IMUParamSensor">
+      <category css-icon="customIcon fa fa-folder" name="IMU-BNO055.Parameters" toolboxitemid="IMUParamSensor">
         <block type="bno055imuParameters_create"></block>
         <block type="bno055imuParameters_setAccelUnit">
           <value name="BNO055IMU_PARAMETERS">
@@ -1878,6 +1960,116 @@
           </value>
         </block>
       </category>
+		<category name="OpticalDistanceSensor" hidden="true">
+			<block type="opticalDistanceSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsOpticalDistanceSensor</field>
+				<field name="PROP">LightDetected</field>
+			</block>
+			<block type="opticalDistanceSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsOpticalDistanceSensor</field>
+				<field name="PROP">RawLightDetected</field>
+			</block>
+			<block type="opticalDistanceSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsOpticalDistanceSensor</field>
+				<field name="PROP">RawLightDetectedMax</field>
+			</block>
+			<block type="opticalDistanceSensor_enableLed_Boolean">
+				<field name="IDENTIFIER">colorAsOpticalDistanceSensor</field>
+				<value name="ENABLE">
+					<shadow type="logic_boolean">
+						<field name="BOOL">TRUE</field>
+					</shadow>
+				</value>
+			</block>
+		</category>
+		<category css-icon="customIcon fa fa-adjust" name="REV Color/Range Sensor" toolboxitemid="ColorSensor">
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Alpha</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Argb</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Blue</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Gain</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">2</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Gain</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Green</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">I2cAddress7Bit</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">8</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">I2cAddress7Bit</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_setProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">I2cAddress8Bit</field>
+				<value name="VALUE">
+					<shadow type="math_number">
+						<field name="NUM">16</field>
+					</shadow>
+				</value>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">I2cAddress8Bit</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">LightDetected</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">RawLightDetected</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">RawLightDetectedMax</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<field name="PROP">Red</field>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getDistance_Number">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+				<value name="UNIT">
+					<shadow type="navigation_typedEnum_distanceUnit"/>
+				</value>
+			</block>
+			<block type="lynxI2cColorRangeSensor_getNormalizedColors">
+				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
+			</block>
+		</category>
+		<category css-icon="customIcon fa fa-sign-in" name="TouchSensor" toolboxitemid="TouchSensor">
+			<block type="touchSensor_getProperty_Boolean">
+				<field name="IDENTIFIER">touchAsTouchSensor</field>
+				<field name="PROP">IsPressed</field>
+			</block>
+		</category>
       <category css-icon="" name="VoltageSensor" hidden="true">
         <block type="voltageSensor_getProperty_Number">
           <field name="IDENTIFIER">ExpansionHubAsVoltageSensor</field>
@@ -5504,6 +5696,7 @@
   <script src="./blocks/blocks/bno055imu.js"></script>
   <script src="./blocks/blocks/bno055imu_parameters.js"></script>
   <script src="./blocks/blocks/color.js"></script>
+  <script src="./blocks/blocks/color_range_sensor.js"></script>
   <script src="./blocks/blocks/cr_servo.js"></script>
   <script src="./blocks/blocks/dbg_log.js"></script>
   <script src="./blocks/blocks/dc_motor.js"></script>
@@ -5531,6 +5724,7 @@
   <script src="./blocks/blocks/telemetry.js"></script>
   <script src="./blocks/blocks/temperature.js"></script>
   <script src="./blocks/blocks/text.js"></script>
+  <script src="./blocks/blocks/touch_sensor.js"></script>
   <script src="./blocks/blocks/variables.js"></script>
   <script src="./blocks/blocks/vars.js"></script>
   <script src="./blocks/blocks/vector_f.js"></script>
