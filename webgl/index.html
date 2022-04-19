@@ -124,22 +124,14 @@
       console.log("IMUValues: " + obj.imuReadings);
       console.log("ColorSensorValues: " + obj.colorSensorReadings);
       console.log("TOuchSensorValues: " + obj.touchSensorReadings);
-
-      // TEST LINE DELETE BEFORE PROD //
-      setColorSensorData(1, 2, 3, 4);
-      // TEST LINE DELETE BEFORE PROD // 
-
-
     }
 
     function setColorSensorData(R, G, B, Distance) {
-      console.log("askjdnfasnlfd: setColorSensorData: " + "[[" + R + "," + G + "," + B + "," + Distance + "]]")
       localStorage.setItem('colorSensorReadings', "[[" + R + "," + G + "," + B + "," + Distance + "]]");
     }
 
     //Old Code (Lean off of using this)
     function setFrontLeftEncoders(encoders) {
-      setColorSensorData(1, 2, 3, encoders);
       frontLeftEncoder = encoders;
       updateEncoderLocalStorage();
     }
