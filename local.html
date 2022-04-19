@@ -706,6 +706,7 @@
                     <option value='BasicPOVDrive'>POVDrive</option>
                     <option value='BasicTankDrive'>TankDrive</option>
                   </optgroup>
+				  <!--
                   <optgroup label="Concept">
                     <option value='ConceptSmoothServo'>Servo</option>
                   </optgroup>
@@ -713,6 +714,7 @@
                     <option value='SensorIMU'>IMU</option>
                     <option value='SensorREVColorDistance'>Color/Distance</option>
                   </optgroup>
+				  -->
                 </select>
               </div>
               <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
@@ -1984,19 +1986,19 @@
 			</block>
 		</category>
 		<category css-icon="customIcon fa fa-adjust" name="REV Color/Range Sensor" toolboxitemid="ColorSensor">
-			<block type="lynxI2cColorRangeSensor_getProperty_Number">
+			<!--<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Alpha</field>
 			</block>
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Argb</field>
-			</block>
+			</block>-->
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Blue</field>
 			</block>
-			<block type="lynxI2cColorRangeSensor_setProperty_Number">
+			<!--<block type="lynxI2cColorRangeSensor_setProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Gain</field>
 				<value name="VALUE">
@@ -2008,12 +2010,12 @@
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Gain</field>
-			</block>
+			</block>-->
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Green</field>
 			</block>
-			<block type="lynxI2cColorRangeSensor_setProperty_Number">
+			<!--<block type="lynxI2cColorRangeSensor_setProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">I2cAddress7Bit</field>
 				<value name="VALUE">
@@ -2050,7 +2052,7 @@
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">RawLightDetectedMax</field>
-			</block>
+			</block>-->
 			<block type="lynxI2cColorRangeSensor_getProperty_Number">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
 				<field name="PROP">Red</field>
@@ -2061,9 +2063,9 @@
 					<shadow type="navigation_typedEnum_distanceUnit"/>
 				</value>
 			</block>
-			<block type="lynxI2cColorRangeSensor_getNormalizedColors">
+			<!--<block type="lynxI2cColorRangeSensor_getNormalizedColors" hidden="true" hidden="true">
 				<field name="IDENTIFIER">colorAsREVColorRangeSensor</field>
-			</block>
+			</block>-->
 		</category>
 		<category css-icon="customIcon fa fa-sign-in" name="TouchSensor" toolboxitemid="TouchSensor">
 			<block type="touchSensor_getProperty_Boolean">
