@@ -203,6 +203,20 @@
 			border-radius: 6.5vw;
 		}
 		
+		#FieldLogo {
+			position: absolute;
+			width: 17vw;
+			height: 17vw;
+			left: 28vw;
+			top: -2.5vh;
+			
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			animation: Intro_Circles 1.5s ease .25s forwards;
+		}
+		
 		@keyframes Intro_Circles {
 			0% {
 				margin: 4.25vw;
@@ -564,6 +578,7 @@
 		<img id="OrangeBKGD" src="./assets/OrangeBKGD.png">
 		<div id="Circle1"><div id="InnerCircle1"></div></div>
 		<div id="Circle2"><div id="InnerCircle2"></div></div>
+		<img id="FieldLogo" src="./assets/ultimateGoal.png">
 	</div>
 	<div id="Icons">
 		<a id="FIRSTIllinois" href="https://www.firstillinoisrobotics.org/ftc/" target="_blank"><img src="./assets/firstIllinoisLogo.png" style="height: 100%;"></a>
@@ -579,7 +594,7 @@
             onClick="overlay('https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz', true)">How
             To Use</button>
 		<button class="NavButtons"
-            onClick="overlay('http://vrobotsim.org/downloadable-vrs-platform/', true)">Download</button>
+            onClick="overlay('https://vrobotsim.com/download-page/', true)">Download</button>
         <button class="NavButtons" onClick="overlay('http://vrobotsim.org/contact-us/', true)">Contact Us</button>
 		<button class="NavButtons" onClick="overlay('http://vrobotsim.org/about-us/', true)">Meet the Team</button>
     </div>
@@ -636,6 +651,7 @@
 			document.getElementById('multiplayerButton').style.animation = "none";
 			document.getElementById('Circle1').style.animation = "none";
 			document.getElementById('Circle2').style.animation = "none";
+			document.getElementById('FieldLogo').style.animation = "none";
 		}
 		
 		//Open Overlay
@@ -674,6 +690,7 @@
 				document.getElementById('multiplayerButton').style.animation = "Intro_Selections 1s ease reverse both";
 				document.getElementById('Circle1').style.animation = "Intro_Circles 1s ease reverse both";
 				document.getElementById('Circle2').style.animation = "Intro_Circles 1s ease reverse both";
+				document.getElementById('FieldLogo').style.animation = "Intro_Circles 1s ease reverse both";
 			}, 5);
 			
 			document.getElementById('RobotConfig').style.transition = "0s";

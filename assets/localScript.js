@@ -501,6 +501,7 @@ function switchTab(button, tabNum) {
 }
 
 //---Load Lessons---
+prevLesson = "-1";
 function loadLesson() {
     document.getElementById('lessonButtons').style.display = "flex";
     document.getElementById('lessonText').parentElement.style.height = '75%';
@@ -555,12 +556,22 @@ function loadLesson() {
             "You're Driving Team isn't looking too good during TeleOp. Looks like you'll have to step in to earn those extra points during autonomous! Try and shoot at each powershot while either rotating or strafing to change trajectory. Get as many points as possible with *correct* wobble goal position included!" +
             "\n\nYou'll Learn:\nScoring Big with Extra Sensors\nHow to Code! (hopefully...)";
         break;
+	case "-2":
+		linkBttn = document.createElement('a');
+		linkBttn.setAttribute('href', 'https://docs.google.com/document/d/1hoTT80vSFAznXJxUHRxzsnOcURv5CSV3Pf-GS-vgjOA/edit?usp=sharingm');
+		linkBttn.setAttribute('target', '_blank');
+		linkBttn.click();
+		linkBttn.remove();
+		document.getElementById('lessonSelect').value = prevLesson;
+		loadLesson();
+		break;
     default:
         document.getElementById('lessonButtons').style.display = "none";
         document.getElementById('lessonText').innerText = "Select a Lesson to begin Learning!";
         document.getElementById('lessonText').parentElement.style.height = '';
         break;
     }
+	prevLesson = document.getElementById('lessonSelect').value;
 }
 
 function runLessonCode() {
