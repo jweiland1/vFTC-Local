@@ -1349,13 +1349,13 @@ Blockly.Blocks['dcMotor_setMotorEnable'] = {
     this.setNextStatement(true);
     this.setColour(propertyColorActuators);
     this.setTooltip('Individually energizes this particular motor. ' +
-        'Not all DcMotors support this feature.');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
 };
 
 Blockly.JavaScript['dcMotor_setMotorEnable'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');
-  return 'motor.setProperty([' + identifier.substring(identifier.length - 1) + '], \'Enabled\', [true]);\n';
+  return 'motor.setMotorEnable(' + identifier.substring(identifier.length - 1) + ');\n';
 };
 
 Blockly.FtcJava['dcMotor_setMotorEnable'] = function(block) {
@@ -1376,13 +1376,13 @@ Blockly.Blocks['dcMotor_setMotorDisable'] = {
     this.setNextStatement(true);
     this.setColour(propertyColorActuators);
     this.setTooltip('Individually de-energizes this particular motor. ' +
-        'Not all DcMotors support this feature.');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
 };
 
 Blockly.JavaScript['dcMotor_setMotorDisable'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');
-  return 'motor.setProperty([' + identifier.substring(identifier.length - 1) + '], \'Enabled\', [false]);\n';
+  return 'motor.setMotorDisable(' + identifier.substring(identifier.length - 1) + ');\n';
 };
 
 Blockly.FtcJava['dcMotor_setMotorDisable'] = function(block) {
@@ -1402,13 +1402,13 @@ Blockly.Blocks['dcMotor_isMotorEnabled'] = {
         .appendField(createNonEditableField('isMotorEnabled'));
     this.setColour(propertyColorActuators);
     this.setTooltip('Returns true if the motor is energized. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
 };
 
 Blockly.JavaScript['dcMotor_isMotorEnabled'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');
-  var code = 'motor.getProperty(' + identifier.substring(identifier.length - 1) + ', \'Enabled\')';
+  var code = 'motor.isMotorEnabled(' + identifier.substring(identifier.length - 1) + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
@@ -1437,7 +1437,7 @@ Blockly.Blocks['dcMotor_setVelocity_withAngleUnit'] = {
     this.setNextStatement(true);
     this.setColour(propertyColorActuators);
     this.setTooltip('Sets the velocity of the motor. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
       switch (inputName) {
         case 'ANGULAR_RATE':
@@ -1481,7 +1481,7 @@ Blockly.Blocks['dcMotor_getVelocity_withAngleUnit'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current velocity of the motor, in angular units per second. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
       return 'double';
     };
@@ -1707,7 +1707,7 @@ Blockly.Blocks['dcMotor_getCurrent'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current consumed by this motor. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
       return 'double';
     };
@@ -1745,7 +1745,7 @@ Blockly.Blocks['dcMotor_getCurrentAlert'] = {
         .setAlign(Blockly.ALIGN_RIGHT);
     this.setColour(propertyColorActuators);
     this.setTooltip('Returns the current alert for this motor. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaOutputType = function() {
       return 'double';
     };
@@ -1756,11 +1756,7 @@ Blockly.JavaScript['dcMotor_getCurrentAlert'] = function(block) {
   var identifier = block.getFieldValue('IDENTIFIER');
   var currentUnit = Blockly.JavaScript.valueToCode(
       block, 'CURRENT_UNIT', Blockly.JavaScript.ORDER_NONE);
-  var code;
-  if (currentUnit == '"AMPS"')
-	code = 'motor.getProperty(' + identifier.substring(identifier.length - 1) + ', \'CurrentAlert\')';
-  else
-	code = '(motor.getProperty(' + identifier.substring(identifier.length - 1) + ', \'CurrentAlert\') * 1000)';
+  var code = 'motor.getCurrentAlert(' + identifier.substring(identifier.length - 1) + ', ' + currentUnit + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
@@ -1791,7 +1787,7 @@ Blockly.Blocks['dcMotor_setCurrentAlert'] = {
     this.setNextStatement(true);
     this.setColour(propertyColorActuators);
     this.setTooltip('Sets the current alert for this motor. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
     this.getFtcJavaInputType = function(inputName) {
       switch (inputName) {
         case 'CURRENT':
@@ -1808,11 +1804,7 @@ Blockly.JavaScript['dcMotor_setCurrentAlert'] = function(block) {
       block, 'CURRENT', Blockly.JavaScript.ORDER_COMMA);
   var currentUnit = Blockly.JavaScript.valueToCode(
       block, 'CURRENT_UNIT', Blockly.JavaScript.ORDER_COMMA);
-	  console.log(currentUnit);
-  if (currentUnit == '"AMPS"')
-	return 'motor.setProperty([' + identifier.substring(identifier.length - 1) + '], \'CurrentAlert\', [' + current + ']);\n';
-  else
-	return 'motor.setProperty([' + identifier.substring(identifier.length - 1) + '], \'CurrentAlert\', [' + current * .001 + ']);\n';
+  return 'motor.setCurrentAlert(' + identifier.substring(identifier.length - 1) + ', ' + current + ', ' + currentUnit + ');\n';
 };
 
 Blockly.FtcJava['dcMotor_setCurrentAlert'] = function(block) {
@@ -1836,7 +1828,7 @@ Blockly.Blocks['dcMotor_isOverCurrent'] = {
         .appendField(createNonEditableField('isOverCurrent'));
     this.setColour(propertyColorActuators);
     this.setTooltip('Returns true if the current consumption of this motor exceeds the alert threshold. ' +
-        'Not all DcMotors support this feature.\n');
+        'Not all DcMotors support this feature.\n[NOT IMPLEMENTED]');
   }
 };
 

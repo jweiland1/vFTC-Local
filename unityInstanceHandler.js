@@ -31,29 +31,44 @@ function writeMotorPowers() {
         UnityInstance.SendMessage("FieldManager", "resetField");
         localStorage.setItem('resetField', false);
     }
-	
-	if (localStorage.getItem('motorResetEncoders') == 'true') {
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "resetEncoders");
-        localStorage.setItem('motorResetEncoders', false);
-	}
 
-    var motorPowers = JSON.parse(localStorage.getItem('motorPowers'));
-    var motor1 = motorPowers[0];
-    var motor2 = motorPowers[1];
-    var motor3 = motorPowers[2];
-    var motor4 = motorPowers[3];
-    var motor5 = motorPowers[4];
-    var motor6 = motorPowers[5];
-    var motor7 = motorPowers[6];
-    var motor8 = motorPowers[7];
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontLeftVel", (motor1 != null) ? motor1 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontRightVel", (motor2 != null) ? motor2 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackLeftVel", (motor3 != null) ? motor3 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackRightVel", (motor4 != null) ? motor4 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor5", (motor5 != null) ? motor5 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor6", (motor6 != null) ? motor6 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor7", (motor7 != null) ? motor7 : 0);
-    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor8", (motor8 != null) ? motor8 : 0);
+    var motors = JSON.parse(localStorage.getItem('motorPowers'));
+	var encoderResets = JSON.parse(localStorage.getItem("motorResetEncoders"));
+    var servos = JSON.parse(localStorage.getItem('servoPositions'));
+	for (var i = 0; i < motors.length; i++)
+		if (!motors[i])
+			motors[i] = 0;
+	for (var i = 0; i < servos.length; i++)
+		if (!servos[i])
+			servos[i] = 0;
+	
+	localStorage.setItem('motorResetEncoders', "[false, false, false, false, false, false, false, false]");
+	
+	
+	//Old Code (Lean off of using this)
+	for (var i = 0; i < encoderResets.length; i++)
+		if (encoderResets[i] == true)
+			UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "resetEncoders");
+	UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontLeftVel", motors[0]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setFrontRightVel", motors[1]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackLeftVel", motors[2]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setBackRightVel", motors[3]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor5", motors[4]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor6", motors[5]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor7", motors[6]);
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "setMotor8", motors[7]);
+	//Old Code (Lean off of using this)
+	
+	
+    var command = new Object();
+    command.motors = motors;
+    command.encoderResets = encoderResets;
+	command.servos = servos;
+    //To add more use: obj.<name> = array
+	
+	//WIP - Unity will need to respond to this one command and set values accordingly
+    UnityInstance.SendMessage("PhotonNetworkPlayer(Clone)", "receiveInfo", JSON.stringify(command));
+	//Sends the info: '{"motors":[0,0,0,0,0,0,0,0],"encoderResets":[false,false,false,false,false,false,false,false],"servos":[0,0,0]}'
 	
 	//Implement Servos once Unity is ready
 	

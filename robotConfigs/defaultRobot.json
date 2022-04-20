@@ -54,5 +54,13 @@
 	"distSensor": [
 	],
 	"IMU": [
+	],
+	"colorSensor": [
+		{
+			"name": "bottomColorSensor",
+			"type": "REV Color Sensor V3"
+		}
+	],
+	"touchSensor": [
 	]
 }

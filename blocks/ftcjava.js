@@ -1188,6 +1188,21 @@ Blockly.FtcJava.importDeclareAssign_ = function(block, identifierFieldName, java
         throw 'Unexpected situation (identifierFieldName is \'' + identifierFieldName + '\').';
       }
       identifier = block.getFieldValue(identifierFieldName);
+	  
+	  //VRS - Convert to actual Electronic Names
+	  if (javaType == "DcMotor")
+		  identifier = robotConfig["motors"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+	  if (javaType == "Servo" || javaType == "CRServo")
+		  identifier = robotConfig["servos"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+	  if (javaType == "DistanceSensor")
+		  identifier = robotConfig["distSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+	  if (javaType == "BNO055IMU")
+		  identifier = robotConfig["IMU"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+	  if (javaType == "ColorSensor")
+		  identifier = robotConfig["colorSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+	  if (javaType == "TouchSensor")
+		  identifier = robotConfig["touchSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+
       try {
         // getIdentifierForFtcJava is generated dynamically in
         // HardwareUtil.fetchJavaScriptForHardware().
