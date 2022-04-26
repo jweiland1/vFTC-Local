@@ -116,6 +116,19 @@ function setUpOnBotJava(javaCode) {
     //autoFormatSelection();
 }
 
+function convert2JS() {
+    // console.log("java code : ", editor.getValue())    
+    var javaString = editor.getValue()
+    let result = ""
+    try{
+        result = javaToJavascript(javaString)
+    }catch(e){
+        console.log("parse error : ", e)
+    }
+    console.log("js code : ",result)
+    editor.setValue(result)
+}
+
 //---Functionality for New Program Overlay Buttons---
 //"Sample Program"
 function sampleProgram(blockProgram) {
