@@ -191,11 +191,11 @@ function convert_2js(javaString) {
             funcBlocks[key] = funcBlocks[key].join("\n");
             jsString += `async function ${key}(${funcValues[key]}) { 
                 ${funcBlocks[key]}
-            }`
+            }\n`
             Object.keys(exteralFuncs).map(funct => {
                 if(funcBlocks['runOpMode'].includes(funct)){
                     funcBlocks['runOpMode'] = funcBlocks['runOpMode'].replaceAll(funct, exteralFuncs[funct][0])
-                    jsString += exteralFuncs[funct][1]
+                    jsString += exteralFuncs[funct][1] + "\n"
                 }
             })
         })
