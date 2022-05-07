@@ -1,3 +1,4 @@
+
 const directions = {
     'frontLeft': 0,
     'frontRight': 1,
@@ -78,7 +79,7 @@ const customConvert = (str) =>{
         let sides = str.split(".setDirection(")
         const varName = sides[0]
         const value = valueChecker(sides[1].replace('DcMotorSimple.Direction.', '').split(");")[0])
-        return `motor.setProperty([${mortorVars[varName]}], 'Direction', ["${value}"]);`;
+        return `motor.setProperty([${mortorVars[varName]}], 'Direction', ['${value}']);`;
     }
     else if(str.includes('waitForStart()')){
         return str.replace('waitForStart', 'await linearOpMode.waitForStart');
@@ -94,7 +95,7 @@ const customConvert = (str) =>{
         let sides = str.split(".setMode(")
         const varName = sides[0]
         const value = valueChecker(sides[1].replace('DcMotor.RunMode.', '').split(");")[0])
-        return `motor.setProperty([${mortorVars[varName]}], 'Mode', ["${value}]");`;
+        return `motor.setProperty([${mortorVars[varName]}], 'Mode', ['${value}']);`;
     }
 
     else if(str.includes('setTargetPosition(')){
@@ -209,7 +210,7 @@ function convert_2js(javaString) {
         console.log("parse error : ", e)
         return 'parse error'
     }
-    console.log("current branch")
+
     return jsString
 
 }

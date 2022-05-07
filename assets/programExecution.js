@@ -120,13 +120,13 @@ function convert2JS() {
     // console.log("java code : ", editor.getValue())    
     var javaString = editor.getValue()
     let result = ""
-    try{
-        result = javaToJavascript(javaString)
-    }catch(e){
-        console.log("parse error : ", e)
+    result = convert_2js(javaString)
+    if(result == 'parse error'){
+        alert("JS convert failed.")
+    }else{    
+        console.log("js code : ",result)
+        editor.setValue(result)
     }
-    console.log("js code : ",result)
-    editor.setValue(result)
 }
 
 //---Functionality for New Program Overlay Buttons---
@@ -409,7 +409,7 @@ function resetField() {
 var programExecController = new AbortController();
 
 async function runProgram(code) {
-    console.log(code);
+    console.log("js code : ", code);
     let AsyncFunctionCtor = Object.getPrototypeOf(async function () {}).constructor;
     let program = new AsyncFunctionCtor(code);
 
