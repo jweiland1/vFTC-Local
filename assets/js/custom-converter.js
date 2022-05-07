@@ -68,12 +68,13 @@ const valueChecker = (str)=>{
         return str;
 }
 const customConvert = (str) =>{
-    let result = "";
+    // let result = "";
+
     if(str.includes('hardwareMap')){
         let sides = str.split(" = ");
         const varName = sides[0];
         mortorVars[varName] = directions[varName];
-        return result;
+        return "";
     }
     else if(str.includes('.setDirection')){
         let sides = str.split(".setDirection(")
@@ -163,8 +164,13 @@ function convert_2js(javaString) {
         result = result.replaceAll('opModeIsActive', 'linearOpMode.opModeIsActive');
         // document.getElementById("output-field").innerText = result;
         result = result.split('\n');
+        
 
-        for (let i = 1; i < result.length; i++) {
+        for (let i = 1; i < result.length; i++) {            
+            let space_letter = ""
+            for(var j=0;i<result[i].length;j++)if(result[i][j]!==" ")break; else space_letter += " ";
+
+            console.log("space_letter  : ", space_letter.length)
             let lineTxt = result[i].trim();
             brackets += checkBrackets(lineTxt);
             // var 
@@ -173,7 +179,7 @@ function convert_2js(javaString) {
                 funcBlocks[funcName] = [];
                 funcValues[funcName] = lineTxt.split("(")[1].split(") {")[0];
             } else if (brackets > 0) {
-                var jsLine = customConvert(lineTxt);
+                var jsLine = space_letter + customConvert(lineTxt);
                 if (jsLine) funcBlocks[funcName].push(jsLine);
             } else if (brackets == 0 && funcName) {
                 funcName = '';
