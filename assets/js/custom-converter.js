@@ -73,7 +73,8 @@ const customConvert = (str) =>{
     if(str.includes('hardwareMap')){
         let sides = str.split(" = ");
         const varName = sides[0];
-        mortorVars[varName] = directions[varName];
+        const varValue = sides[1].split("hardwareMap.get('")[1].split("')")[0]
+        mortorVars[varName] = directions[varValue];
         return "";
     }
     else if(str.includes('.setDirection')){
@@ -162,7 +163,6 @@ function convert_2js(javaString) {
         result = javaToJavascript(javaString);
         result = result.replaceAll("this.", "");
         result = result.replaceAll('opModeIsActive', 'linearOpMode.opModeIsActive');
-        // document.getElementById("output-field").innerText = result;
         result = result.split('\n');
         
 
@@ -170,7 +170,6 @@ function convert_2js(javaString) {
             let space_letter = ""
             for(var j=0;i<result[i].length;j++)if(result[i][j]!==" ")break; else space_letter += " ";
 
-            console.log("space_letter  : ", space_letter.length)
             let lineTxt = result[i].trim();
             brackets += checkBrackets(lineTxt);
             // var 
@@ -185,10 +184,14 @@ function convert_2js(javaString) {
                 funcName = '';
             }
         }
+
+        console.log("mortorVars : ", mortorVars)
         funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
         funcBlocks['constructor'].map(line=> {
-            const varValue = line.split(" = ")
-            if(mortorVars[varValue[0]])return false
+            const varValue = line.trim().split(" = ")
+            console.log("varValue : ", varValue, mortorVars[varValue[0]], mortorVars[varValue[0]]==undefined)
+            if(mortorVars[varValue[0]]!=undefined)return false
+
             jsString += "var " + line + "\n"
         })
         Object.keys(funcBlocks).map(key => {
