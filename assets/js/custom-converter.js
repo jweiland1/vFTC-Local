@@ -4,7 +4,14 @@ const directions = {
     'frontRight': 1,
     'backLeft': 2,
     'backRight': 3,
-    'wobbleActuator': 4
+    'wobbleActuator': 4,
+    'ringLoader': 5,
+    'ringShooter': 6
+}
+
+
+const colorData = {
+    'bottomColorSensor': 0
 }
 const exteralFuncs = {
     "JavaUtil.randomInt":
@@ -22,6 +29,8 @@ const exteralFuncs = {
       `]
 }
 var mortorVars = {}
+var colorVars = {}
+var convertedSource = ""
 const checkBrackets = (str)=>{
     const openBracket =  (str.match(/{/g) || []).length;
     const closeBracket = (str.match(/}/g) || []).length;
@@ -40,6 +49,10 @@ const valueConverter = (str) =>{
         let sides = str.split(".getCurrentPosition(");
         const varName = sides[0];
         return `motor.getProperty(${directions[varName]}, 'CurrentPosition')`
+    }else if(str.includes(".blue()")){
+        let sides = str.split(".blue()");
+        const varName = sides[0];
+        return `colorSensor.getColor(${colorVars[varName]}, 'Blue')` 
     }
     return str
 }
@@ -74,7 +87,10 @@ const customConvert = (str) =>{
         let sides = str.split(" = ");
         const varName = sides[0];
         const varValue = sides[1].split("hardwareMap.get('")[1].split("')")[0]
-        mortorVars[varName] = directions[varValue];
+        if(directions[varValue]!=undefined)
+            mortorVars[varName] = directions[varValue];
+        else if(colorData[varValue]!=undefined)
+            colorVars[varName] = colorData[varValue];
         return "";
     }
     else if(str.includes('.setDirection')){
@@ -144,6 +160,14 @@ const customConvert = (str) =>{
         let sides = str.split("for (")
         const value = valueChecker(sides[1].split(") {")[0])
         return `for (${value}) {` + sides[1].split(") {")[1];
+    }else if(str.includes("telemetry.addData(")){
+        let sides = str.split("telemetry.addData(")[1].split(");")[0].split(", ")
+        let newVars = []
+        sides.map(item=>{
+            newVars.push(valueConverter(item))
+        })
+        newVars = newVars.join(", ")
+        return `telemetry.addData(${newVars});`
     }
     else if(str.includes('sleep')){
         return "await linearOpMode.sleep("+str.split("sleep(")[1];
@@ -159,10 +183,14 @@ function convert_2js(javaString) {
     var funcName = ''
 
     try {
-        javaString = javaString.replaceAll("DcMotor.class,", "");
+        javaString = javaString.replaceAll("DcMotor.class,", "").replaceAll("ColorSensor.class,", "");
+
         result = javaToJavascript(javaString);
         result = result.replaceAll("this.", "");
         result = result.replaceAll('opModeIsActive', 'linearOpMode.opModeIsActive');
+
+        convertedSource = result
+
         result = result.split('\n');
         
 
@@ -185,11 +213,10 @@ function convert_2js(javaString) {
             }
         }
 
-        console.log("mortorVars : ", mortorVars)
+        console.log("Vars : ", mortorVars, colorVars)
         funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
         funcBlocks['constructor'].map(line=> {
             const varValue = line.trim().split(" = ")
-            console.log("varValue : ", varValue, mortorVars[varValue[0]], mortorVars[varValue[0]]==undefined)
             if(mortorVars[varValue[0]]!=undefined)return false
 
             jsString += "var " + line + "\n"
