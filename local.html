@@ -807,9 +807,7 @@
 		document.getElementById('LoadingScreen').style.animation = "Intro_Loading .5s ease reverse both";
 		
 		setTimeout(() => {
-			var bttnLink = document.createElement('a');
-			bttnLink.href = "homepage.html";
-			bttnLink.click();
+      window.history.go(-1);
 		}, 500);
 	}
   </script>
