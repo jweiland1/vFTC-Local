@@ -4,9 +4,10 @@ const directions = {
     'frontRight': 1,
     'backLeft': 2,
     'backRight': 3,
-    'wobbleActuator': 4,
+    'ringCollection': 4,
     'ringLoader': 5,
-    'ringShooter': 6
+    'ringShooter': 6,
+    'wobbleActuator': 7
 }
 
 
@@ -53,6 +54,16 @@ const valueConverter = (str) =>{
         let sides = str.split(".blue()");
         const varName = sides[0];
         return `colorSensor.getColor(${colorVars[varName]}, 'Blue')` 
+    }else if(str.includes(".red()")){
+        let sides = str.split(".red()");
+        const varName = sides[0];
+        return `colorSensor.getColor(${colorVars[varName]}, 'Red')` 
+    }else if(str.includes(".green()")){
+        let sides = str.split(".green()");
+        const varName = sides[0];
+        return `colorSensor.getColor(${colorVars[varName]}, 'Green')` 
+    }else if(str.includes("getRuntime(")){
+        return str.replaceAll('getRuntime(', "linearOpMode.getRuntime(")
     }
     return str
 }
@@ -172,7 +183,7 @@ const customConvert = (str) =>{
     else if(str.includes('sleep')){
         return "await linearOpMode.sleep("+str.split("sleep(")[1];
     }else     
-        return str;
+        return valueChecker(str);
 }
 function convert_2js(javaString) {
     var result = "";
@@ -217,7 +228,7 @@ function convert_2js(javaString) {
         funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
         funcBlocks['constructor'].map(line=> {
             const varValue = line.trim().split(" = ")
-            if(mortorVars[varValue[0]]!=undefined)return false
+            if(mortorVars[varValue[0]]!=undefined || colorVars[varValue[0]]!=undefined)return false
 
             jsString += "var " + line + "\n"
         })

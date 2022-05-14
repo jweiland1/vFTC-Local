@@ -125,7 +125,11 @@ function convert2JS() {
         alert("JS convert failed.")
         return "Fail";
     } else {
-        console.log("js code : ", result)
+
+        console.log("===========> js code start<============ \n" + result)
+        console.log("===========> js code end <============")
+
+
         return result;
         //editor.setValue(result)
     }
@@ -416,7 +420,8 @@ function resetField() {
 var programExecController = new AbortController();
 
 async function runProgram(code) {
-    console.log("js code : ", code);
+    console.log("===========> js code start<============ \n" + code)
+    console.log("===========> js code end <============")
     let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
     let program = new AsyncFunctionCtor(code);
 
