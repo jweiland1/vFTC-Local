@@ -13,32 +13,32 @@ var overlayReturned = null;
 
 //Overrides Window.Prompt for Variable Renaming
 window.prompt = function overlayPrompt(message, placeholder) {
-	overlayReturned = null;
-	overlay(true, (message == "New variable name:" ? 2 : 3));
-	return new Promise(function (resolve, reject) {
-		var returnChecker = setInterval(function () {
-			if (overlayReturned == -1) {
-				reject();
-				clearInterval(returnChecker);
-			} else if (overlayReturned != null) {
-				resolve(overlayReturned);
-				clearInterval(returnChecker);
-			}
-		}, 250);
-	});
+    overlayReturned = null;
+    overlay(true, (message == "New variable name:" ? 2 : 3));
+    return new Promise(function (resolve, reject) {
+        var returnChecker = setInterval(function () {
+            if (overlayReturned == -1) {
+                reject();
+                clearInterval(returnChecker);
+            } else if (overlayReturned != null) {
+                resolve(overlayReturned);
+                clearInterval(returnChecker);
+            }
+        }, 250);
+    });
 }
 
 //---Gamepad Connections---
 window.addEventListener("gamepadconnected", (event) => {
-	if (event.gamepad.index < 2) {
-		document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
-	}
+    if (event.gamepad.index < 2) {
+        document.getElementById("telemetryText").innerText = 'New Controller: "' + event.gamepad.id + '".\nSet Controller to gamepad' + (event.gamepad.index + 1) + ".";
+    }
 });
 
 window.addEventListener("gamepaddisconnected", (event) => {
-	if (event.gamepad.index < 2) {
-		document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
-	}
+    if (event.gamepad.index < 2) {
+        document.getElementById("telemetryText").innerText = 'Controller disconnected: "' + event.gamepad.id + '".\nGamepad' + (event.gamepad.index + 1) + " lost.";
+    }
 });
 
 //---Functions for OnBotJava---
@@ -87,7 +87,7 @@ function switchToOnBotJava() {
     document.getElementById('blocklyDiv').hidden = true;
     document.getElementById('onBotJavaDiv').hidden = false;
     document.getElementById('saveAs').disabled = true;
-    document.getElementById('initBttn').disabled = true;
+    document.getElementById('initBttn').disabled = false;
     document.getElementById('save').disabled = true;
     document.getElementById('delete').disabled = true;
     document.getElementById('download').disabled = true;
@@ -121,11 +121,13 @@ function convert2JS() {
     var javaString = editor.getValue()
     let result = ""
     result = convert_2js(javaString)
-    if(result == 'parse error'){
+    if (result == 'parse error') {
         alert("JS convert failed.")
-    }else{    
-        console.log("js code : ",result)
-        editor.setValue(result)
+        return "Fail";
+    } else {
+        console.log("js code : ", result)
+        return result;
+        //editor.setValue(result)
     }
 }
 
@@ -133,8 +135,8 @@ function convert2JS() {
 //"Sample Program"
 function sampleProgram(blockProgram) {
     var sampleProgram;
-	if (typeof blockProgram == "string")
-		sampleProgram = blockProgram;
+    if (typeof blockProgram == "string")
+        sampleProgram = blockProgram;
     else if (blockProgram)
         sampleProgram = document.getElementById('blockSelect').value;
     else
@@ -156,12 +158,12 @@ function sampleProgram(blockProgram) {
                 Blockly.mainWorkspace.clear();
                 Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
                 resetProgramExecution();
-				if (currStep == 0) {
-					if (sampleProgram != 'BasicAutoOpMode')
-						document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-					else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
-						document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-				}
+                if (currStep == 0) {
+                    if (sampleProgram != 'BasicAutoOpMode')
+                        document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
+                    else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
+                        document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
+                }
                 switchToBlocks();
             } else {
                 switchToOnBotJava();
@@ -185,55 +187,55 @@ document.getElementById('filePrompt').addEventListener('change', function () {
 function uploadProgram(programName, content) {
     document.getElementById('filePrompt').value = '';
     var fileType = programName.split('.')[programName.split('.').length - 1]
-        if (fileType == "blk") {
-            programName = programName.substring(0, programName.length - fileType.length - 1);
-            currentProjectName = programName;
-            Blockly.mainWorkspace.clear();
-            var i = content.indexOf('</xml>');
-            content = content.substring(0, i + 6); //Convert from names to config
-            //String to XML to Blockly
-            var parser = new DOMParser();
-            var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
-            //Convert 2 Duals to Quad
-            var blocks = xmlDoc.getElementsByTagName("block");
-            for (var i = 0; i < blocks.length - 1; i++) {
-                if (blocks[i].getElementsByTagName("next")[0]) {
-					for (var c = 0; c < blocks[i].getElementsByTagName("next")[0].childNodes.length; c++)
-						if (blocks[i].getElementsByTagName("next")[0].childNodes[c].tagName == "block")
-							nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[c];
-                    if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
-                        blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
-                        blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-                        for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
-                            if (nextBlock.childNodes[c].tagName && nextBlock.childNodes[c].getAttribute("name")) {
-                                var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
-                                nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
-                                blocks[i].appendChild(nextBlock.childNodes[c]);
-                            }
-                        blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
-                        if (nextBlock.getElementsByTagName("next")[0])
-                            blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
-                    }
+    if (fileType == "blk") {
+        programName = programName.substring(0, programName.length - fileType.length - 1);
+        currentProjectName = programName;
+        Blockly.mainWorkspace.clear();
+        var i = content.indexOf('</xml>');
+        content = content.substring(0, i + 6); //Convert from names to config
+        //String to XML to Blockly
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
+        //Convert 2 Duals to Quad
+        var blocks = xmlDoc.getElementsByTagName("block");
+        for (var i = 0; i < blocks.length - 1; i++) {
+            if (blocks[i].getElementsByTagName("next")[0]) {
+                for (var c = 0; c < blocks[i].getElementsByTagName("next")[0].childNodes.length; c++)
+                    if (blocks[i].getElementsByTagName("next")[0].childNodes[c].tagName == "block")
+                        nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[c];
+                if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
+                    blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
+                    blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
+                    for (var c = nextBlock.childNodes.length - 1; c > 1; c--)
+                        if (nextBlock.childNodes[c].tagName && nextBlock.childNodes[c].getAttribute("name")) {
+                            var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
+                            nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
+                            blocks[i].appendChild(nextBlock.childNodes[c]);
+                        }
+                    blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
+                    if (nextBlock.getElementsByTagName("next")[0])
+                        blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
                 }
             }
-            content = new XMLSerializer().serializeToString(xmlDoc);
-            console.log(content);
-            Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-            resetProgramExecution();
-            document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-            localStorage.setItem("Program Name: " + programName, content);
-            prepareUiToLoadProgram();
-            document.getElementById("programSelect").value = programName;
-            document.getElementById('save').disabled = false;
-            document.getElementById('delete').disabled = false;
-            document.getElementById('download').disabled = false;
-            switchToBlocks();
-            overlay(false, 0);
-        } else if (fileType == "java") {
-            switchToOnBotJava();
-            setUpOnBotJava(content);
-            overlay(false, 0);
         }
+        content = new XMLSerializer().serializeToString(xmlDoc);
+        console.log(content);
+        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+        resetProgramExecution();
+        document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
+        localStorage.setItem("Program Name: " + programName, content);
+        prepareUiToLoadProgram();
+        document.getElementById("programSelect").value = programName;
+        document.getElementById('save').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.getElementById('download').disabled = false;
+        switchToBlocks();
+        overlay(false, 0);
+    } else if (fileType == "java") {
+        switchToOnBotJava();
+        setUpOnBotJava(content);
+        overlay(false, 0);
+    }
 }
 
 //"Export to OnBotJava"
@@ -270,12 +272,12 @@ function saveProgram() {
     document.getElementById('download').disabled = false;
     overlay(false, 0);
     document.getElementById("telemetryText").innerText = 'Saved new "' + programName + '" Program \n';
-	//HowTo Tutorial Addition
-	if (currStep > 0) {
-		document.getElementById('howToText').children[2].children[1].disabled = false;
-		document.getElementById('saveAs').style.position = "inherit";
-		document.getElementById('saveAs').style.zIndex = "inherit";
-	}
+    //HowTo Tutorial Addition
+    if (currStep > 0) {
+        document.getElementById('howToText').children[2].children[1].disabled = false;
+        document.getElementById('saveAs').style.position = "inherit";
+        document.getElementById('saveAs').style.zIndex = "inherit";
+    }
 }
 
 function loadProgram() {
@@ -285,7 +287,7 @@ function loadProgram() {
     if (nameOfProject == "Program Name: Load Program") {
         document.getElementById("blockSelect").value = 'BasicAutoOpMode';
         sampleProgram(true);
-    } else if (typeof(Storage) !== "undefined") {
+    } else if (typeof (Storage) !== "undefined") {
         document.getElementById('save').disabled = false;
         document.getElementById('delete').disabled = false;
         document.getElementById('download').disabled = false;
@@ -356,6 +358,11 @@ function initProgram(code) {
     document.getElementById('startBttn').disabled = false;
     startTime = performance.now();
     if (code == "") {
+        if (!isUsingBlocks) {
+            var javaCode = convert2JS();
+            console.log("Java Code: ", javaCode);
+            runProgram(javaCode);
+        }
         code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
         var finalCode = "";
         var inFunction = false;
@@ -381,16 +388,16 @@ function initProgram(code) {
 
 function startProgram() {
     document.getElementById('startBttn').disabled = true;
-	//HowTo Tutorial Thing
-	if (currStep == 2) {
-		document.getElementById('howToText').children[2].children[1].disabled = false;
-		document.getElementById('programInit').style.position = "inherit";
-		document.getElementById('programInit').style.zIndex = "inherit";
-		document.getElementById('programStartStop').style.position = "inherit";
-		document.getElementById('programStartStop').style.zIndex = "inherit";
-	}
-	else
-		programStart = true;
+    //HowTo Tutorial Thing
+    if (currStep == 2) {
+        document.getElementById('howToText').children[2].children[1].disabled = false;
+        document.getElementById('programInit').style.position = "inherit";
+        document.getElementById('programInit').style.zIndex = "inherit";
+        document.getElementById('programStartStop').style.position = "inherit";
+        document.getElementById('programStartStop').style.zIndex = "inherit";
+    }
+    else
+        programStart = true;
     document.getElementById("telemetryText").innerText = "Program Started \n";
 }
 
@@ -410,7 +417,7 @@ var programExecController = new AbortController();
 
 async function runProgram(code) {
     console.log("js code : ", code);
-    let AsyncFunctionCtor = Object.getPrototypeOf(async function () {}).constructor;
+    let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
     let program = new AsyncFunctionCtor(code);
 
     //setup
