@@ -323,9 +323,9 @@ let colorSensor = {
 		var returnValue = -1;
 		if (property == "Red") {
 			returnValue = colorSensorData[colorSensorNumber][0]
-		} else if (property == "Green") {
-			returnValue = colorSensorData[colorSensorNumber][1]
 		} else if (property == "Blue") {
+			returnValue = colorSensorData[colorSensorNumber][1]
+		} else if (property == "Green") {
 			returnValue = colorSensorData[colorSensorNumber][2]
 		} else if (property == "Alpha") {
 			returnValue = colorSensorData[colorSensorNumber][3]
