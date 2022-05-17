@@ -217,14 +217,14 @@ function convert_2js(javaString) {
                 funcBlocks[funcName] = [];
                 funcValues[funcName] = lineTxt.split("(")[1].split(") {")[0];
             } else if (brackets > 0) {
-                var jsLine = space_letter + customConvert(lineTxt);
-                if (jsLine) funcBlocks[funcName].push(jsLine);
+                var jsLine = customConvert(lineTxt);
+                if (jsLine != "") funcBlocks[funcName].push(space_letter + jsLine);
             } else if (brackets == 0 && funcName) {
                 funcName = '';
             }
         }
 
-        console.log("Vars : ", mortorVars, colorVars)
+        console.log("Vars : ", mortorVars, colorVars, funcBlocks)
         funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
         funcBlocks['constructor'].map(line=> {
             const varValue = line.trim().split(" = ")
