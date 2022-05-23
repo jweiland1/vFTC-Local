@@ -170,7 +170,7 @@
     </div>
 
     <div class="center-horizontal">
-        <h1 style="font-size: 6.66vh; margin=bottom: 5vh;">Coming Soon</h1>
+        <h1 style="font-size: 6.66vh; margin-bottom: 5vh;">Coming Soon</h1>
     </div>
 	
 	<div style="display: flex; height: 75vh; justify-content: space-around;">
@@ -204,9 +204,7 @@
 			document.getElementById('LoadingScreen').style.animation = "Intro_Loading .5s ease reverse both";
 			
 			setTimeout(() => {
-				var bttnLink = document.createElement('a');
-				bttnLink.href = "homepage.html";
-				bttnLink.click();
+                window.history.go(-1);
 			}, 500);
 		}
 	</script>

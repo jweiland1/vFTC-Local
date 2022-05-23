@@ -999,7 +999,9 @@ Blockly.FtcJava.getAdjusted = function(block, atId, opt_order) {
 };
 
 Blockly.FtcJava.setClassNameForFtcJava_ = function(className) {
-  Blockly.FtcJava.classNameForFtcJava_ = className;
+  if (/^[0-9]/.test(className))
+    className = "_" + className;
+  Blockly.FtcJava.classNameForFtcJava_ = className.replace(/[^$a-z0-9]/gmi, "_");
 }
 
 Blockly.FtcJava.getClassNameForFtcJava_ = function() {
