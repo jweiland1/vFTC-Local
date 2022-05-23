@@ -826,15 +826,13 @@
       document.getElementById('LoadingScreen').style.animation = "Intro_Loading .5s ease reverse both";
 
       setTimeout(() => {
-        var bttnLink = document.createElement('a');
-        bttnLink.href = "homepage.html";
-        bttnLink.click();
+        window.history.go(-1);
       }, 500);
     }
   </script>
 
-  <script src="./assets/programExecution.js"></script>
-  <script src="./assets/localScript.js"></script>
+  <script src="./assets/js/programExecution.js"></script>
+  <script src="./assets/js/localScript.js"></script>
 
   <!-- FTC Copied Files w/ slight modifications -->
   <xml id="toolbox" style="display: none">
