@@ -251,6 +251,12 @@ function convert_2js(javaString) {
 
     try {
 
+        var classString1 =  javaString.split("extends LinearOpMode")
+        var classString2 = classString1[0].split("@TeleOp(")
+        var classString3 = classString2[1].split("public class ")
+
+        javaString = classString2[0] + "@TeleOp(" + (classString3[0] + "public class MainControlClass extends LinearOpMode") +classString1[1]
+
         removeWordsJAVA.map(word=>{
             javaString = javaString.replaceAll(word, "")
         })
