@@ -10,6 +10,14 @@ const directions = {
     'wobbleActuator': 7
 }
 
+const removeWordsJAVA = [
+    "DcMotor.class,", "ColorSensor.class,", "(Double)", ".doubleValue()", ".toString()", "Double.parseDouble", "(DistanceSensor)"
+]
+
+const replaceJSString = [
+    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive']
+]
+
 
 const colorData = {
     'bottomColorSensor': 0
@@ -37,6 +45,23 @@ const checkBrackets = (str)=>{
     const closeBracket = (str.match(/}/g) || []).length;
     return openBracket - closeBracket
 }
+
+
+const getBracketContent = (str)=>{
+    let returnStr = ""
+    let bracketCount = 0
+
+    for(var i=0; i<str.length; i++){
+        if(str[i]=="(")bracketCount++
+        else if(str[i]==")")bracketCount--
+        if(bracketCount<0)break
+        returnStr +=str[i]
+    }
+
+    return returnStr
+
+}
+
 const valueConverter = (str) =>{
     if(str.includes(".isBusy(")){
         let sides = str.split(".isBusy(");
@@ -64,7 +89,19 @@ const valueConverter = (str) =>{
         return `colorSensor.getColor(${colorVars[varName]}, 'Green')` 
     }else if(str.includes("getRuntime(")){
         return str.replaceAll('getRuntime(', "linearOpMode.getRuntime(")
+    }else if(str.includes(".getDistance(")){
+        let sides = str.split(".getDistance(")
+        let colorIndex = 0
+        Object.keys(colorData).map((color)=>{
+            if(sides[0].includes(color))colorIndex=color
+        })
+
+        let value = getBracketContent(sides[1])
+        return `colorSensor.getDistance(${colorData[colorIndex]}, ${value})`;
     }
+
+
+
     return str
 }
 const valueChecker = (str)=>{
@@ -79,8 +116,11 @@ const valueChecker = (str)=>{
             if(bracks<0)break;
             else listValue+=sides[1][i]
         }
+
+        console.log("listValue update: ", listValue)
         let listValueArr = listValue.split(", ")
-        listValueArr = `${listValueArr[0]}[((fieldSetup + 1) - 1)]`
+        listValueArr = `${listValueArr[0]}[${listValueArr[2]}]`
+
         return str.replaceAll("JavaUtil.inListGet(" + listValue + ")", listValueArr)
     }
     var words = str.split(" ")
@@ -94,9 +134,10 @@ const valueChecker = (str)=>{
 const customConvert = (str) =>{
     // let result = "";
 
-    if(str.includes('hardwareMap')){
+    if(str.includes('hardwareMap.get')){
         let sides = str.split(" = ");
         const varName = sides[0];
+        console.log("var value sides[1] : ", sides)
         const varValue = sides[1].split("hardwareMap.get('")[1].split("')")[0]
         if(directions[varValue]!=undefined)
             mortorVars[varName] = directions[varValue];
@@ -172,12 +213,27 @@ const customConvert = (str) =>{
         const value = valueChecker(sides[1].split(") {")[0])
         return `for (${value}) {` + sides[1].split(") {")[1];
     }else if(str.includes("telemetry.addData(")){
-        let sides = str.split("telemetry.addData(")[1].split(");")[0].split(", ")
+
+
+        let sides = str.split("telemetry.addData(")[1].split(");")[0]
+        // .split(" ")
+        let bracketCount = 0
+        let s = 0
+        for(s=0; s<sides.length; s++){
+            if(sides[s]=='(')bracketCount++
+            else if(sides[s]==')')bracketCount--
+            if(bracketCount==0 && sides[s] == ',') break;
+        }
+
+        sides = [sides.substring(0, s), sides.substring(s+2, sides.length)]
+
         let newVars = []
+
         sides.map(item=>{
-            newVars.push(valueConverter(item))
+            newVars.push(valueChecker(item))
         })
         newVars = newVars.join(", ")
+
         return `telemetry.addData(${newVars});`
     }
     else if(str.includes('sleep')){
@@ -194,11 +250,24 @@ function convert_2js(javaString) {
     var funcName = ''
 
     try {
-        javaString = javaString.replaceAll("DcMotor.class,", "").replaceAll("ColorSensor.class,", "");
+
+        var classString1 =  javaString.split("extends LinearOpMode")
+        var classString2 = classString1[0].split("@TeleOp(")
+        var classString3 = classString2[1].split("public class ")
+
+        javaString = classString2[0] + "@TeleOp(" + (classString3[0] + "public class MainControlClass extends LinearOpMode") +classString1[1]
+
+        removeWordsJAVA.map(word=>{
+            javaString = javaString.replaceAll(word, "")
+        })
 
         result = javaToJavascript(javaString);
-        result = result.replaceAll("this.", "");
-        result = result.replaceAll('opModeIsActive', 'linearOpMode.opModeIsActive');
+
+        replaceJSString.map(word=>{
+            result = result.replaceAll(word[0], word[1])
+        })
+
+     
 
         convertedSource = result
 
@@ -217,14 +286,14 @@ function convert_2js(javaString) {
                 funcBlocks[funcName] = [];
                 funcValues[funcName] = lineTxt.split("(")[1].split(") {")[0];
             } else if (brackets > 0) {
-                var jsLine = space_letter + customConvert(lineTxt);
-                if (jsLine) funcBlocks[funcName].push(jsLine);
+                var jsLine = customConvert(lineTxt);
+                if (jsLine != "") funcBlocks[funcName].push(space_letter + jsLine);
             } else if (brackets == 0 && funcName) {
                 funcName = '';
             }
         }
 
-        console.log("Vars : ", mortorVars, colorVars)
+        console.log("Vars : ", mortorVars, colorVars, funcBlocks)
         funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
         funcBlocks['constructor'].map(line=> {
             const varValue = line.trim().split(" = ")
