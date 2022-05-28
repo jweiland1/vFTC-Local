@@ -15,7 +15,7 @@ const removeWordsJAVA = [
 ]
 
 const replaceJSString = [
-    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive']
+    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive'], ['Range.clip(', 'range.clip(']
 ]
 
 const modeTypes = ["LinearOpMode", "OpMode"]
@@ -41,6 +41,7 @@ const exteralFuncs = {
 }
 var mortorVars = {}
 var colorVars = {}
+var elapsedTimeVars = {}
 var convertedSource = ""
 const checkBrackets = (str)=>{
     const openBracket =  (str.match(/{/g) || []).length;
@@ -101,6 +102,8 @@ const valueConverter = (str) =>{
         let value = getBracketContent(sides[1])
         return `colorSensor.getDistance(${colorData[colorIndex]}, ${value})`;
     }
+    else if(elapsedTimeVars[str])
+        return `elapsedTime.toText(${str})`
 
 
 
@@ -147,6 +150,12 @@ const customConvert = (str) =>{
             colorVars[varName] = colorData[varValue];
         return "";
     }
+
+    else if(str.includes("new ElapsedTime()")){
+        let sides = str.split(" = ");
+        elapsedTimeVars[sides[0]]  = true
+        return str.replace("new ElapsedTime()", "elapsedTime.create()")
+    }
     else if(str.includes('.setDirection')){
         let sides = str.split(".setDirection(")
         const varName = sides[0]
@@ -164,58 +173,56 @@ const customConvert = (str) =>{
         return `motor.setProperty([${mortorVars[varName]}], 'Power', [${value}]);`;
     }
     else if(str.includes('setMode(')){
-        let sides = str.split(".setMode(")
-        const varName = sides[0]
-        const value = valueChecker(sides[1].replace('DcMotor.RunMode.', '').split(");")[0])
+        let sides = str.split(".setMode(");
+        const varName = sides[0];
+        const value = valueChecker(sides[1].replace('DcMotor.RunMode.', '').split(");")[0]);
         return `motor.setProperty([${mortorVars[varName]}], 'Mode', ['${value}']);`;
     }
 
     else if(str.includes('setTargetPosition(')){
-        let sides = str.split(".setTargetPosition(")
-        const varName = sides[0]
-        const value =  valueChecker(sides[1].split(");")[0])
+        let sides = str.split(".setTargetPosition(");
+        const varName = sides[0];
+        const value =  valueChecker(sides[1].split(");")[0]);
         return `motor.setProperty([${mortorVars[varName]}], 'TargetPosition', [${value}]);`;
     }
     
     else if(str.includes('setTargetPositionTolerance(')){
-        let sides = str.split(").setTargetPositionTolerance(")
-        const varName = sides[0].split("(")[1]
-        const value = valueChecker(sides[1].split(");")[0])
+        let sides = str.split(").setTargetPositionTolerance(");
+        const varName = sides[0].split("(")[1];
+        const value = valueChecker(sides[1].split(");")[0]);
         return `motor.setProperty([${mortorVars[varName]}], 'TargetPositionTolerance', [${value}]);`;
     }
 
     else if(str.includes("if (")){
-
-        let sides = str.split("if (")
-        const value = valueChecker(sides[1].split(") {")[0])
+        let sides = str.split("if (");
+        const value = valueChecker(sides[1].split(") {")[0]);
         return `if (${value}) {` + sides[1].split(") {")[1];
-
     }
 
     else if(str.includes("JavaUtil.createListWith(")){
-        let sides = str.split("JavaUtil.createListWith(")
-        const value = valueChecker(sides[1].split(");")[0])
+        let sides = str.split("JavaUtil.createListWith(");
+        const value = valueChecker(sides[1].split(");")[0]);
         return `${sides[0]}[${value}];`;
     }
 
     else if(str.includes("GoToPosition(")){
-        let sides = str.split("GoToPosition(")
-        const value = valueChecker(sides[1].split(");")[0])
+        let sides = str.split("GoToPosition(");
+        const value = valueChecker(sides[1].split(");")[0]);
         return `${sides[0]} GoToPosition(${value});`;
     }
 
     else if(str.includes("while (")){
-        let sides = str.split("while (")
-        const value = valueChecker(sides[1].split(") {")[0])
+        let sides = str.split("while (");
+        const value = valueChecker(sides[1].split(") {")[0]);
         return `while (${value}) {await linearOpMode.sleep(1);\n` + sides[1].split(") {")[1];
     }
 
     else if(str.includes("for (")){
-        let sides = str.split("for (")
-        const value = valueChecker(sides[1].split(") {")[0])
+        let sides = str.split("for (");
+        const value = valueChecker(sides[1].split(") {")[0]);
         return `for (${value}) {` + sides[1].split(") {")[1];
-    }else if(str.includes("telemetry.addData(")){
 
+    }else if(str.includes("telemetry.addData(")){
 
         let sides = str.split("telemetry.addData(")[1].split(");")[0]
         // .split(" ")
@@ -226,7 +233,6 @@ const customConvert = (str) =>{
             else if(sides[s]==')')bracketCount--
             if(bracketCount==0 && sides[s] == ',') break;
         }
-
         sides = [sides.substring(0, s), sides.substring(s+2, sides.length)]
         let newVars = []
         sides.map(item=>{
@@ -337,7 +343,7 @@ function convert_2js(javaString) {
 
     } catch (e) {
         console.log("parse error : ", e)
-        return 'parse error|' + e
+        return 'parse error'
     }
 
     return jsString
