@@ -129,8 +129,8 @@ function convert2JS() {
         return "Fail";
     } else {
 
-        console.log("===========> js code start<============ \n" + result)
-        console.log("===========> js code end <============")
+        // console.log("===========> js code start<============ \n" + result)
+        // console.log("===========> js code end <============")
 
 
         return result;

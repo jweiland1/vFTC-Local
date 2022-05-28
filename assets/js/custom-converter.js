@@ -18,6 +18,8 @@ const replaceJSString = [
     ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive']
 ]
 
+const modeTypes = ["LinearOpMode", "OpMode"]
+
 
 const colorData = {
     'bottomColorSensor': 0
@@ -137,7 +139,7 @@ const customConvert = (str) =>{
     if(str.includes('hardwareMap.get')){
         let sides = str.split(" = ");
         const varName = sides[0];
-        console.log("var value sides[1] : ", sides)
+        // console.log("var value sides[1] : ", sides)
         const varValue = sides[1].split("hardwareMap.get('")[1].split("')")[0]
         if(directions[varValue]!=undefined)
             mortorVars[varName] = directions[varValue];
@@ -158,7 +160,7 @@ const customConvert = (str) =>{
     else if(str.includes('.setPower(')){
         let sides = str.split(".setPower(")
         const varName = sides[0]
-        const value = valueChecker(sides[1].split(");")[0])
+        const value = valueChecker(sides[1].split(");")[0])?valueChecker(sides[1].split(");")[0]):0
         return `motor.setProperty([${mortorVars[varName]}], 'Power', [${value}]);`;
     }
     else if(str.includes('setMode(')){
@@ -205,7 +207,7 @@ const customConvert = (str) =>{
     else if(str.includes("while (")){
         let sides = str.split("while (")
         const value = valueChecker(sides[1].split(") {")[0])
-        return `while (${value}) {` + sides[1].split(") {")[1];
+        return `while (${value}) {await linearOpMode.sleep(1);\n` + sides[1].split(") {")[1];
     }
 
     else if(str.includes("for (")){
@@ -226,14 +228,11 @@ const customConvert = (str) =>{
         }
 
         sides = [sides.substring(0, s), sides.substring(s+2, sides.length)]
-
         let newVars = []
-
         sides.map(item=>{
             newVars.push(valueChecker(item))
         })
         newVars = newVars.join(", ")
-
         return `telemetry.addData(${newVars});`
     }
     else if(str.includes('sleep')){
@@ -248,32 +247,33 @@ function convert_2js(javaString) {
     var funcBlocks = {}
     var funcValues = {}
     var funcName = ''
+    var modeType = 0
 
     try {
+        modeTypes.map((mode, i)=>{
+            if(javaString.includes("extends " + mode)) modeType = i
+        })
 
-        var classString1 =  javaString.split("extends LinearOpMode")
+        var classString1 =  javaString.split("extends " + modeTypes[modeType])
+
         var classString2 = classString1[0].split("@TeleOp(")
+
+        if(classString2.length == 1)classString2 = ['', classString2[0]]
+
         var classString3 = classString2[1].split("public class ")
 
-        javaString = classString2[0] + "@TeleOp(" + (classString3[0] + "public class MainControlClass extends LinearOpMode") +classString1[1]
+        javaString = (classString2[0]==''?'':( classString2[0] + "@TeleOp(")) + (classString3[0] + "public class MainControlClass extends " + modeTypes[modeType]) +classString1[1]
 
         removeWordsJAVA.map(word=>{
             javaString = javaString.replaceAll(word, "")
         })
-
+        console.log("javaString : ", javaString)
         result = javaToJavascript(javaString);
-
         replaceJSString.map(word=>{
             result = result.replaceAll(word[0], word[1])
         })
-
-     
-
         convertedSource = result
-
         result = result.split('\n');
-        
-
         for (let i = 1; i < result.length; i++) {            
             let space_letter = ""
             for(var j=0;i<result[i].length;j++)if(result[i][j]!==" ")break; else space_letter += " ";
@@ -289,38 +289,51 @@ function convert_2js(javaString) {
                 var jsLine = customConvert(lineTxt);
                 if (jsLine != "") funcBlocks[funcName].push(space_letter + jsLine);
             } else if (brackets == 0 && funcName) {
+                if(funcName != 'constructor')
+                    funcBlocks[funcName] = funcBlocks[funcName].join("\n");
                 funcName = '';
             }
         }
 
         console.log("Vars : ", mortorVars, colorVars, funcBlocks)
-        funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")            
-        funcBlocks['constructor'].map(line=> {
-            const varValue = line.trim().split(" = ")
-            if(mortorVars[varValue[0]]!=undefined || colorVars[varValue[0]]!=undefined)return false
+        // funcBlocks['runOpMode'] = funcBlocks['runOpMode'].join("\n")   
+        if(typeof funcBlocks['constructor']!='function' && funcBlocks['constructor'])  
+            funcBlocks['constructor'].map(line=> {
+                const varValue = line.trim().split(" = ")
+                if(mortorVars[varValue[0]]!=undefined || colorVars[varValue[0]]!=undefined)return false
 
-            jsString += "var " + line + "\n"
-        })
+                jsString += "var " + line + "\n"
+            })
         Object.keys(funcBlocks).map(key => {
-            if (key === 'constructor' || key === 'runOpMode') return
-            funcBlocks['runOpMode'] = funcBlocks['runOpMode'].replaceAll((key + "("), ("await " + key + "("));
-            funcBlocks[key] = funcBlocks[key].join("\n");
-            jsString += `async function ${key}(${funcValues[key]}) { 
-                ${funcBlocks[key]}
-            }\n`
+            if (key === 'constructor') return
+            Object.keys(funcBlocks).map(key1 => {
+                if(key == key1 || key1 === 'constructor')return
+                // console.log(key1)
+                funcBlocks[key1] = funcBlocks[key1].replaceAll((key + "("), ("await " + key + "("));
+            })
+
             Object.keys(exteralFuncs).map(funct => {
-                if(funcBlocks['runOpMode'].includes(funct)){
-                    funcBlocks['runOpMode'] = funcBlocks['runOpMode'].replaceAll(funct, exteralFuncs[funct][0])
+                if(funcBlocks[key].includes(funct)){
+                    funcBlocks[key] = funcBlocks[key].replaceAll(funct, exteralFuncs[funct][0])
                     jsString += exteralFuncs[funct][1] + "\n"
                 }
             })
         })
 
-        jsString += `
-        async function runOpMode() {
-            ${funcBlocks['runOpMode']}
-        }        
-        await runOpMode();`
+
+        Object.keys(funcBlocks).map(key => {
+            if(key != "constructor")
+            jsString += `async function ${key}(${funcValues[key]}) { 
+                ${funcBlocks[key]}
+            }\n`
+        })
+
+        if(modeType == 0)
+            jsString += `          
+            await runOpMode();`
+        else 
+            jsString += `  
+            await init();`
 
     } catch (e) {
         console.log("parse error : ", e)
