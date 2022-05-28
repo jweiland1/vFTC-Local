@@ -121,8 +121,11 @@ function convert2JS() {
     var javaString = editor.getValue()
     let result = ""
     result = convert_2js(javaString)
-    if (result == 'parse error') {
-        alert("JS convert failed.")
+    if (result.startsWith('parse error')) {
+        //alert("JS convert failed.")
+		localStorage.setItem('stopMatch', true);
+		document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + result.split("|")[1];
+		resetProgramExecution();
         return "Fail";
     } else {
 
@@ -210,7 +213,7 @@ function uploadProgram(programName, content) {
                 if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
                     blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
                     blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-                    for (var c = nextBlock.childNodes.length - 1; c > 1; c--)
+                    for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
                         if (nextBlock.childNodes[c].tagName && nextBlock.childNodes[c].getAttribute("name")) {
                             var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
                             nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
@@ -365,27 +368,30 @@ function initProgram(code) {
         if (!isUsingBlocks) {
             var javaCode = convert2JS();
             console.log("Java Code: ", javaCode);
-            runProgram(javaCode);
+			if (javaCode != "Fail")
+				runProgram(javaCode);
         }
-        code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
-        var finalCode = "";
-        var inFunction = false;
-        for (var line of code.split('\n')) {
-            if (line.startsWith('function ')) {
-                inFunction = true;
-            }
-            if (line.startsWith('async function '))
-                inFunction = true;
-            if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
-                finalCode += line + '\n';
-            else
-                finalCode += '//' + line + '\n';
-            if (line == '}')
-                inFunction = false;
-        }
-
-        finalCode += "\nawait runOpMode();\n";
-        runProgram(finalCode);
+		else {
+			code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
+			var finalCode = "";
+			var inFunction = false;
+			for (var line of code.split('\n')) {
+				if (line.startsWith('function ')) {
+					inFunction = true;
+				}
+				if (line.startsWith('async function '))
+					inFunction = true;
+				if (inFunction || line == '' || line.startsWith('var ') || line.startsWith('// '))
+					finalCode += line + '\n';
+				else
+					finalCode += '//' + line + '\n';
+				if (line == '}')
+					inFunction = false;
+			}
+	
+			finalCode += "\nawait runOpMode();\n";
+			runProgram(finalCode);
+		}
     } else
         runProgram(code);
 }

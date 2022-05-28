@@ -337,7 +337,7 @@ function convert_2js(javaString) {
 
     } catch (e) {
         console.log("parse error : ", e)
-        return 'parse error'
+        return 'parse error|' + e
     }
 
     return jsString
