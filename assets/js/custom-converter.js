@@ -15,7 +15,7 @@ const removeWordsJAVA = [
 ]
 
 const replaceJSString = [
-    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive']
+    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive'], ['new ElapsedTime()', 'elapsedTime.toText(elapsedTime.create())'], ['Range.clip(', 'range.clip(']
 ]
 
 const modeTypes = ["LinearOpMode", "OpMode"]
@@ -337,7 +337,7 @@ function convert_2js(javaString) {
 
     } catch (e) {
         console.log("parse error : ", e)
-        return 'parse error|' + e
+        return 'parse error'
     }
 
     return jsString
