@@ -72,7 +72,7 @@ let linearOpMode = {
 
 		});
 	},
-	idle: function () { linearOpMode.sleep(0); },
+	idle: function () { linearOpMode.sleep(1); },
 	sleep: async function (milliseconds) {
 
 		// bail early if the program has been aborted already
@@ -105,8 +105,8 @@ let linearOpMode = {
 
 		});
 	},
-	opModeIsActive: () => !linearOpMode.isStopRequested() && linearOpMode.isStarted(),
-	isStarted: () => programStart,
+	opModeIsActive: () => linearOpMode.isStarted() && !linearOpMode.isStopRequested(),
+	isStarted: () => programStart || linearOpMode.isStopRequested(),
 	isStopRequested: () => false,
 	requestOpModeStop: function () { stopProgram(); },
 	getRuntime: function () { return Math.floor(performance.now() - startTime) / 1000; },
