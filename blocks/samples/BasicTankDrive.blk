@@ -7,7 +7,7 @@
 <field name="COMMENT">Reverse one of the drive motors.</field>
 <next>
 <block type="dcMotor_setProperty_Direction" id="eq?6z=8[X(p{)!kj=ljm">
-<field name="IDENTIFIER">dcMotor1</field>
+<field name="IDENTIFIER">right_driveAsDcMotor</field>
 <field name="PROP">Direction</field>
 <comment pinned="false" h="103" w="377">You will have to determine which motor to reverse for your robot.  In this example, the right motor was reversed so that positive applied power makes it move the robot in the forward direction.</comment>
 <data>{"IDENTIFIER":"right_drive"}</data>
@@ -38,8 +38,8 @@
 <next>
 <block type="dcMotor_setDualProperty" id="?fu!mk[evxtjh1mAGC7J">
 <field name="PROP">Power</field>
-<field name="IDENTIFIER1">dcMotor0</field>
-<field name="IDENTIFIER2">dcMotor1</field>
+<field name="IDENTIFIER1">left_driveAsDcMotor</field>
+<field name="IDENTIFIER2">right_driveAsDcMotor</field>
 <comment pinned="false" h="101" w="394">The Y axis of a joystick ranges from -1 in its topmost position to +1 in its bottommost position.  We negate this value so that the topmost position corresponds to maximum forward power.</comment>
 <data>{"IDENTIFIER1":"left_drive","IDENTIFIER2":"right_drive"}</data>
 <value name="VALUE1">
@@ -81,7 +81,7 @@
 </value>
 <value name="NUMBER">
 <block type="dcMotor_getProperty_Number" id=")l?bt;SeT)jw=H;h7K0G">
-<field name="IDENTIFIER">dcMotor0</field>
+<field name="IDENTIFIER">left_driveAsDcMotor</field>
 <field name="PROP">Power</field>
 <data>{"IDENTIFIER":"left_drive"}</data>
 </block>
@@ -95,7 +95,7 @@
 </value>
 <value name="NUMBER">
 <block type="dcMotor_getProperty_Number" id="a.6ieWX3JB?^^b14yx0p">
-<field name="IDENTIFIER">dcMotor1</field>
+<field name="IDENTIFIER">right_driveAsDcMotor</field>
 <field name="PROP">Power</field>
 <data>{"IDENTIFIER":"right_drive"}</data>
 </block>

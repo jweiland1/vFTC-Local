@@ -1,6 +1,8 @@
 //Load Config File
 var robotConfig = null;
 
+var defaultBot = true;
+
 var client = new XMLHttpRequest();
 client.open('GET', './robotConfigs/defaultRobot.json');
 client.onload = function () {
@@ -129,7 +131,27 @@ function configNaming(str) {
 	return str;
 }
 
-function blocklyNaming(str) {
+//Does some string replacement for java programs with defaultBot
+function javaNaming(str) {
+	if (defaultBot) {
+		str = str.replaceAll('"left_drive"', '"frontLeft"');
+		str = str.replaceAll('"right_drive"', '"frontRight"');
+		str = str.replaceAll('"left_arm"', '"wobbleActuator"');
+	}
+	return str;
+}
+
+//Converts New Blockly Programs to Naming Convention
+var savedStr = "";
+var savedSampleProg = false;
+function blocklyNaming(str, sampleProg) {
+	//First - Changes based off of Default Bot Config
+	if (defaultBot) {
+		str = str.replaceAll('left_driveAsDcMotor', 'dcMotor0');
+		str = str.replaceAll('right_driveAsDcMotor', 'dcMotor1');
+		str = str.replaceAll('sensor_colorAsREVColorRangeSensor', 'colorSensor0');
+	}
+	//Second - Changes any known config naming
 	for (var i = 0; i < robotConfig["motors"].length; i++)
 		str = str.replaceAll(robotConfig["motors"][i].name + "AsDcMotor", "dcMotor" + i);
 	for (var i = 0; i < robotConfig["servos"].length; i++)
@@ -142,14 +164,97 @@ function blocklyNaming(str) {
 		str = str.replaceAll(robotConfig["colorSensor"][i].name + "AsREVColorRangeSensor", "colorSensor" + i);
 	for (var i = 0; i < robotConfig["touchSensor"].length; i++)
 		str = str.replaceAll(robotConfig["touchSensor"][i].name + "AsTouchSensor", "touchSensor" + i);
-	return str;
+	//Third - Asks any remaining unknown names to be named
+	var findIndex = 0;
+	var configs = [];
+	//Removes Previous Selections
+	while (document.getElementById('configRenamer').childElementCount > 1)
+		document.getElementById('configRenamer').children[1].remove();
+	//Checks for "nameAsDevice"
+	while (true) {
+		findIndex = str.indexOf("As", findIndex + 1);
+		if (findIndex == -1)
+			break;
+		var configName = str.substring(str.lastIndexOf(">", findIndex) + 1, findIndex);
+		var deviceType = str.substring(findIndex, str.indexOf("<", findIndex));
+		if (!configs.includes(configName)) {
+			var newConfigOpt = document.getElementById('configRenamer').firstElementChild.cloneNode(true);
+			newConfigOpt.style.display = "flex";
+			newConfigOpt.firstElementChild.innerText = configName;
+			//Adds Options
+			var dropdown = newConfigOpt.lastElementChild.firstElementChild;
+			var devices = [];
+			var deviceName = "invalid";
+			switch(deviceType) {
+				case "AsDcMotor":
+					devices = robotConfig["motors"];
+					deviceName = "dcMotor";
+					break;
+				case "AsServo":
+					devices = robotConfig["servos"];
+					deviceName = "servo";
+					break;
+				case "AsDistanceSensor":
+					devices = robotConfig["distSensor"];
+					deviceName = "distanceSensor";
+					break;
+				case "AsBNO055IMU":
+					devices = robotConfig["IMU"];
+					deviceName = "imu";
+					break;
+				case "AsREVColorRangeSensor":
+					devices = robotConfig["colorSensor"];
+					deviceName = "colorSensor";
+					break;
+				case "AsTouchSensor":
+					devices = robotConfig["touchSensor"];
+					deviceName = "touchSensor";
+					break;
+			}
+			for (var i = 0; i < devices.length; i++) {
+				var newOpt = document.createElement('option');
+				newOpt.setAttribute('value', deviceName + i);
+				newOpt.innerText = devices[i]["name"];
+				dropdown.append(newOpt);
+			}
+			if (deviceName != "invalid") {
+				configs.push(configName);
+				document.getElementById('configRenamer').append(newConfigOpt);
+			}
+		}
+	}
+	overlay(false, 0);
+	if (configs.length > 0) {
+		savedStr = str;
+		savedSampleProg = sampleProg;
+		setTimeout(function() {overlay(true, 5);}, 500);
+	}
+	else
+		loadBlocksXML(str, sampleProg);
+}
+
+//Config Renaming Finished
+function renameConfig() {
+	var parentConfig = document.getElementById('configRenamer');
+	while (parentConfig.childElementCount > 1) {
+		var replace = parentConfig.children[1].firstElementChild.innerText;
+		var index = savedStr.indexOf(replace + "As")
+		replace = savedStr.substring(index, savedStr.indexOf("<", index));
+		var newStr = parentConfig.children[1].lastElementChild.firstElementChild.value;
+		savedStr = savedStr.replaceAll(replace, newStr);
+		parentConfig.children[1].remove();
+	}
+	loadBlocksXML(savedStr, savedSampleProg);
 }
 
 
 //Sets up workspace with actuators/sensors
 function setupCategories() {
+	document.getElementById("javaSelect").value = 'BlankLinearOpMode';
+	sampleProgram(false);
 	document.getElementById("blockSelect").value = 'BasicAutoOpMode';
 	sampleProgram(true);
+	switchToBlocks();
 	
 	try {
 		var toolbox = Blockly.getMainWorkspace().getToolbox();
