@@ -23,11 +23,17 @@ function resetProperties() {
 	}
 
 	motorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	telemetryItems.splice(0, telemetryItems.length);
+	telemetryLogs.splice(0, telemetryLogs.length);
+	telemetryLogCapacity = 9;
 }
 
 var programStart = false;
 var startTime = performance.now();
-var telemetryData = "";
+var telemetryItems = [];
+var telemetryLogs = [];
+var telemetryLogCapacity = 9;
 
 const noOp = function () { }
 
@@ -565,11 +571,49 @@ let range = {
 
 let telemetry = {
 	addData: function (key, data) {
-		return (telemetryData += key + ": " + data + "\n");
+		return telemetryItems[telemetryItems.push(key + ": " + data) - 1];
+	},
+	addLine: function () {
+		if (arguments.length > 0) 
+			telemetryItems.push(Array.from(arguments)[0]);
+		else 
+			telemetryItems.push("");
+		return;
+	},
+	clear: function () {
+		telemetryItems.splice(0, telemetryItems.length);
+		return;
+	},
+	clearAll: function () {
+		telemetryItems.splice(0, telemetryItems.length);
+		telemetryLogs.splice(0, telemetryLogs.length);
+		document.getElementById("telemetryText").innerText = "\n\n";
+		return;
+	},
+	log: function () {
+		return {
+			add: function (entry) {
+				telemetryLogs.unshift(entry);
+				if (telemetryLogs.length > telemetryLogCapacity)
+					telemetryLogs.splice(telemetryLogCapacity, telemetryLogs.length - telemetryLogCapacity);
+				return;
+			},
+			clear: function () {
+				telemetryLogs.splice(0, telemetryLogs.length);
+				return;
+			},
+			setCapacity: function (capacity) {
+				telemetryLogCapacity = capacity;
+				return;
+			},
+			getCapacity: function () {
+				return telemetryLogCapacity;
+			}
+		};
 	},
 	update: function () {
-		document.getElementById("telemetryText").innerText = telemetryData;
-		telemetryData = "";
+		document.getElementById("telemetryText").innerText = telemetryItems.join("\n") + "\n\n" + telemetryLogs.join("\n");
+		telemetryItems.splice(0, telemetryItems.length);
 		return;
 	},
 	speak: noOp,
