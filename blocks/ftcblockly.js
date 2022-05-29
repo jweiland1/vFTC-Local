@@ -72,7 +72,7 @@ let linearOpMode = {
 
 		});
 	},
-	idle: noOp,
+	idle: function () { linearOpMode.sleep(0); },
 	sleep: async function (milliseconds) {
 
 		// bail early if the program has been aborted already
@@ -108,7 +108,9 @@ let linearOpMode = {
 	opModeIsActive: () => true,
 	isStarted: () => programStart,
 	isStopRequested: () => false,
-	getRuntime: function () { return Math.floor((performance.now() - startTime) * .1) / 100; },
+	requestOpModeStop: function () { stopProgram(); },
+	getRuntime: function () { return Math.floor(performance.now() - startTime) / 1000; },
+	resetStartTime: function () { startTime = performance.now(); }
 }
 
 let gamepad = {
