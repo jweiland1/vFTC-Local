@@ -105,7 +105,7 @@ let linearOpMode = {
 
 		});
 	},
-	opModeIsActive: () => true,
+	opModeIsActive: () => !linearOpMode.isStopRequested() && linearOpMode.isStarted(),
 	isStarted: () => programStart,
 	isStopRequested: () => false,
 	requestOpModeStop: function () { stopProgram(); },
