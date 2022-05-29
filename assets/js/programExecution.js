@@ -1,5 +1,6 @@
 //---TempVariable will be replaced by vars.js---
-var currentProjectName = "";
+var currentProjectName = "program";
+var javaProjectName = "program";
 
 //---Sending Data to Unity---
 const abortedMsg = "aborted";
@@ -58,25 +59,16 @@ function autoFormatSelection() {
 }
 
 //---Switching between Blocks and Java---
-var isUsingBlocks = true;
-
 function switchToBlocks() {
     document.getElementById('blocksBttn').classList.add('button1Selected');
     document.getElementById('javaBttn').classList.remove('button1Selected');
 
     document.getElementById('blocklyDiv').hidden = false;
     document.getElementById('onBotJavaDiv').hidden = true;
-    document.getElementById('saveAs').disabled = false;
-    document.getElementById('initBttn').disabled = false;
     isUsingBlocks = true;
+	prepareUiToLoadProgram();
     if (Blockly.mainWorkspace)
         Blockly.svgResize(Blockly.mainWorkspace);
-    if (currentProjectName != 'program') {
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        document.getElementById("programSelect").value = currentProjectName;
-    }
 }
 
 function switchToOnBotJava() {
@@ -86,26 +78,17 @@ function switchToOnBotJava() {
     resetProgramExecution();
     document.getElementById('blocklyDiv').hidden = true;
     document.getElementById('onBotJavaDiv').hidden = false;
-    document.getElementById('saveAs').disabled = true;
-    document.getElementById('initBttn').disabled = false;
-    document.getElementById('save').disabled = true;
-    document.getElementById('delete').disabled = true;
-    document.getElementById('download').disabled = true;
     isUsingBlocks = false;
-    document.getElementById("programSelect").value = "Load Program";
+	prepareUiToLoadProgram();
 }
 
-var defaultText = 'package org.firstinspires.ftc.teamcode;\n\n\npublic class NewProgram {\n\n	// todo: write your code here\n}';
 var editor;
-
-setUpOnBotJava();
-switchToBlocks();
 
 function setUpOnBotJava(javaCode) {
     editor = CodeMirror(function (elt) {
         document.getElementById('onBotJavaDiv').replaceChild(elt, document.getElementById('onBotJavaDiv').firstElementChild);
     }, {
-        value: "/**\n * OnBotJava is still WIP!\n * You can only visualize Block Code exported to Java\n * and some Sample Code given in the 'New Program' popup.\n */\n\n" + (javaCode || defaultText),
+        value: javaCode || "",
         mode: "text/x-java",
         lineNumbers: true,
         theme: "darcula",
@@ -148,11 +131,10 @@ function sampleProgram(blockProgram) {
         sampleProgram = document.getElementById('blockSelect').value;
     else
         sampleProgram = document.getElementById('javaSelect').value;
-    document.getElementById("programSelect").value = "Load Program";
-    currentProjectName = "program";
-    document.getElementById('save').disabled = true;
-    document.getElementById('delete').disabled = true;
-    document.getElementById('download').disabled = true;
+	if (isUsingBlocks)
+		currentProjectName = "program";
+	else
+		javaProjectName = "program";
     //Load Basic Program From Files
     var client = new XMLHttpRequest();
     client.open('GET', './blocks/samples/' + sampleProgram + (blockProgram ? '.blk' : '.java'));
@@ -162,19 +144,13 @@ function sampleProgram(blockProgram) {
             if (blockProgram) {
                 var i = content.indexOf('</xml>');
                 content = content.substring(0, i + 6);
-                Blockly.mainWorkspace.clear();
-                Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-                resetProgramExecution();
-                if (currStep == 0) {
-                    if (sampleProgram != 'BasicAutoOpMode')
-                        document.getElementById("telemetryText").innerText = 'Loaded Example \"' + sampleProgram + '\" Program \n';
-                    else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
-                        document.getElementById("telemetryText").innerText = 'Reset Blocks \n';
-                }
-                switchToBlocks();
+				//Goes through blockly naming then back to loadBlocksXML
+				blocklyNaming(content, true);
             } else {
                 switchToOnBotJava();
-                setUpOnBotJava(content);
+                setUpOnBotJava(javaNaming(content));
+				if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
+					document.getElementById("telemetryText").innerText = 'Loaded Sample Program \n';
             }
         }
     }
@@ -197,52 +173,65 @@ function uploadProgram(programName, content) {
     if (fileType == "blk") {
         programName = programName.substring(0, programName.length - fileType.length - 1);
         currentProjectName = programName;
-        Blockly.mainWorkspace.clear();
         var i = content.indexOf('</xml>');
-        content = content.substring(0, i + 6); //Convert from names to config
-        //String to XML to Blockly
-        var parser = new DOMParser();
-        var xmlDoc = parser.parseFromString(blocklyNaming(content), "text/xml");
-        //Convert 2 Duals to Quad
-        var blocks = xmlDoc.getElementsByTagName("block");
-        for (var i = 0; i < blocks.length - 1; i++) {
-            if (blocks[i].getElementsByTagName("next")[0]) {
-                for (var c = 0; c < blocks[i].getElementsByTagName("next")[0].childNodes.length; c++)
-                    if (blocks[i].getElementsByTagName("next")[0].childNodes[c].tagName == "block")
-                        nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[c];
-                if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
-                    blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
-                    blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
-                    for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
-                        if (nextBlock.childNodes[c].tagName && nextBlock.childNodes[c].getAttribute("name")) {
-                            var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
-                            nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
-                            blocks[i].appendChild(nextBlock.childNodes[c]);
-                        }
-                    blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
-                    if (nextBlock.getElementsByTagName("next")[0])
-                        blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
-                }
-            }
-        }
-        content = new XMLSerializer().serializeToString(xmlDoc);
-        console.log(content);
-        Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
-        resetProgramExecution();
-        document.getElementById("telemetryText").innerText = 'Loaded new \"' + programName + '\" Program \n';
-        localStorage.setItem("Program Name: " + programName, content);
-        prepareUiToLoadProgram();
-        document.getElementById("programSelect").value = programName;
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        switchToBlocks();
-        overlay(false, 0);
+        content = content.substring(0, i + 6);
+		//Goes through blockly naming then back to loadBlocksXML
+		blocklyNaming(content, false);
     } else if (fileType == "java") {
         switchToOnBotJava();
-        setUpOnBotJava(content);
+		programName = programName.substring(0, programName.length - fileType.length - 1);
+		javaProjectName = programName
+        setUpOnBotJava(javaNaming(content));
+		document.getElementById("telemetryText").innerText = 'Loaded new \"' + javaProjectName + '\" Program \n';
+		localStorage.setItem("Java Program Name: " + javaProjectName, content);
+		prepareUiToLoadProgram();
         overlay(false, 0);
     }
+}
+
+//After resolving config naming
+function loadBlocksXML(xmlString, sampleProg) {
+	//String to XML to Blockly
+    var parser = new DOMParser();
+	var xmlDoc = parser.parseFromString(xmlString, "text/xml");
+	//Convert 2 Duals to Quad
+	var blocks = xmlDoc.getElementsByTagName("block");
+	for (var i = 0; i < blocks.length - 1; i++) {
+		if (blocks[i].getElementsByTagName("next")[0]) {
+			for (var c = 0; c < blocks[i].getElementsByTagName("next")[0].childNodes.length; c++)
+				if (blocks[i].getElementsByTagName("next")[0].childNodes[c].tagName == "block")
+					nextBlock = blocks[i].getElementsByTagName("next")[0].childNodes[c];
+			if (blocks[i].getAttribute("type").startsWith("dcMotor_setDualProperty") && nextBlock.getAttribute("type").startsWith("dcMotor_setDualProperty") &&
+				blocks[i].getElementsByTagName("field")[0].childNodes[0].nodeValue == nextBlock.getElementsByTagName("field")[0].childNodes[0].nodeValue) {
+				blocks[i].setAttribute("type", "dcMotor_setQuadProperty" + blocks[i].getAttribute("type").substring(23));
+				for (var c = nextBlock.childNodes.length - 1; c > 0; c--)
+					if (nextBlock.childNodes[c].tagName && nextBlock.childNodes[c].getAttribute("name")) {
+						var num = parseInt(nextBlock.childNodes[c].getAttribute("name").substring(nextBlock.childNodes[c].getAttribute("name").length - 1));
+						nextBlock.childNodes[c].setAttribute("name", nextBlock.childNodes[c].getAttribute("name").substring(0, nextBlock.childNodes[c].getAttribute("name").length - 1) + (num + 2));
+						blocks[i].appendChild(nextBlock.childNodes[c]);
+					}
+				blocks[i].removeChild(blocks[i].getElementsByTagName("next")[0]);
+				if (nextBlock.getElementsByTagName("next")[0])
+					blocks[i].appendChild(nextBlock.getElementsByTagName("next")[0]);
+			}
+		}
+	}
+	//Loads Content to Workspace
+	content = new XMLSerializer().serializeToString(xmlDoc);
+	console.log(content);
+	Blockly.mainWorkspace.clear();
+	Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
+	resetProgramExecution();
+	//Sets UI Values
+	if (currStep == 0)
+		if (currentProjectName != 'program')
+			document.getElementById("telemetryText").innerText = 'Loaded new \"' + currentProjectName + '\" Program \n';
+		else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
+			document.getElementById("telemetryText").innerText = 'Loaded Sample Program \n';
+	if (!sampleProg)
+		localStorage.setItem("Program Name: " + currentProjectName, content);
+	prepareUiToLoadProgram();
+	switchToBlocks();
 }
 
 //"Export to OnBotJava"
@@ -268,57 +257,85 @@ function generateJavaCode() {
 
 //---Functionality of Middle Buttons---
 function saveProgram() {
-    var programName = document.getElementById('saveProgramName').value;
-    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-    localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
-    prepareUiToLoadProgram();
-    document.getElementById("programSelect").value = document.getElementById('saveProgramName').value;
-    currentProjectName = document.getElementById('saveProgramName').value;
-    document.getElementById('save').disabled = false;
-    document.getElementById('delete').disabled = false;
-    document.getElementById('download').disabled = false;
-    overlay(false, 0);
-    document.getElementById("telemetryText").innerText = 'Saved new "' + programName + '" Program \n';
-    //HowTo Tutorial Addition
-    if (currStep > 0) {
-        document.getElementById('howToText').children[2].children[1].disabled = false;
-        document.getElementById('saveAs').style.position = "inherit";
-        document.getElementById('saveAs').style.zIndex = "inherit";
-    }
+	if (isUsingBlocks) {
+		currentProjectName = document.getElementById('saveProgramName').value;
+		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		localStorage.setItem("Program Name: " + currentProjectName, Blockly.Xml.domToText(xml));
+		overlay(false, 0);
+		document.getElementById("telemetryText").innerText = 'Saved new "' + currentProjectName + '" Program \n';
+		//HowTo Tutorial Addition
+		if (currStep > 0) {
+			document.getElementById('howToText').children[2].children[1].disabled = false;
+			document.getElementById('saveAs').style.position = "inherit";
+			document.getElementById('saveAs').style.zIndex = "inherit";
+		}
+	}
+	else {
+		javaProjectName = document.getElementById('saveProgramName').value;
+		localStorage.setItem("Java Program Name: " + javaProjectName, editor.getValue());
+		overlay(false, 0);
+		document.getElementById("telemetryText").innerText = 'Saved new "' + javaProjectName + '" Program \n';
+	}
+	prepareUiToLoadProgram();
 }
 
 function loadProgram() {
-    Blockly.mainWorkspace.clear();
-    var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
-    currentProjectName = document.getElementById('programSelect').value;
-    if (nameOfProject == "Program Name: Load Program") {
-        document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-        sampleProgram(true);
-    } else if (typeof (Storage) !== "undefined") {
-        document.getElementById('save').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.getElementById('download').disabled = false;
-        var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
-        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
-        resetProgramExecution();
-        document.getElementById("telemetryText").innerText = 'Loaded "' + document.getElementById("programSelect").value + '" Program \n';
-    }
-    switchToBlocks();
+	if (isUsingBlocks) {
+		Blockly.mainWorkspace.clear();
+		var nameOfProject = "Program Name: " + document.getElementById("programSelect").value;
+		currentProjectName = document.getElementById('programSelect').value;
+		if (nameOfProject == "Program Name: Load Program") {
+			document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+			sampleProgram(true);
+		} else if (typeof (Storage) !== "undefined") {
+			var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
+			Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+			resetProgramExecution();
+			document.getElementById("telemetryText").innerText = 'Loaded "' + currentProjectName + '" Program \n';
+			prepareUiToLoadProgram();
+		}
+	}
+	else {
+		var nameOfProject = "Java Program Name: " + document.getElementById("programSelect").value;
+		javaProjectName = document.getElementById('programSelect').value;
+		if (nameOfProject == "Java Program Name: Load Program") {
+			document.getElementById("javaSelect").value = 'BlankLinearOpMode';
+			sampleProgram(false);
+		} else if (typeof (Storage) !== "undefined") {
+			setUpOnBotJava(localStorage.getItem(nameOfProject));
+			resetProgramExecution();
+			document.getElementById("telemetryText").innerText = 'Loaded "' + javaProjectName + '" Program \n';
+			prepareUiToLoadProgram();
+		}
+	}
 }
 
 function autoSave() {
-    var programName = document.getElementById('programSelect').value;
-    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-    localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
+	var programName = document.getElementById('programSelect').value;
+	if (isUsingBlocks) {
+		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
+	}
+	else {
+		localStorage.setItem("Java Program Name: " + programName, editor.getValue());
+	}
     document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
 }
 
 function deleteProgram() {
     var programName = document.getElementById('programSelect').value;
-    currentProjectName = "program";
-    localStorage.removeItem("Program Name: " + programName);
-    document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-    sampleProgram(true);
+	if (isUsingBlocks) {
+		currentProjectName = "program";
+		localStorage.removeItem("Program Name: " + programName);
+		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+		sampleProgram(true);
+	}
+	else {
+		javaProjectName = "program";
+		localStorage.removeItem("Java Program Name: " + programName);
+		document.getElementById("javaSelect").value = 'BlankLinearOpMode';
+		sampleProgram(false);
+	}
     prepareUiToLoadProgram();
     resetProgramExecution();
     document.getElementById("telemetryText").innerText = 'Deleted "' + programName + '" Program \n';
@@ -326,34 +343,41 @@ function deleteProgram() {
 }
 
 function downloadProgram(button) {
-    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-    //Blockly to XML to String
-    var parser = new DOMParser();
-    var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
-    //Convert Quad to 2 Duals
-    var blocks = xmlDoc.getElementsByTagName("block");
-    for (var i = 0; i < blocks.length; i++)
-        if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
-            var secondDual = blocks[i].cloneNode();
-            blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
-            secondDual.setAttribute("type", blocks[i].getAttribute("type"));
-            secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
-            for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
-                if (blocks[i].childNodes[c].getAttribute("name")) {
-                    var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
-                    if (num > 2) {
-                        blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
-                        secondDual.appendChild(blocks[i].childNodes[c]);
-                    }
-                }
-            if (blocks[i].getElementsByTagName("next")[0])
-                secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
-            blocks[i].appendChild(xmlDoc.createElement("next"));
-            blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
-        }
-    //Download Program
-    button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
-    button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
+	if (isUsingBlocks) {
+		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		//Blockly to XML to String
+		var parser = new DOMParser();
+		var xmlDoc = parser.parseFromString(configNaming(Blockly.Xml.domToText(xml)), "text/xml");
+		//Convert Quad to 2 Duals
+		var blocks = xmlDoc.getElementsByTagName("block");
+		for (var i = 0; i < blocks.length; i++)
+			if (blocks[i].getAttribute("type").startsWith("dcMotor_setQuadProperty")) {
+				var secondDual = blocks[i].cloneNode();
+				blocks[i].setAttribute("type", "dcMotor_setDualProperty" + blocks[i].getAttribute("type").substring(23));
+				secondDual.setAttribute("type", blocks[i].getAttribute("type"));
+				secondDual.appendChild(blocks[i].childNodes[0].cloneNode(true));
+				for (var c = blocks[i].childNodes.length - 1; c > 0; c--)
+					if (blocks[i].childNodes[c].getAttribute("name")) {
+						var num = parseInt(blocks[i].childNodes[c].getAttribute("name").substring(blocks[i].childNodes[c].getAttribute("name").length - 1));
+						if (num > 2) {
+							blocks[i].childNodes[c].setAttribute("name", blocks[i].childNodes[c].getAttribute("name").substring(0, blocks[i].childNodes[c].getAttribute("name").length - 1) + (num - 2));
+							secondDual.appendChild(blocks[i].childNodes[c]);
+						}
+					}
+				if (blocks[i].getElementsByTagName("next")[0])
+					secondDual.appendChild(blocks[i].getElementsByTagName("next")[0]);
+				blocks[i].appendChild(xmlDoc.createElement("next"));
+				blocks[i].getElementsByTagName("next")[0].appendChild(secondDual);
+			}
+		//Download Program
+		button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(xmlDoc).replace(/xmlns=\"(.*?)\"/g, '')));
+		button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".blk");
+	}
+	else {
+		//Download Program
+		button.parentElement.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(editor.getValue()));
+		button.parentElement.setAttribute('download', document.getElementById('programSelect').value + ".java");
+	}
 }
 
 //---Functionality for Top Right Buttons---

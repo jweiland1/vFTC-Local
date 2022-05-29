@@ -1000,7 +1000,7 @@ Blockly.FtcJava.getAdjusted = function(block, atId, opt_order) {
 
 Blockly.FtcJava.setClassNameForFtcJava_ = function(className) {
   if (!className)
-    Blockly.FtcJava.classNameForFtcJava_ = "program";
+    Blockly.FtcJava.classNameForFtcJava_ = null;
   else {
     if (/^[0-9]/.test(className))
       className = "_" + className;

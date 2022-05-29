@@ -66,8 +66,8 @@
 <field name="NUM">123</field>
 </shadow>
 <block type="lynxI2cColorRangeSensor_getDistance_Number" id="G::~+y1/s{x=rqtZR5F1">
-<field name="IDENTIFIER">colorsensor</field>
-<data>{"IDENTIFIER":"color"}</data>
+<field name="IDENTIFIER">sensor_colorAsREVColorRangeSensor</field>
+<data>{"IDENTIFIER":"sensor_color"}</data>
 <value name="UNIT">
 <shadow type="navigation_typedEnum_distanceUnit" id="MkE2VUev],.AI8t*YC)w">
 <field name="DISTANCE_UNIT">CM</field>
@@ -90,9 +90,9 @@
 <field name="NUM">123</field>
 </shadow>
 <block type="lynxI2cColorRangeSensor_getProperty_Number" id="C@#iSBZd2CRv+p@dE;Xj">
-<field name="IDENTIFIER">colorsensor</field>
+<field name="IDENTIFIER">sensor_colorAsREVColorRangeSensor</field>
 <field name="PROP">LightDetected</field>
-<data>{"IDENTIFIER":"color"}</data>
+<data>{"IDENTIFIER":"sensor_color"}</data>
 </block>
 </value>
 <next>
@@ -157,9 +157,9 @@
 </statement>
 <next>
 <block type="lynxI2cColorRangeSensor_setProperty_Number" id="V+-e3@.NtRNv}mF!FGdW">
-<field name="IDENTIFIER">colorsensor</field>
+<field name="IDENTIFIER">sensor_colorAsREVColorRangeSensor</field>
 <field name="PROP">Gain</field>
-<data>{"IDENTIFIER":"color"}</data>
+<data>{"IDENTIFIER":"sensor_color"}</data>
 <value name="VALUE">
 <shadow type="math_number" id="Sz#[#r*@z.vevGGOLz*u">
 <field name="NUM">2</field>
@@ -180,9 +180,9 @@
 <field name="NUM">123</field>
 </shadow>
 <block type="lynxI2cColorRangeSensor_getProperty_Number" id="OM%K5kg9lD2X]@!v~y:o">
-<field name="IDENTIFIER">colorsensor</field>
+<field name="IDENTIFIER">sensor_colorAsREVColorRangeSensor</field>
 <field name="PROP">Gain</field>
-<data>{"IDENTIFIER":"color"}</data>
+<data>{"IDENTIFIER":"sensor_color"}</data>
 </block>
 </value>
 <next>
@@ -193,8 +193,8 @@
 <field name="VAR" id="gb`)x4HOn`wR:pPDMx9)">normalizedColors</field>
 <value name="VALUE">
 <block type="lynxI2cColorRangeSensor_getNormalizedColors" id="M?VZXiTlQYhCg{/=4Sg$">
-<field name="IDENTIFIER">colorsensor</field>
-<data>{"IDENTIFIER":"color"}</data>
+<field name="IDENTIFIER">sensor_colorAsREVColorRangeSensor</field>
+<data>{"IDENTIFIER":"sensor_color"}</data>
 </block>
 </value>
 <next>

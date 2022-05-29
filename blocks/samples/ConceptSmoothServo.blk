@@ -118,7 +118,7 @@
 </value>
 <next>
 <block type="servo_setProperty_Number" id="A/XQW=0I}=j?ubS%dI!D">
-<field name="IDENTIFIER">servo0</field>
+<field name="IDENTIFIER">left_handAsServo</field>
 <field name="PROP">Position</field>
 <data>{"IDENTIFIER":"left_hand"}</data>
 <value name="VALUE">
