@@ -15,7 +15,7 @@ const removeWordsJAVA = [
 ]
 
 const replaceJSString = [
-    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['opModeIsActive', 'linearOpMode.opModeIsActive'], ['Range.clip(', 'range.clip(']
+    ["DistanceUnit.CM", "'CM'"], ["this.", ""], ['idle()', 'linearOpMode.idle()'], ['opModeIsActive()', 'linearOpMode.opModeIsActive()'], ['isStarted()', 'linearOpMode.isStarted()'], ['isStopRequested()', 'linearOpMode.isStopRequested()'], ['requestOpModeStop()', 'linearOpMode.requestOpModeStop()'], ['getRuntime()', 'linearOpMode.getRuntime()'], ['resetStartTime()', 'linearOpMode.resetStartTime()'], ['Range.clip(', 'range.clip(']
 ]
 
 const modeTypes = ["LinearOpMode", "OpMode"]
@@ -90,8 +90,6 @@ const valueConverter = (str) =>{
         let sides = str.split(".green()");
         const varName = sides[0];
         return `colorSensor.getColor(${colorVars[varName]}, 'Green')` 
-    }else if(str.includes("getRuntime(")){
-        return str.replaceAll('getRuntime(', "linearOpMode.getRuntime(")
     }else if(str.includes(".getDistance(")){
         let sides = str.split(".getDistance(")
         let colorIndex = 0
