@@ -580,11 +580,8 @@ let telemetry = {
 	addData: function (key, data) {
 		return telemetryItems[telemetryItems.push(key + ": " + data) - 1];
 	},
-	addLine: function () {
-		if (arguments.length > 0) 
-			telemetryItems.push(Array.from(arguments)[0]);
-		else 
-			telemetryItems.push("");
+	addLine: function (line = "") {
+		telemetryItems.push(line);
 		return;
 	},
 	clear: function () {
