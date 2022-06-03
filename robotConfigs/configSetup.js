@@ -38,7 +38,7 @@ function createDcMotorExDropdown() {
 function createCRServoDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["servos"].length; i++)
-		if (robotConfig["servos"][i]["type"] == "continous")
+		if (robotConfig["servos"][i]["type"] == "continuous")
 			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
 	if (CHOICES.length == 0)
 		CHOICES[0] = ["<None>", "servo" + robotConfig["servos"].length];
@@ -137,6 +137,7 @@ function javaNaming(str) {
 		str = str.replaceAll('"left_drive"', '"frontLeft"');
 		str = str.replaceAll('"right_drive"', '"frontRight"');
 		str = str.replaceAll('"left_arm"', '"wobbleActuator"');
+		str = str.replaceAll('"sensor_range"', '"frontDistSensor"');
 	}
 	return str;
 }
@@ -150,6 +151,7 @@ function blocklyNaming(str, sampleProg) {
 		str = str.replaceAll('left_driveAsDcMotor', 'dcMotor0');
 		str = str.replaceAll('right_driveAsDcMotor', 'dcMotor1');
 		str = str.replaceAll('sensor_colorAsREVColorRangeSensor', 'colorSensor0');
+		str = str.replaceAll('sensor_touchAsTouchSensor', 'touchSensor0');
 	}
 	//Second - Changes any known config naming
 	for (var i = 0; i < robotConfig["motors"].length; i++)
@@ -264,7 +266,7 @@ function setupCategories() {
 	
 	var crServos = 0;
 	for (i = 0; i < robotConfig["servos"].length; i++)
-		if (robotConfig["servos"][i]["type"] == "continous")
+		if (robotConfig["servos"][i]["type"] == "continuous")
 			crServos++;
 	
 	if (crServos == 0)
