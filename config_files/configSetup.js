@@ -4,7 +4,7 @@ var robotConfig = null;
 var defaultBot = true;
 
 var client = new XMLHttpRequest();
-client.open('GET', './robotConfigs/defaultRobot.json');
+client.open('GET', './config_files/defaultRobot.json');
 client.onload = function () {
     var robotConfigTxt = client.responseText;
     if (robotConfigTxt !== '' && robotConfig == null) {
@@ -38,7 +38,7 @@ function createDcMotorExDropdown() {
 function createCRServoDropdown() {
     var CHOICES = [];
 	for (i = 0; i < robotConfig["servos"].length; i++)
-		if (robotConfig["servos"][i]["type"] == "continous")
+		if (robotConfig["servos"][i]["type"] == "continuous")
 			CHOICES[CHOICES.length] = [robotConfig["servos"][i]["name"], "servo" + i];
 	if (CHOICES.length == 0)
 		CHOICES[0] = ["<None>", "servo" + robotConfig["servos"].length];
@@ -137,6 +137,7 @@ function javaNaming(str) {
 		str = str.replaceAll('"left_drive"', '"frontLeft"');
 		str = str.replaceAll('"right_drive"', '"frontRight"');
 		str = str.replaceAll('"left_arm"', '"wobbleActuator"');
+		str = str.replaceAll('"sensor_range"', '"frontDistSensor"');
 	}
 	return str;
 }
@@ -150,6 +151,7 @@ function blocklyNaming(str, sampleProg) {
 		str = str.replaceAll('left_driveAsDcMotor', 'dcMotor0');
 		str = str.replaceAll('right_driveAsDcMotor', 'dcMotor1');
 		str = str.replaceAll('sensor_colorAsREVColorRangeSensor', 'colorSensor0');
+		str = str.replaceAll('sensor_touchAsTouchSensor', 'touchSensor0');
 	}
 	//Second - Changes any known config naming
 	for (var i = 0; i < robotConfig["motors"].length; i++)
@@ -247,6 +249,7 @@ function renameConfig() {
 	loadBlocksXML(savedStr, savedSampleProg);
 }
 
+settingUp = 3;
 
 //Sets up workspace with actuators/sensors
 function setupCategories() {
@@ -254,7 +257,7 @@ function setupCategories() {
 	sampleProgram(false);
 	document.getElementById("blockSelect").value = 'BasicAutoOpMode';
 	sampleProgram(true);
-	switchToBlocks();
+	setTimeout(displayLastSaved, 100);
 	
 	try {
 		var toolbox = Blockly.getMainWorkspace().getToolbox();
@@ -264,7 +267,7 @@ function setupCategories() {
 	
 	var crServos = 0;
 	for (i = 0; i < robotConfig["servos"].length; i++)
-		if (robotConfig["servos"][i]["type"] == "continous")
+		if (robotConfig["servos"][i]["type"] == "continuous")
 			crServos++;
 	
 	if (crServos == 0)
@@ -310,4 +313,32 @@ function setupCategories() {
 	
 	if (robotConfig["distSensor"].length == 0 && robotConfig["IMU"].length == 0 && robotConfig["colorSensor"].length == 0 && robotConfig["touchSensor"].length == 0)
         toolbox.getToolboxItemById('Sensors').hide();
+}
+
+//Displays Last Saved Program
+function displayLastSaved() {
+	if (settingUp > 1)
+		setTimeout(displayLastSaved, 100);
+	else {
+		var lastProgram = localStorage.getItem("Last Program");
+		if (!lastProgram)
+			switchToBlocks();
+		else if (lastProgram.startsWith("Program Name: ")) {
+			switchToBlocks();
+			document.getElementById("programSelect").value = lastProgram.substring(14);
+			if (document.getElementById("programSelect").value == "")
+				document.getElementById("programSelect").value = "Load Program";
+			else
+				loadProgram();
+		}
+		else {
+			switchToOnBotJava();
+			document.getElementById("programSelect").value = lastProgram.substring(19);
+			if (document.getElementById("programSelect").value == "")
+				document.getElementById("programSelect").value = "Load Program";
+			else
+				loadProgram();
+		}
+		settingUp = 0;
+	}
 }

@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Virtual Robot Simulator Platform</title>
+	<title>Virtual Robot Simulator</title>
 	<link rel="icon" type="image/x-icon" href="./logo.ico">
 	<style>
 		body {
@@ -405,14 +405,14 @@
 		}
 
 		.NavButtons {
-			border-radius: 100px;
+			border-radius: 1vh;
 			color: #242424;
 			text-align: center;
 			font-family: Jura;
 			text-decoration: none;
-			font-size: .85vw;
+			font-size: 1vw;
 			font-weight: 600;
-			margin: 4vh .25vw;
+			margin: 2vh .25vw;
 			margin-bottom: 0px;
 			cursor: pointer;
 			padding: .66vh .75vw;
@@ -551,36 +551,38 @@
 		.SelectionDesc {
 			height: 0px;
 			background-color: white;
-			font-size: 2.5vh;
+			font-size: 1.25vw;
 			color: black;
 			text-shadow: none;
+			padding-left: .5vw;
+			padding-right: .5vw;
 		}
 
 		@keyframes DescReveal {
 			from {
 				height: 0vw;
-				padding-top: 0vh;
-				margin-top: 0vh;
+				padding-top: 0vw;
+				margin-top: 0vw;
 			}
 
 			to {
-				height: 12.5vh;
-				padding-top: 1.5vh;
+				height: 6.5vw;
+				padding-top: .75vw;
 				margin-top: 2vh;
 			}
 		}
 
 		@keyframes DescHide {
 			from {
-				height: 12.5vh;
-				padding-top: 1.5vh;
+				height: 6.5vw;
+				padding-top: .75vw;
 				margin-top: 2vh;
 			}
 
 			to {
 				height: 0vw;
-				padding-top: 0vh;
-				margin-top: 0vh;
+				padding-top: 0vw;
+				margin-top: 0vw;
 			}
 		}
 	</style>
@@ -607,37 +609,37 @@
 	</div>
 	<div id="MainText">
 		<div id="TitleText">Welcome to the VIRTUAL ROBOT SIMULATOR PLATFORM</div>
-		<button onClick="nextPage('robotConfig.html')" id="RobotConfig">
+		<button onClick="nextPage('configpage.html')" id="RobotConfig">
 			<div id="ConfigText">Robot Configuration</div>
 		</button>
-		<div id="VersionText">Version 1.1.1 - 4/21/2022</div>
+		<div id="VersionText">Version 1.3.0 - 6/6/2022</div>
 	</div>
 	<div id="NavItems">
 		<button class="NavButtons"
 			onClick="overlay('https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz', true)">How
 			To Use</button>
-		<button class="NavButtons" onClick="overlay('https://vrobotsim.com/download-page/', true)">Download</button>
-		<button class="NavButtons" onClick="overlay('http://vrobotsim.org/contact-us/', true)">Contact Us</button>
-		<button class="NavButtons" onClick="overlay('https://vrobotsim.com/team/', true)">Meet the Team</button>
+		<div style="width: 1vw;"></div>
 	</div>
 	<a id="VRSLogo" href="http://vrobotsim.com/" target="_blank"><img src="./assets/vrsLogo.png"
 			style="width: 100%;"></a>
 	<div id="Selections">
 		<button id="localButton" class="SelectionPanel" onmouseover="buttonHover(this, true)"
-			onmouseout="buttonHover(this, false)" onClick="nextPage('local.html')">
-			<div class="SelectionTitle">Autonomous</div>
+			onmouseout="buttonHover(this, false)" onClick="nextPage('programpage.html')">
+			<div class="SelectionTitle">Programming</div>
 			<img class="SelectionIcon" src="./assets/laptop.png">
 			<div class="SelectionHint">Learn More</div>
-			<div class="SelectionDesc">Program your very own FTC robot using the popular and easy to use "Blockly"
-				programming language.</div>
+			<div class="SelectionDesc">Program your very own FTC robot using the easy to use "Blockly"
+				programming language or Java</div>
 		</button>
 		<button id="multiplayerButton" class="SelectionPanel" onmouseover="buttonHover(this, true)"
-			onmouseout="buttonHover(this, false)" onClick="nextPage('multiplayer.html')">
-			<div class="SelectionTitle">TeleOp</div>
+			onmouseout="buttonHover(this, false)" onClick="nextPage('arenapage.html')">
+			<div class="SelectionTitle">Robot Arena</div>
 			<img class="SelectionIcon" src="./assets/gamepad.png">
 			<div class="SelectionHint">Learn More</div>
 			<div class="SelectionDesc">Test your driving skills solo or with friends using the 2020-2021 FTC Ultimate
-				Goal Field.</div>
+				Goal Field</div>
+			<!--<div class="SelectionDesc">Test your driving skills solo or with friends using popular FTC
+				Fields and user-made custom Fields</div>-->
 		</button>
 	</div>
 
@@ -656,6 +658,10 @@
 
 	<script>
 		document.body.style.background = "#242424";
+				
+		//Ensures Animations are not stuck
+		if (document.getElementById('OrangeBKGD').style.animation != "")
+			location.reload();
 
 		//LoadingScreen
 		document.getElementById('LoadingScreen').style.display = "inherit";

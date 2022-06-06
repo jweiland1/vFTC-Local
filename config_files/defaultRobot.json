@@ -50,10 +50,30 @@
 		}
 	],
 	"servos": [
+		{
+            "name": "left_hand",
+            "type": "180degrees"
+        },
+		{
+            "name": "right_hand",
+            "type": "180degrees"
+        },
+		{
+            "name": "fullservo",
+            "type": "continuous"
+        }
 	],
 	"distSensor": [
+		{
+            "name": "frontDistSensor",
+            "type": "REV 2M"
+        }
 	],
 	"IMU": [
+		{
+            "name": "imu",
+            "type": "REV Control Hub"
+        }
 	],
 	"colorSensor": [
 		{
@@ -62,5 +82,9 @@
 		}
 	],
 	"touchSensor": [
+		{
+            "name": "backTouchSensor",
+            "type": "REV Touch Sensor"
+        }
 	]
 }
