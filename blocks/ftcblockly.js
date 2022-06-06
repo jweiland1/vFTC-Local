@@ -23,11 +23,17 @@ function resetProperties() {
 	}
 
 	motorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	telemetryItems.splice(0, telemetryItems.length);
+	telemetryLogs.splice(0, telemetryLogs.length);
+	telemetryLogCapacity = 9;
 }
 
 var programStart = false;
 var startTime = performance.now();
-var telemetryData = "";
+var telemetryItems = [];
+var telemetryLogs = [];
+var telemetryLogCapacity = 9;
 
 const noOp = function () { }
 
@@ -66,7 +72,7 @@ let linearOpMode = {
 
 		});
 	},
-	idle: noOp,
+	idle: function () { linearOpMode.sleep(1); },
 	sleep: async function (milliseconds) {
 
 		// bail early if the program has been aborted already
@@ -99,10 +105,12 @@ let linearOpMode = {
 
 		});
 	},
-	opModeIsActive: () => true,
-	isStarted: () => programStart,
+	opModeIsActive: () => linearOpMode.isStarted() && !linearOpMode.isStopRequested(),
+	isStarted: () => programStart || linearOpMode.isStopRequested(),
 	isStopRequested: () => false,
-	getRuntime: function () { return Math.floor((performance.now() - startTime) * .1) / 100; },
+	requestOpModeStop: function () { stopProgram(); },
+	getRuntime: function () { return Math.floor(performance.now() - startTime) / 1000; },
+	resetStartTime: function () { startTime = performance.now(); }
 }
 
 let gamepad = {
@@ -265,7 +273,7 @@ let acceleration = {
 		return { "DistanceUnit": units || "CM", "XAccel": x || 0, "YAccel": y || 0, "ZAccel": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { return `(${misc.formatNumber(variable["XAccel"],3)} ${misc.formatNumber(variable["YAccel"],3)} ${misc.formatNumber(variable["ZAccel"],3)})${variable["DistanceUnit"].toLowerCase()}/s^2` },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
@@ -455,7 +463,7 @@ let magneticFlux = {
 		return { "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return JSON.stringify(variable); }
+	toText: function (variable) { return `(${misc.formatNumber(variable["X"]*1000,3)} ${misc.formatNumber(variable["Y"]*1000,3)} ${misc.formatNumber(variable["Z"]*1000,3)})mT`; }
 }
 
 let orientation = {
@@ -463,7 +471,12 @@ let orientation = {
 		return { "AxesReference": refrence || "EXTRINSIC", "AxesOrder": order || "XYX", "AngleUnit": units || "DEGREES", "FirstAngle": x || 0, "SecondAngle": y || 0, "ThirdAngle": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { 
+		if (variable["AngleUnit"] == "DEGREES")
+			return `${variable["AxesReference"]} ${variable["AxesOrder"]} ${Math.round(variable["FirstAngle"])} ${Math.round(variable["SecondAngle"])} ${Math.round(variable["ThirdAngle"])}`;
+		else
+			return `${variable["AxesReference"]} ${variable["AxesOrder"]} ${misc.formatNumber(variable["FirstAngle"], 3)} ${misc.formatNumber(variable["SecondAngle"], 3)} ${misc.formatNumber(variable["ThirdAngle"], 3)}`;
+	},
 	toAngleUnit: function (variable, newUnit) {
 		var conversion = 1;
 		if (variable["AngleUnit"] == newUnit)
@@ -490,7 +503,7 @@ let pidf = {
 	},
 	get: function (property, variable) { return variable[property]; },
 	set: function (property, variable, value) { variable[property] = value; },
-	toText: function (variable) { return JSON.stringify(variable); }
+	toText: function (variable) { return `PIDFCoefficients(p=${variable["P"]} i=${variable["I"]} d=${variable["D"]} f=${variable["F"]} alg=${variable["Algorithm"]})`; }
 }
 
 let position = {
@@ -498,7 +511,7 @@ let position = {
 		return { "DistanceUnit": units || "CM", "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { return `(${misc.formatNumber(variable["X"],3)} ${misc.formatNumber(variable["Y"],3)} ${misc.formatNumber(variable["Z"],3)})${variable["DistanceUnit"].toLowerCase()}`; },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
@@ -565,11 +578,46 @@ let range = {
 
 let telemetry = {
 	addData: function (key, data) {
-		return (telemetryData += key + ": " + data + "\n");
+		return telemetryItems[telemetryItems.push(key + ": " + data) - 1];
+	},
+	addLine: function (line = "") {
+		telemetryItems.push(line);
+		return;
+	},
+	clear: function () {
+		telemetryItems.splice(0, telemetryItems.length);
+		return;
+	},
+	clearAll: function () {
+		telemetryItems.splice(0, telemetryItems.length);
+		telemetryLogs.splice(0, telemetryLogs.length);
+		document.getElementById("telemetryText").innerText = "\n\n";
+		return;
+	},
+	log: function () {
+		return {
+			add: function (entry) {
+				telemetryLogs.unshift(entry);
+				if (telemetryLogs.length > telemetryLogCapacity)
+					telemetryLogs.splice(telemetryLogCapacity, telemetryLogs.length - telemetryLogCapacity);
+				return;
+			},
+			clear: function () {
+				telemetryLogs.splice(0, telemetryLogs.length);
+				return;
+			},
+			setCapacity: function (capacity) {
+				telemetryLogCapacity = capacity;
+				return;
+			},
+			getCapacity: function () {
+				return telemetryLogCapacity;
+			}
+		};
 	},
 	update: function () {
-		document.getElementById("telemetryText").innerText = telemetryData;
-		telemetryData = "";
+		document.getElementById("telemetryText").innerText = telemetryItems.join("\n") + "\n\n" + telemetryLogs.join("\n");
+		telemetryItems.splice(0, telemetryItems.length);
 		return;
 	},
 	speak: noOp,
@@ -613,7 +661,7 @@ let elapsedTime = {
 			return Math.floor((system.nanoTime() - variable.StartTime) / 10000) / 100;
 		return variable[property];
 	},
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { return `${misc.formatNumber(elapsedTime.get("Time", variable), 4)} ${variable["Resolution"].toLowerCase()}`; },
 	reset: function (variable) { variable.StartTime = system.nanoTime(); }
 }
 
@@ -630,7 +678,14 @@ let vectorF = {
 	},
 	getIndex: function (variable, index) { return variable[index]; },
 	put: function (variable, index, value) { variable[index] = value; },
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { 
+		let text = "{";
+		for (let i = 0; i < variable.length; i++) {
+			if (i > 0) text += " ";
+			text += misc.formatNumber(variable[i], 2);
+		}
+		return text + "}"; 
+	},
 	normalized3D: function (variable) {
 		var newVar = [];
 		for (var i = 0; i < 3; i++)
@@ -683,7 +738,7 @@ let velocity = {
 		return { "DistanceUnit": units || "CM", "XVeloc": x || 0, "YVeloc": y || 0, "ZVeloc": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return JSON.stringify(variable); },
+	toText: function (variable) { return `(${misc.formatNumber(variable["XVeloc"],3)} ${misc.formatNumber(variable["YVeloc"],3)} ${misc.formatNumber(variable["ZVeloc"],3)})${variable["DistanceUnit"].toLowerCase()}/s`; },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)

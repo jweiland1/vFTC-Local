@@ -493,7 +493,7 @@
       <button id="saveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
       <div style="width: 10px; display: inline-block;"></div>
       <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
-        <select id="programSelect" class="dropdown-select" onchange="loadProgram()">
+        <select id="programSelect" class="dropdown-select" onchange="loadProgram()" style="width: 200px;">
           <option value="Load Program">-Load Program-</option>
         </select>
       </div>
@@ -677,8 +677,8 @@
           </form>
           <button class="button1" onclick="saveProgram()"
             style="font-size: 18.5px; margin-top: 38.5px; margin-left: 315px; height: 30px; width: 75px;">Save</button>
-        </div style="display: none;">
-        <div>
+        </div>
+        <div style="display: none;">
           <img src="./assets/trashProgram.png" style="width: 33%; padding-left: 33%; padding-top: 17.5px;" />
           <button class="button1" onclick="deleteProgram()"
             style="font-size: 18.5px; margin-top: 17.5px; margin-left: 310px; height: 30px; width: 80px;">Delete</button>
@@ -691,7 +691,7 @@
           <button class="button1" onclick="overlay(false, 1)"
             style="font-size: 18.5px; margin-top: 38.5px; margin-left: 310px; height: 30px; width: 80px;">Create</button>
         </div>
-        <div>
+        <div style="display: none;">
           <form onSubmit="return false;" style="display: flex; justify-content: center; margin-top: 38.5px;">
             <input type="text" id="changedVariableName" style="font-size: 20px;" placeholder="Variable Name..."
               autocomplete="off">
@@ -716,15 +716,14 @@
                     <option value='BasicPOVDrive'>POVDrive</option>
                     <option value='BasicTankDrive'>TankDrive</option>
                   </optgroup>
-                  <!--
                   <optgroup label="Concept">
-                    <option value='ConceptSmoothServo'>Servo</option>
+                    <option value='ConceptDeviceInteraction'>DeviceInteraction</option>
+                    <option value='ConceptSmoothServo'>SmoothServo</option>
                   </optgroup>
                   <optgroup label="Sensor">
                     <option value='SensorIMU'>IMU</option>
                     <option value='SensorREVColorDistance'>Color/Distance</option>
                   </optgroup>
-				  -->
                 </select>
               </div>
               <div style="background-color: grey; height: 1.5px; margin: 12.5px;"></div>
@@ -737,7 +736,7 @@
                     <option value='BlankLinearOpMode'>Linear</option>
                     <option value='BlankIterativeOpMode'>Iterative</option>
                   </optgroup>
-                  <optgroup label="Tank Drive">
+                  <optgroup label="POV Drive">
                     <option value='BasicOpMode_Linear'>Linear</option>
                     <option value='BasicOpMode_Iterative'>Iterative</option>
                   </optgroup>
@@ -771,8 +770,29 @@
                 style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Export to OnBotJava</button>
             </div>
           </div>
-
         </div>
+		<div>
+          <div id="configRenamer" style="height: 100px; overflow-y: scroll;">
+            <h2 style="display:none; font-size:18.5px; padding-left:25px; padding-right:25px;">
+              <div style="width:165px;"></div>
+              <i class="fa fa-arrow-circle-right" style="margin:5px; margin-bottom:0px;"></i>
+			  <div class="dropdown dropdown-dark" style="display:flex; background-color:#FFFFFF;">
+				<select class="dropdown-select" style="font-size:18.5px; width:165px; text-align:center;">
+				</select>
+			  </div>
+            </h2>
+		  </div>
+		  <div style="display:flex; margin-top:10px;">
+            <div class="dropdown dropdown-dark" style="display:flex; background-color:#FFFFFF; margin-left:5px;">
+              <select class="dropdown-select" style="font-size:20px;">
+                <option value=''>Default Robot</option>
+              </select>
+			</div>
+            <button class="button1" onclick="overlay(false, 3)"
+              style="font-size: 18.5px; margin-left: 145px; height: 30px; width: 90px;">Done</button>
+		  </div>
+		</div>
+		
       </div>
     </div>
   </div>
@@ -832,8 +852,8 @@
     }
   </script>
 
-  <script src="./assets/js/programExecution.js"></script>
   <script src="./assets/js/localScript.js"></script>
+  <script src="./assets/js/programExecution.js"></script>
 
   <!-- FTC Copied Files w/ slight modifications -->
   <xml id="toolbox" style="display: none">

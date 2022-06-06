@@ -451,6 +451,9 @@ function overlay(show, activity) {
             document.getElementById('overlayName').innerHTML = "New Program";
             document.getElementById('blockjavaConvert').disabled = !isUsingBlocks;
             break;
+		case 5:
+            document.getElementById('overlayName').innerHTML = "Rename Config";
+			break;
         }
         for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
             document.getElementById('overlayType').children[i].style.display = "none";
@@ -462,12 +465,15 @@ function overlay(show, activity) {
             overlayReturned = -1;
         else if (activity == 1)
             overlayReturned = document.getElementById('newVariableName').value;
-        else
+        else if (activity == 2)
             overlayReturned = document.getElementById('changedVariableName').value;
+		else if (activity == 3)
+			renameConfig();
     }
 }
 
 //(re)loads dropdown of saved programs
+isUsingBlocks = true;
 function prepareUiToLoadProgram() {
     var keys = Object.keys(localStorage).sort();
 
@@ -475,16 +481,27 @@ function prepareUiToLoadProgram() {
 
     for (var i = 0; i < keys.length; i++) {
         console.log(keys[i]);
-        if (keys[i].includes("Program Name: ")) {
+        if (keys[i].startsWith("Program Name: ") && isUsingBlocks) {
             var option = document.createElement("option");
             option.value = keys[i].replace("Program Name: ", "");
             option.text = keys[i].replace("Program Name: ", "");
             document.getElementById("programSelect").appendChild(option);
         }
+		else if (keys[i].startsWith("Java Program Name: ") && !isUsingBlocks) {
+            var option = document.createElement("option");
+            option.value = keys[i].replace("Java Program Name: ", "");
+            option.text = keys[i].replace("Java Program Name: ", "");
+            document.getElementById("programSelect").appendChild(option);
+		}
     }
+	
+	var projectName = isUsingBlocks ? currentProjectName : javaProjectName;
+	
+	document.getElementById('save').disabled = projectName == 'program';
+	document.getElementById('delete').disabled = projectName == 'program';
+	document.getElementById('download').disabled = projectName == 'program';
+	document.getElementById("programSelect").value = projectName == 'program' ? 'Load Program' : projectName;
 }
-
-prepareUiToLoadProgram();
 
 //---Switch Between Top Right Tabs---
 var prevTabButton = document.getElementById('firstTab');
