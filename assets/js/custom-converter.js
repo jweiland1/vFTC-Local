@@ -47,20 +47,14 @@ var mortorVars = {}
 var colorVars = {}
 var elapsedTimeVars = {}
 var convertedSource = ""
-
-
 const gamepadVars = ["gamepad1", "gamepad2", "gamepad3", "gamepad4"]
-
 const gamepadValues = {
     "left_stick_x": 0,
     "left_stick_y": 1,
     "right_stick_x": 2,
     "right_stick_y": 3,
-
     "right_stick_button": 11
 }
-
-
 
 const checkBrackets = (str) => {
     const openBracket = (str.match(/{/g) || []).length;
