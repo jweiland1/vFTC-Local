@@ -9,7 +9,7 @@
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml">
   <meta http-equiv="X-Content-Security-Policy"
     content="default-src 'self'; script-src 'self' 'unsafe-inline'; script-src-elem 'self' 'unsafe-inline' https://developers.google.com/blockly/xml"> -->
-  <title>Virtual Robot Simulator: Autonomous</title>
+  <title>VRS: Programming</title>
   <link rel="icon" type="image/x-icon" href="./logo.ico">
   <style>
     body {
@@ -604,12 +604,12 @@
             </div>
           </div>
           <div style="display: none; height: 100%;">
-            <div style="display: flex; justify-content: center; overflow: hidden; height: 11%">
+            <div style="display: flex; justify-content: space-between; overflow: hidden; height: 11%">
+              <div style="width: 112px;"></div>
               <div class="dropdown dropdown-dark"
                 style="display: inline-block; background-color: #FFFFFF; height: 24.8px;">
                 <select id="lessonSelect" class="dropdown-select" onChange="loadLesson()" style="font-size:20px;">
                   <option value=-1>-Coding Lessons-</option>
-                  <option value=-2>&lt;-Link to Shared Document-></option>
                   <option value=0>Drive to White Line - 2 Motors</option> <!-- Timing			-->
                   <option value=1>Drive to White Line - 4 Motors</option> <!-- Timing x2		-->
                   <option value=2>Drive and Rotate 90 Degress</option> <!-- Precise Timing	-->
@@ -622,6 +622,9 @@
                   <option value=9>Drive and Shoot at Powershots</option> <!-- Complex task	-->
                 </select>
               </div>
+			  <a class="button1" style="margin-right: 10px; padding: 6px; padding-top: 1.5px; height: 15px;" target="_blank"
+				href='https://docs.google.com/document/d/1hoTT80vSFAznXJxUHRxzsnOcURv5CSV3Pf-GS-vgjOA/edit?usp=sharingm'>
+				Document <i class="fa fa-external-link-square" aria-hidden="true"></i></a>
             </div>
             <div style="width:100%; overflow:hidden; background-color: #323232;">
               <h2 id="lessonText" style="font-size: 20px; overflow: auto; height: 91%;">Select a Lesson to begin
@@ -762,7 +765,7 @@
             </div>
             <div style="width: 35px; display:inline-block;"></div>
             <div style="width: 130px;">
-              <input id="filePrompt" type="file" accept=".blk,.java" style="display:none;">
+              <input id="filePrompt" type="file" accept=".blk,.java,.txt" style="display:none;">
               <button class="button1" onclick="document.getElementById('filePrompt').click()"
                 style="font-size: 20px; width: 130px; height: 55px; padding-bottom: 10px;">Upload Program</button>
               <div style="height: 10px;"></div>
@@ -807,7 +810,7 @@
       </div>
       <div style="width:100%; height: 1px; background-color: #4B4B4B;"></div>
       <h2 style="padding: 15px; padding-top: 2.5px; padding-bottom: 10px; font-size: 20px; width: 295px;">Here, you will
-        be able to control your robot through the programming language of Blocks!<br><br>
+        be able to control your robot through the programming language of Blocks or Java!<br><br>
         If you wish to learn how everything works, you can either have these text boxes guide you or watch our
         explanatory video.</h2>
       <div style="display: flex; justify-content: space-around; width: 325px;">
@@ -852,7 +855,7 @@
     }
   </script>
 
-  <script src="./assets/js/localScript.js"></script>
+  <script src="./assets/js/programpageScript.js"></script>
   <script src="./assets/js/programExecution.js"></script>
 
   <!-- FTC Copied Files w/ slight modifications -->
@@ -5729,7 +5732,7 @@
 
   </script>
 
-  <script src="./robotConfigs/configSetup.js"></script>
+  <script src="./config_files/configSetup.js"></script>
   <script src="./blocks/ftcblockly.js"></script>
   <script src="./blocks/ftcjava.js"></script>
   <script src="./blocks/blocks/acceleration.js"></script>

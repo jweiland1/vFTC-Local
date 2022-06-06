@@ -140,10 +140,6 @@ function sampleProgram(blockProgram) {
         sampleProgram = document.getElementById('blockSelect').value;
     else
         sampleProgram = document.getElementById('javaSelect').value;
-	if (isUsingBlocks)
-		currentProjectName = "program";
-	else
-		javaProjectName = "program";
     //Load Basic Program From Files
     var client = new XMLHttpRequest();
     client.open('GET', './blocks/samples/' + sampleProgram + (blockProgram ? '.blk' : '.java'));
@@ -153,12 +149,17 @@ function sampleProgram(blockProgram) {
             if (blockProgram) {
                 var i = content.indexOf('</xml>');
                 content = content.substring(0, i + 6);
+				currentProjectName = "program";
 				//Goes through blockly naming then back to loadBlocksXML
 				blocklyNaming(content, true);
             } else {
-                switchToOnBotJava();
+				javaProjectName = "program";
+				if (settingUp == 0)
+					switchToOnBotJava();
+				else
+					settingUp -= 1;
                 setUpOnBotJava(javaNaming(content));
-				if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
+				if (settingUp == 0)
 					document.getElementById("telemetryText").innerText = 'Loaded Sample Program \n';
             }
         }
@@ -186,7 +187,7 @@ function uploadProgram(programName, content) {
         content = content.substring(0, i + 6);
 		//Goes through blockly naming then back to loadBlocksXML
 		blocklyNaming(content, false);
-    } else if (fileType == "java") {
+    } else if (fileType == "java" || fileType == "txt") {
         switchToOnBotJava();
 		programName = programName.substring(0, programName.length - fileType.length - 1);
 		javaProjectName = programName
@@ -229,26 +230,31 @@ function loadBlocksXML(xmlString, sampleProg) {
 	content = new XMLSerializer().serializeToString(xmlDoc);
 	console.log(content);
 	Blockly.mainWorkspace.clear();
+	if (settingUp == 0)
+		switchToBlocks();
+	else
+		settingUp -= 1;
 	Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
 	resetProgramExecution();
 	//Sets UI Values
 	if (currStep == 0)
 		if (currentProjectName != 'program')
 			document.getElementById("telemetryText").innerText = 'Loaded new \"' + currentProjectName + '\" Program \n';
-		else if (document.getElementById("telemetryText").innerText != '-Telemetry Output-' && !document.getElementById("telemetryText").innerText.startsWith("New Controller"))
+		else if (settingUp == 0)
 			document.getElementById("telemetryText").innerText = 'Loaded Sample Program \n';
 	if (!sampleProg)
 		localStorage.setItem("Program Name: " + currentProjectName, content);
 	prepareUiToLoadProgram();
-	switchToBlocks();
 }
 
 //"Export to OnBotJava"
 function convertToJava() {
     var javaCode = generateJavaCode();
+	javaProjectName = "program";
     switchToOnBotJava();
     setUpOnBotJava(configNaming(javaCode));
     overlay(false, 0);
+	document.getElementById("telemetryText").innerText = 'Exported "' + currentProjectName + '" to Java';
 }
 
 //Coped from FTC Code
@@ -270,6 +276,7 @@ function saveProgram() {
 		currentProjectName = document.getElementById('saveProgramName').value;
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 		localStorage.setItem("Program Name: " + currentProjectName, Blockly.Xml.domToText(xml));
+		localStorage.setItem("Last Program", "Program Name: " + currentProjectName);
 		overlay(false, 0);
 		document.getElementById("telemetryText").innerText = 'Saved new "' + currentProjectName + '" Program \n';
 		//HowTo Tutorial Addition
@@ -282,6 +289,7 @@ function saveProgram() {
 	else {
 		javaProjectName = document.getElementById('saveProgramName').value;
 		localStorage.setItem("Java Program Name: " + javaProjectName, editor.getValue());
+		localStorage.setItem("Last Program", "Java Program Name: " + javaProjectName);
 		overlay(false, 0);
 		document.getElementById("telemetryText").innerText = 'Saved new "' + javaProjectName + '" Program \n';
 	}
@@ -300,7 +308,8 @@ function loadProgram() {
 			var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
 			Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 			resetProgramExecution();
-			document.getElementById("telemetryText").innerText = 'Loaded "' + currentProjectName + '" Program \n';
+			if (settingUp == 0)
+				document.getElementById("telemetryText").innerText = 'Loaded "' + currentProjectName + '" Program \n';
 			prepareUiToLoadProgram();
 		}
 	}
@@ -313,7 +322,8 @@ function loadProgram() {
 		} else if (typeof (Storage) !== "undefined") {
 			setUpOnBotJava(localStorage.getItem(nameOfProject));
 			resetProgramExecution();
-			document.getElementById("telemetryText").innerText = 'Loaded "' + javaProjectName + '" Program \n';
+			if (settingUp == 0)
+				document.getElementById("telemetryText").innerText = 'Loaded "' + javaProjectName + '" Program \n';
 			prepareUiToLoadProgram();
 		}
 	}
@@ -324,9 +334,11 @@ function autoSave() {
 	if (isUsingBlocks) {
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
 		localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
+		localStorage.setItem("Last Program", "Program Name: " + programName);
 	}
 	else {
 		localStorage.setItem("Java Program Name: " + programName, editor.getValue());
+		localStorage.setItem("Last Program", "Java Program Name: " + programName);
 	}
     document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
 }
