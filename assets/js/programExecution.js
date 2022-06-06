@@ -99,26 +99,35 @@ function setUpOnBotJava(javaCode) {
     //autoFormatSelection();
 }
 
-function convert2JS() {
+function convert2JS(callback) {
     // console.log("java code : ", editor.getValue())    
     var javaString = editor.getValue()
     let result = ""
-    result = convert_2js(javaString)
-    if (result.startsWith('parse error')) {
-        //alert("JS convert failed.")
-		localStorage.setItem('stopMatch', true);
-		document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + result.split("|")[1];
-		resetProgramExecution();
-        return "Fail";
-    } else {
-
-        // console.log("===========> js code start<============ \n" + result)
-        // console.log("===========> js code end <============")
 
 
-        return result;
-        //editor.setValue(result)
-    }
+    const tjs_url = 'https://transpiler.vrobotsim.online/students/convert-js'
+        // 'http://localhost:8080/students/convert-js' 
+    convert_2js(tjs_url, javaString, (rowSource, finalResult)=>{
+        console.log("===========> js code source start<============ \n" + finalResult)
+        if (finalResult.startsWith('parse error')) {
+            //alert("JS convert failed.")
+            localStorage.setItem('stopMatch', true);
+            document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + finalResult.split("|")[1];
+            resetProgramExecution();
+            callback("Fail")
+        } else {
+    
+            // console.log("===========> js code start<============ \n" + result)
+            // console.log("===========> js code end <============")    
+    
+            callback(finalResult)
+            //editor.setValue(result)
+        }
+    })
+
+
+    // result = convert_2js(javaString)
+    
 }
 
 //---Functionality for New Program Overlay Buttons---
@@ -390,10 +399,11 @@ function initProgram(code) {
     startTime = performance.now();
     if (code == "") {
         if (!isUsingBlocks) {
-            var javaCode = convert2JS();
-            console.log("Java Code: ", javaCode);
-			if (javaCode != "Fail")
-				runProgram(javaCode);
+            convert2JS((javaCode)=>{
+                console.log("Java Code: ", javaCode);
+                if (javaCode != "Fail")
+                    runProgram(javaCode);
+            });            
         }
 		else {
 			code = Blockly.JavaScript.workspaceToCode(Blockly.mainWorkspace);
