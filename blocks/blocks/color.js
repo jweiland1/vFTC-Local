@@ -28,7 +28,7 @@
 // propertyColorUtilities
 
 //VRS-Created colorIdentifierForJavaScript
-colorIdentifierForJavaScript = "color";
+colorIdentifierForJavaScript = "colorUtil";
 
 Blockly.Blocks['color_getProperty'] = {
   init: function() {
@@ -622,11 +622,11 @@ Blockly.Blocks['normalizedColors_getProperty_Number'] = {
     // Assign 'this' to a variable for use in the closures below.
     var thisBlock = this;
     var TOOLTIPS = [
-        ['Red', 'Returns the Red value of the given NormalizedRGBA object.\n[NON FUNCTIONAL]'],
-        ['Green', 'Returns the Green value of the given NormalizedRGBA object.\n[NON FUNCTIONAL]'],
-        ['Blue', 'Returns the Blue value of the given NormalizedRGBA object.\n[NON FUNCTIONAL]'],
-        ['Alpha', 'Returns the Alpha value of the given NormalizedRGBA object.\n[NON FUNCTIONAL]'],
-        ['Color', 'Returns the Android color integer.\n[NON FUNCTIONAL]'],
+        ['Red', 'Returns the Red value of the given NormalizedRGBA object.'],
+        ['Green', 'Returns the Green value of the given NormalizedRGBA object.'],
+        ['Blue', 'Returns the Blue value of the given NormalizedRGBA object.'],
+        ['Alpha', 'Returns the Alpha value of the given NormalizedRGBA object.'],
+        ['Color', 'Returns the Android color integer.'],
     ];
     this.setTooltip(function() {
       var key = thisBlock.getFieldValue('PROP');
@@ -658,7 +658,7 @@ Blockly.JavaScript['normalizedColors_getProperty_Number'] = function(block) {
   var property = block.getFieldValue('PROP');
   var normalizedColors = Blockly.JavaScript.valueToCode(
       block, 'NORMALIZED_COLORS', Blockly.JavaScript.ORDER_MEMBER);
-  var code = colorIdentifierForJavaScript + '.normalized(\"' + property + '", ' + normalizedColors + ')';
+  var code = colorIdentifierForJavaScript + '.normalized("' + property + '", ' + normalizedColors + ')';
   return [code, Blockly.JavaScript.ORDER_MEMBER];
 };
 
@@ -910,7 +910,7 @@ Blockly.Blocks['color_showColor'] =  {
     this.setPreviousStatement(true);
     this.setNextStatement(true);
     this.setColour(propertyColorUtilities);
-    this.setTooltip('Shows the given color on the Robot Controller screen.\n[NON FUNCTIONAL]');
+    this.setTooltip('Shows the given color on the Robot Controller screen.');
     this.getFtcJavaInputType = function(inputName) {
       switch (inputName) {
         case 'COLOR':

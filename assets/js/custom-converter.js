@@ -94,15 +94,15 @@ const valueConverter = (str) => {
     } else if (str.includes(".blue()")) {
         let sides = str.split(".blue()");
         const varName = sides[0];
-        return `colorSensor.getColor(${colorVars[varName]}, 'Blue')`
+        return `colorSensor.getProperty(${colorVars[varName]}, 'Blue')`
     } else if (str.includes(".red()")) {
         let sides = str.split(".red()");
         const varName = sides[0];
-        return `colorSensor.getColor(${colorVars[varName]}, 'Red')`
+        return `colorSensor.getProperty(${colorVars[varName]}, 'Red')`
     } else if (str.includes(".green()")) {
         let sides = str.split(".green()");
         const varName = sides[0];
-        return `colorSensor.getColor(${colorVars[varName]}, 'Green')`
+        return `colorSensor.getProperty(${colorVars[varName]}, 'Green')`
     } else if (str.includes("getRuntime(")) {
         return str.replaceAll('getRuntime(', "linearOpMode.getRuntime(")
     } else if (str.includes(".getDistance(")) {

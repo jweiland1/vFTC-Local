@@ -9,8 +9,8 @@ client.onload = function () {
     var robotConfigTxt = client.responseText;
     if (robotConfigTxt !== '' && robotConfig == null) {
 		robotConfig = JSON.parse(robotConfigTxt);
+		
 		setTimeout(variableUpdate, 1);
-		setTimeout(setupCategories, 250);
     }
 }
 client.send();
@@ -249,16 +249,10 @@ function renameConfig() {
 	loadBlocksXML(savedStr, savedSampleProg);
 }
 
-settingUp = 3;
-
 //Sets up workspace with actuators/sensors
 function setupCategories() {
-	document.getElementById("javaSelect").value = 'BlankLinearOpMode';
-	sampleProgram(false);
-	document.getElementById("blockSelect").value = 'BasicAutoOpMode';
-	sampleProgram(true);
-	setTimeout(displayLastSaved, 100);
-	
+	settingUp -= 1;
+		
 	try {
 		var toolbox = Blockly.getMainWorkspace().getToolbox();
 	} catch (e) {
@@ -340,5 +334,6 @@ function displayLastSaved() {
 				loadProgram();
 		}
 		settingUp = 0;
+		document.getElementById('programLoading').remove();
 	}
 }

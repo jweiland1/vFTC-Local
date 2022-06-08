@@ -1,3 +1,27 @@
+//Wait for 3 HttpRequests and then load last saved program
+settingUp = 4;
+
+//Loads Toolbox XML
+var clientToolbox = new XMLHttpRequest();
+clientToolbox.open('GET', './blocks/toolbox.xml');
+clientToolbox.onload = function () {
+    var toolboxTxt = clientToolbox.responseText;
+    if (toolboxTxt !== '' && !document.getElementById('toolbox')) {
+		toolboxLoaded(toolboxTxt);
+		
+		//Loads Default Programs and Eventually Last Saved
+		document.getElementById("javaSelect").value = 'BlankLinearOpMode';
+		sampleProgram(false);
+		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+		sampleProgram(true);
+		setTimeout(displayLastSaved, 100);
+		
+		setTimeout(setupCategories, 250);
+    }
+}
+clientToolbox.send();
+
+
 //---Loading Screen for Unity---
 var shouldBeUpdatingLoadingText = true;
 var counterForLoadingText = 1;
@@ -14,11 +38,17 @@ const updateLoadingText = async() => {
 	while (shouldBeUpdatingLoadingText) {
 		if (counterForLoadingText == 1) {
 			document.getElementById('loadingText').innerHTML = "Loading Field."
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools."
 		} else if (counterForLoadingText == 2) {
 			document.getElementById('loadingText').innerHTML = "Loading Field.."
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools.."
 		} else if (counterForLoadingText == 3) {
 			document.getElementById('loadingText').innerHTML = "Loading Field..."
-				counterForLoadingText = 0;
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools..."
+			counterForLoadingText = 0;
 		}
 		counterForLoadingText++;
 		await delay(500);
@@ -35,10 +65,14 @@ function resizeScreens() {
 	document.getElementById('leftScreen').style.width = xScreenSize + "px";
 	document.getElementById('rightScreen').style.width = xScreenSize + "px";
 	yScreenSize = window.innerHeight / 2 - 30;
-	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
+	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 43.5 + "px";
 	document.getElementById('controlPanel').style.height = yScreenSize + "px";
 	document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
 	document.getElementById('fieldView').style.height = yScreenSize + "px";
+	if (settingUp != 0) {
+		document.getElementById('programLoading').style.width = xScreenSize - 5 + "px";
+		document.getElementById('programLoading').style.height = window.innerHeight - 43.5 + "px";
+	}
 }
 var mouseClicked = 0;
 

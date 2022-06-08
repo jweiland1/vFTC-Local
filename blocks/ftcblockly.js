@@ -22,7 +22,15 @@ function resetProperties() {
 		robotConfig["motors"][i]["CurrentAlert"] = 5;
 	}
 
+	for (i = 0; i < robotConfig["colorSensor"].length; i++) {
+		robotConfig["colorSensor"][i]["Gain"] = 2;
+		robotConfig["colorSensor"][i]["I2cAddress7Bit"] = 8;
+		robotConfig["colorSensor"][i]["I2cAddress8Bit"] = 16;
+	}
+
 	motorPowers = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	document.getElementById('telemetryColor').style.backgroundColor = "";
 
 	telemetryItems.splice(0, telemetryItems.length);
 	telemetryLogs.splice(0, telemetryLogs.length);
@@ -324,34 +332,51 @@ let angularVelocity = {
 	},
 }
 
-var colorSensorData = JSON.parse(localStorage.getItem("colorSensorReadings"));
 let colorSensor = {
-	getColor: function (colorSensorNumber, property) {
-		colorSensorData = JSON.parse(localStorage.getItem("colorSensorReadings"));
-		var returnValue = -1;
-		if (property == "Red") {
-			returnValue = colorSensorData[colorSensorNumber][0]
-		} else if (property == "Green") {
-			returnValue = colorSensorData[colorSensorNumber][1]
-		} else if (property == "Blue") {
-			returnValue = colorSensorData[colorSensorNumber][2]
-		} else if (property == "Alpha") {
-			returnValue = colorSensorData[colorSensorNumber][3]
-		}
-		console.log("COLOR SENSOR COLOR SNESOR: " + colorSensorData + ", " + property + ", " + returnValue);
-		return returnValue;
+	setProperty: function (sensorNum, property, value) {
+		robotConfig["colorSensor"][sensorNum][property] = value;
+		return;
 	},
-	getDistance: function (colorSensorNumber, unit) {
-		colorSensorData = JSON.parse(localStorage.getItem("colorSensorReadings"));
-		// TODO: figure out what current units are then add unit conversion - right now its just returning value frm unity
-		console.log("Distance SENSOR distance SNESOR: " + colorSensorData + ", " + unit + ", " + colorSensorData[colorSensorNumber][3]);
-		return colorSensorData[colorSensorNumber][3];
+	getProperty: function (sensorNum, property) {
+		var sensorObj = robotConfig["colorSensor"][sensorNum];
+		var returnVar;
+		if (property == "Alpha" || property == "RawLightDetected")
+			returnVar = (sensorObj["Red"] + sensorObj["Green"] + sensorObj["Blue"]) / 3.0;
+		else if (property == "LightDetected")
+			returnVar = colorSensor.getProperty(sensorNum, "RawLightDetected") / colorSensor.getProperty(sensorNum, "RawLightDetectedMax");
+		else if (property == "RawLightDetectedMax")
+			returnVar = 255; //Limit currently is 0-255 instead of unscaled
+		else if (property == "Argb")
+			returnVar = 0;
+		else
+			returnVar = sensorObj[property];
+		//Applies Gain to RGBA Values
+		if (property == "Red" || property == "Green" || property == "Blue" || property == "Alpha")
+			returnVar = Math.round(returnVar * (sensorObj["Gain"] / 2.0));
+		return returnVar;
+	},
+	getDistance: function (sensorNum, unit) {
+		var conversion = convertDistUnits("CM", unit);
+		return robotConfig["colorSensor"][sensorNum]["Distance"] * conversion;
+	},
+	getNormalizedColors: function(sensorNum) {
+		var sensorObj = robotConfig["colorSensor"][sensorNum];
+		var [r, g, b, a] = [sensorObj["Red"], sensorObj["Green"], sensorObj["Blue"], colorSensor.getProperty(sensorNum, "RawLightDetected")];
+		var magnitude = (r ** 2 + g ** 2 + b ** 2 + a ** 2) ** .5;
+		if (magnitude == 0)
+			magnitude = 1;
+		return '{"Red":' + (r / magnitude) + ',"Green":' + (g / magnitude) + ',"Blue":' + (b / magnitude) + ',"Alpha":' + (a / magnitude) + '}';
 	}
 }
 
-let color = {
+let colorUtil = {
 	rgbToColor: function (r, g, b, a) {
-		return { "Red": r, "Green": g, "Blue": b, "Alpha": (a || 255) };
+		//RGBA to Integer Hex
+		r = Math.round(Math.min(Math.max(r, 0), 255));
+		g = Math.round(Math.min(Math.max(g, 0), 255));
+		b = Math.round(Math.min(Math.max(b, 0), 255));
+		a = Math.round(Math.min(Math.max(a, 0), 255));
+		return ((a || 0) * 256 * 256 * 256) + (r * 256 * 256) + (g * 256) + (b);
 	},
 	hsvToColor: function (h, s, v, a) {
 		var c = v * s;
@@ -382,7 +407,7 @@ let color = {
 			r = c;
 			b = x;
 		}
-		return { "Red": r, "Green": g, "Blue": b, "Alpha": (a || 255) };
+		return colorUtil.rgbToColor(r, g, b, a);
 	},
 	textToColor: function (text) {
 		var r = g = b = 0;
@@ -394,35 +419,32 @@ let color = {
 			case "yellow": r = 255; g = 255; break;
 			case "purple": r = 128; b = 128; break;
 			case "cyan": g = 255; b = 255; break;
+			case "white": r = g = b = 255; break;
 			default:
 				if (!text.startsWith('#') || text.length > 9)
 					break;
-				try {
-					r = parseInt(text.substring(1, 3), 16);
-					g = parseInt(text.substring(3, 5), 16);
-					b = parseInt(text.substring(5, 7), 16);
-					if (text.length > 7)
-						a = parseInt(text.substring(7, 9), 16);
-				} catch (e) { }
-				break;
+				return parseInt(text.substring(1), 16);
 		}
-		console.log({ "Red": r, "Green": g, "Blue": b, "Alpha": a });
-		return { "Red": r, "Green": g, "Blue": b, "Alpha": a };
+		return colorUtil.rgbToColor(r, g, b, a);
 	},
 	get: function (property, variable) {
+		var hexColor = ("00000000" + variable.toString(16)).slice(-8);
 		if (property == "Hue" || property == "Saturation" || property == "Value")
-			return color.rgbTo(property, variable.Red, variable.Green, variable.Blue);
-		else
-			return variable[property];
+			return colorUtil.rgbTo(property, parseInt(hexColor.substring(2, 4), 16), parseInt(hexColor.substring(4, 6), 16), parseInt(hexColor.substring(6, 8), 16));
+		if (property == "Red")
+			return parseInt(hexColor.substring(2, 4), 16);
+		if (property == "Green")
+			return parseInt(hexColor.substring(4, 6), 16);
+		if (property == "Blue")
+			return parseInt(hexColor.substring(6, 8), 16);
+		if (property == "Alpha")
+			return parseInt(hexColor.substring(0, 2), 16);
 	},
 	toText: function (variable) {
-		var r = variable.Red;
-		var g = variable.Green;
-		var b = variable.Blue;
-		var a = variable.Alpha;
-		var hex = "#" + r.toString(16) + (r.toString(16).length == 1 ? "0" : "") + g.toString(16) + (g.toString(16).length == 1 ? "0" : "") +
-			b.toString(16) + (b.toString(16).length == 1 ? "0" : "") + a.toString(16) + (a.toString(16).length == 1 ? "0" : "");
-		return hex;
+		var hexColor = ("00000000" + variable.toString(16)).slice(-8);
+		if (hexColor.startsWith("00"))
+			return "#" + hexColor.substring(2);
+		return "#" + hexColor;
 	},
 	rgbTo: function (type, r, g, b) {
 		r /= 255.0;
@@ -450,7 +472,15 @@ let color = {
 		else if (type == "Value")
 			return maxColor;
 	},
-	showColor: noOp,
+	showColor: function (variable) {
+		document.getElementById('telemetryColor').style.backgroundColor = '#' + ("000000" + variable.toString(16)).slice(-6);
+		return;
+	},
+	normalized: function (property, variable) {
+		if (property == "Color")
+			return colorUtil.rgbToColor(variable["Red"] * 255, variable["Green"] * 255, variable["Blue"] * 255, variable["Alpha"] * 255);
+		return variable[property];
+	}
 }
 
 let dbgLog = {
@@ -516,19 +546,7 @@ let position = {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
 			return newVar;
-		var conversion = 1;
-		//Conversion to CM
-		switch (variable["DistanceUnit"]) {
-			case "INCH": conversion *= 2.54; break;
-			case "METER": conversion *= 100; break;
-			case "MM": conversion *= .1; break;
-		}
-		//Conversion to new Unit
-		switch (newUnit) {
-			case "INCH": conversion /= 2.54; break;
-			case "METER": conversion /= 100; break;
-			case "MM": conversion /= .1; break;
-		}
+		var conversion = convertDistUnits(variable["DistanceUnit"], newUnit);
 		newVar.DistanceUnit = newUnit;
 		newVar.X *= conversion;
 		newVar.Y *= conversion;
@@ -743,19 +761,7 @@ let velocity = {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
 			return newVar;
-		var conversion = 1;
-		//Conversion to CM
-		switch (variable["DistanceUnit"]) {
-			case "INCH": conversion *= 2.54; break;
-			case "METER": conversion *= 100; break;
-			case "MM": conversion *= .1; break;
-		}
-		//Conversion to new Unit
-		switch (newUnit) {
-			case "INCH": conversion /= 2.54; break;
-			case "METER": conversion /= 100; break;
-			case "MM": conversion /= .1; break;
-		}
+		var conversion = convertDistUnits(variable["DistanceUnit"], newUnit);
 		newVar.DistanceUnit = newUnit;
 		newVar.XVeloc *= conversion;
 		newVar.YVeloc *= conversion;
@@ -784,6 +790,23 @@ let misc = {
 
 let system = {
 	nanoTime: function () { return Math.floor((performance.now() - startTime) * 1000000) }
+}
+
+function convertDistUnits(currUnits, newUnits) {
+	var conversion = 1;
+	//Conversion to CM
+	switch (currUnits) {
+		case "INCH": conversion *= 2.54; break;
+		case "METER": conversion *= 100; break;
+		case "MM": conversion *= .1; break;
+	}
+	//Conversion to new Unit
+	switch (newUnits) {
+		case "INCH": conversion /= 2.54; break;
+		case "METER": conversion /= 100; break;
+		case "MM": conversion /= .1; break;
+	}
+	return conversion;
 }
 
 var lastTime = 0;
