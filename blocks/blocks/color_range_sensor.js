@@ -83,7 +83,7 @@ Blockly.JavaScript['lynxI2cColorRangeSensor_setProperty_Number'] = function (blo
   var property = block.getFieldValue('PROP');
   var value = Blockly.JavaScript.valueToCode(
     block, 'VALUE', Blockly.JavaScript.ORDER_NONE);
-  return identifier + '.set' + property + '(' + value + ');\n';
+  return 'colorSensor.setProperty(' + identifier.substring(identifier.length - 1) + ', "' + property + '", ' + value + ');\n';
 };
 
 Blockly.FtcJava['lynxI2cColorRangeSensor_setProperty_Number'] = function (block) {
@@ -186,7 +186,7 @@ Blockly.Blocks['lynxI2cColorRangeSensor_getProperty_Number'] = {
 Blockly.JavaScript['lynxI2cColorRangeSensor_getProperty_Number'] = function (block) {
   var identifier = block.getFieldValue('IDENTIFIER');
   var property = block.getFieldValue('PROP');
-  var code = 'colorSensor.getColor(' + identifier.substring(identifier.length - 1) + ', \'' + property + '\')';
+  var code = 'colorSensor.getProperty(' + identifier.substring(identifier.length - 1) + ', "' + property + '")';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
@@ -275,7 +275,7 @@ Blockly.Blocks['lynxI2cColorRangeSensor_getNormalizedColors'] = {
 
 Blockly.JavaScript['lynxI2cColorRangeSensor_getNormalizedColors'] = function (block) {
   var identifier = block.getFieldValue('IDENTIFIER');
-  var code = 'JSON.parse(' + identifier + '.getNormalizedColors())';
+  var code = 'JSON.parse(colorSensor.getNormalizedColors(' + identifier.substring(identifier.length - 1) + '))';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 

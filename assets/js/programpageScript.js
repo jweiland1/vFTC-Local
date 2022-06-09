@@ -1,3 +1,27 @@
+//Wait for 3 HttpRequests and then load last saved program
+settingUp = 4;
+
+//Loads Toolbox XML
+var clientToolbox = new XMLHttpRequest();
+clientToolbox.open('GET', './blocks/toolbox.xml');
+clientToolbox.onload = function () {
+    var toolboxTxt = clientToolbox.responseText;
+    if (toolboxTxt !== '' && !document.getElementById('toolbox')) {
+		toolboxLoaded(toolboxTxt);
+		
+		//Loads Default Programs and Eventually Last Saved
+		document.getElementById("javaSelect").value = 'BlankLinearOpMode';
+		sampleProgram(false);
+		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
+		sampleProgram(true);
+		setTimeout(displayLastSaved, 100);
+		
+		setTimeout(setupCategories, 250);
+    }
+}
+clientToolbox.send();
+
+
 //---Loading Screen for Unity---
 var shouldBeUpdatingLoadingText = true;
 var counterForLoadingText = 1;
@@ -14,11 +38,17 @@ const updateLoadingText = async() => {
 	while (shouldBeUpdatingLoadingText) {
 		if (counterForLoadingText == 1) {
 			document.getElementById('loadingText').innerHTML = "Loading Field."
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools."
 		} else if (counterForLoadingText == 2) {
 			document.getElementById('loadingText').innerHTML = "Loading Field.."
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools.."
 		} else if (counterForLoadingText == 3) {
 			document.getElementById('loadingText').innerHTML = "Loading Field..."
-				counterForLoadingText = 0;
+			if (settingUp != 0)
+				document.getElementById('loadingProgText').innerHTML = "Loading Tools..."
+			counterForLoadingText = 0;
 		}
 		counterForLoadingText++;
 		await delay(500);
@@ -27,82 +57,236 @@ const updateLoadingText = async() => {
 updateLoadingText();
 
 //---Resize Screens---
-resizeScreens();
-var xScreenSize;
-var yScreenSize;
-function resizeScreens() {
-	xScreenSize = .5 * document.body.clientWidth;
-	document.getElementById('leftScreen').style.width = xScreenSize + "px";
-	document.getElementById('rightScreen').style.width = xScreenSize + "px";
-	yScreenSize = window.innerHeight / 2 - 30;
-	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-	document.getElementById('controlPanel').style.height = yScreenSize + "px";
-	document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
-	document.getElementById('fieldView').style.height = yScreenSize + "px";
+
+//Electron stretches screen
+var resizeMult = 1;
+if (navigator.userAgent.toLowerCase().indexOf(' electron/') > -1) {
+   resizeMult = .8;
 }
-var mouseClicked = 0;
 
-document.getElementById('middleSlider').addEventListener('mousedown', function () {
-	document.getElementById('scrollOverlay').style.cursor = "e-resize";
-	document.getElementById('scrollOverlay').style.visibility = "visible";
-	mouseClicked = 1;
-});
+//Resizing Main Windows
+resizeScreens();
+var screenSize;
+function resizeScreens() {
+	screenSize = [.5 * document.body.clientWidth, window.innerHeight / 2 - 30];
+	//Width
+	document.getElementById('leftScreen').style.width = screenSize[0] + "px";
+	document.getElementById('rightScreen').style.width = screenSize[0] + "px";
+	//Height
+	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 43.5 + "px";
+	document.getElementById('controlPanel').style.height = screenSize[1] + "px";
+	document.getElementById('tabOptions').style.height = (screenSize[1] - 82) + "px";
+	document.getElementById('fieldView').style.height = screenSize[1] + "px";
+	if (settingUp != 0) {
+		document.getElementById('programLoading').style.width = screenSize[0] - 5 + "px";
+		document.getElementById('programLoading').style.height = window.innerHeight - 43.5 + "px";
+	}
+}
 
-document.getElementById('rightSlider').addEventListener('mousedown', function () {
-	document.getElementById('scrollOverlay').style.cursor = "n-resize";
-	document.getElementById('scrollOverlay').style.visibility = "visible";
-	mouseClicked = 2;
-});
+document.getElementById('middleSlider').addEventListener('mousedown',
+	function () { startResize("ew-resize", [resizeMiddle]); });
 
-document.getElementById('multiSlider').addEventListener('mousedown', function () {
-	document.getElementById('scrollOverlay').style.cursor = "move";
-	document.getElementById('scrollOverlay').style.visibility = "visible";
-	mouseClicked = 3;
-});
+document.getElementById('rightSlider').addEventListener('mousedown',
+	function () { startResize("ns-resize", [resizeRight]); });
+
+document.getElementById('multiSlider').addEventListener('mousedown',
+	function () { startResize("move", [resizeMiddle, resizeRight]); });
+
+function resizeMiddle(event) {
+	screenSize[0] += event.movementX * resizeMult;
+	var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, screenSize[0]));
+	document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
+	document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
+	Blockly.svgResize(Blockly.mainWorkspace);
+	event.preventDefault();
+}
+
+function resizeRight(event) {
+	screenSize[1] += event.movementY * resizeMult;
+	var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, screenSize[1]));
+	document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
+	document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
+	document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
+	event.preventDefault();
+}
+
+//TabOverlay Resizing
+var tabPosition = [];
+var tabSize = [];
+var limitedTabSize = [];
+var maxTab = false;
+function openTab(src) {
+	//Reset Tab
+	if (document.getElementById('tabOverlay').style.animation != "0.5s ease 0s 1 normal forwards running tabReveal") {
+		document.getElementById('tabOverlay').style.animation = "tabReveal .5s ease 1 normal forwards"
+		tabPosition = [window.innerWidth / 6, window.innerHeight / 6 - 16.5];
+		tabSize = [window.innerWidth * 2 / 3, window.innerHeight * 2 / 3];
+		limitedTabSize = [tabSize[0], tabSize[1]];
+		maxTab = false;
+		document.getElementById('tabMaxRestore').firstChild.textContent = "Maximize ";
+		document.getElementById('tabMaxRestore').firstElementChild.classList.remove("fa-window-restore");
+		document.getElementById('tabMaxRestore').firstElementChild.classList.add("fa-window-maximize");
+		updateTabDisplay();
+	}
+	document.getElementById('tabIFrame').src = src;
+	document.getElementById('newTab').href = src;
+}
+
+function closeTab() {
+	document.getElementById('tabOverlay').style.animation = "tabHide .33s ease 1 normal forwards"
+}
+
+document.getElementById('tabMovable').addEventListener('mousedown',
+	function () { startResize("move", [tabMove]); });
+	
+document.getElementById('leftGrabTab').addEventListener('mousedown',
+	function () { startResize("ew-resize", [leftTabResize]); });
+	
+document.getElementById('rightGrabTab').addEventListener('mousedown',
+	function () { startResize("ew-resize", [rightTabResize]); });
+	
+document.getElementById('topGrabTab').addEventListener('mousedown',
+	function () { startResize("ns-resize", [topTabResize]); });
+document.getElementById('topLeftGrabTab').addEventListener('mousedown',
+	function () { startResize("nwse-resize", [topTabResize]); });
+document.getElementById('topRightGrabTab').addEventListener('mousedown',
+	function () { startResize("nesw-resize", [topTabResize]); });
+	
+document.getElementById('bottomGrabTab').addEventListener('mousedown',
+	function () { startResize("ns-resize", [bottomTabResize]); });
+document.getElementById('bottomLeftGrabTab').addEventListener('mousedown',
+	function () { startResize("nesw-resize", [bottomTabResize]); });
+document.getElementById('bottomRightGrabTab').addEventListener('mousedown',
+	function () { startResize("nwse-resize", [bottomTabResize]); });
+
+function tabMove(event) {
+	tabPosition[0] += event.movementX * resizeMult;
+	tabPosition[1] += event.movementY * resizeMult;
+	updateTabDisplay(event, false);
+}
+
+function leftTabResize(event) {
+	tabSize[0] -= event.movementX * resizeMult;
+	if (tabSize[0] > 500)
+		tabPosition[0] += event.movementX * resizeMult;
+	updateTabDisplay(event, false);
+}
+
+function rightTabResize(event) {
+	tabSize[0] += event.movementX * resizeMult;
+	updateTabDisplay(event, true);
+}
+
+function topTabResize(event) {
+	tabSize[1] -= event.movementY * resizeMult;
+	if (tabSize[1] > 250)
+		tabPosition[1] += event.movementY * resizeMult;
+	updateTabDisplay(event, false);
+}
+
+function bottomTabResize(event) {
+	tabSize[1] += event.movementY * resizeMult;
+	updateTabDisplay(event, true);
+}
+
+function updateTabDisplay(event, resizeNoMove) {
+	if (maxTab) {
+		tabSize = [document.documentElement.clientWidth + 10, window.innerHeight - 52];
+		tabPosition = [-5, 27.5];
+		restoreMaximizeTab();
+		return;
+	}
+	//Applies Limits
+	var limitedTabPosition = [0, 0];
+	limitedTabPosition[0] = Math.min(Math.max(tabPosition[0], -Math.max(500, tabSize[0]) + 250), window.innerWidth - 100);
+	limitedTabPosition[1] = Math.min(Math.max(tabPosition[1], -5), window.innerHeight - 100);
+	if (limitedTabPosition[0] == tabPosition[0])
+		limitedTabSize[0] = tabSize[0];
+	if (limitedTabPosition[1] == tabPosition[1])
+		limitedTabSize[1] = tabSize[1];
+	limitedTabSize[0] = Math.max(500, limitedTabSize[0]);
+	limitedTabSize[1] = Math.max(250, limitedTabSize[1]);
+	if (resizeNoMove)
+		limitedTabPosition[0] = tabPosition[0];
+	
+	//Applies Display to Tab Overlay
+	var tabOverlay = document.getElementById('tabOverlay');
+	tabOverlay.style.width = limitedTabSize[0] + "px";
+	tabOverlay.style.height = limitedTabSize[1] + "px";
+	tabOverlay.style.left = limitedTabPosition[0] + "px";
+	tabOverlay.style.top = limitedTabPosition[1] + "px";
+	document.getElementById('topGrabTab').style.width = (limitedTabSize[0] - 40) + "px";
+	document.getElementById('bottomGrabTab').style.width = (limitedTabSize[0] - 40) + "px";
+	if (event)
+		event.preventDefault();
+}
+
+function restoreMaximizeTab() {
+	if (maxTab) {
+		maxTab = false;
+		updateTabDisplay();
+		document.getElementById('tabMaxRestore').firstChild.textContent = "Maximize ";
+		document.getElementById('tabMaxRestore').firstElementChild.classList.remove("fa-window-restore");
+		document.getElementById('tabMaxRestore').firstElementChild.classList.add("fa-window-maximize");
+	}
+	else {
+		maxTab = true;
+		var tabOverlay = document.getElementById('tabOverlay');
+		tabOverlay.style.width = document.documentElement.clientWidth + 10 + "px";
+		tabOverlay.style.height = window.innerHeight - 52 + "px";
+		tabOverlay.style.left = "-5px";
+		tabOverlay.style.top = "27.5px";
+		document.getElementById('topGrabTab').style.width = (document.body.clientWidth - 40) + "px";
+		document.getElementById('bottomGrabTab').style.width = (document.body.clientWidth - 40) + "px";
+		document.getElementById('tabMaxRestore').firstChild.textContent = "Restore ";
+		document.getElementById('tabMaxRestore').firstElementChild.classList.remove("fa-window-maximize");
+		document.getElementById('tabMaxRestore').firstElementChild.classList.add("fa-window-restore");
+	}
+}
+
+//General Resize/Move Functions
+function startResize(cursorStyle, functions) {
+	document.getElementById('resizeOverlay').style.cursor = cursorStyle;
+	document.getElementById('resizeOverlay').style.visibility = "visible";
+	for (var i = 0; i < functions.length; i++)
+		window.addEventListener('mousemove', functions[i]);
+}
 
 window.addEventListener('mouseup', function () {
-	document.getElementById('scrollOverlay').style.visibility = "hidden";
-	xScreenSize = Math.min(document.body.clientWidth, Math.max(0, xScreenSize));
-	yScreenSize = Math.min(window.innerHeight - 60, Math.max(0, yScreenSize));
-	mouseClicked = 0;
+	document.getElementById('resizeOverlay').style.visibility = "hidden";
+	//Reset Screens Info
+	screenSize[0] = Math.min(document.body.clientWidth, Math.max(0, screenSize[0]));
+	screenSize[1] = Math.min(window.innerHeight - 60, Math.max(0, screenSize[1]));
+	//Reset Tab Info
+	if (!maxTab) {
+		var tabOverlay = document.getElementById('tabOverlay');
+		tabSize[0] = parseFloat(tabOverlay.style.width.slice(0, -2));
+		tabSize[1] = parseFloat(tabOverlay.style.height.slice(0, -2));
+		tabPosition[0] = parseFloat(tabOverlay.style.left.slice(0, -2));
+		tabPosition[1] = parseFloat(tabOverlay.style.top.slice(0, -2));
+	}
+	//Remove Events
+	var functions = [resizeMiddle, resizeRight, tabMove, leftTabResize, rightTabResize, topTabResize, bottomTabResize];
+	for (var i = 0; i < functions.length; i++)
+		window.removeEventListener('mousemove', functions[i]);
 });
 
 window.addEventListener('resize', function () {
 	//Width Consideration
-	xScreenSize = document.getElementById('leftScreen').clientWidth;
-	if (xScreenSize < 10) {
+	screenSize[0] = document.getElementById('leftScreen').clientWidth;
+	if (screenSize[0] < 10) {
 		document.getElementById('leftScreen').style.width = '10px';
-		xScreenSize = 10;
+		screenSize[0] = 10;
 	}
-	document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSize) + "px";
+	document.getElementById('rightScreen').style.width = (document.body.clientWidth - screenSize[0]) + "px";
 	//Height Consideration
-	if (yScreenSize + 70 > window.innerHeight || yScreenSize < 10) {
-		yScreenSize = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-		document.getElementById('controlPanel').style.height = yScreenSize + "px";
-		document.getElementById('tabOptions').style.height = (yScreenSize - 82) + "px";
+	if (screenSize[1] + 70 > window.innerHeight || screenSize[1] < 10) {
+		screenSize[1] = Math.min(window.innerHeight - 70, Math.max(10, screenSize[1]));
+		document.getElementById('controlPanel').style.height = screenSize[1] + "px";
+		document.getElementById('tabOptions').style.height = (screenSize[1] - 82) + "px";
 	}
-	document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSize) + "px";
+	document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - screenSize[1]) + "px";
 	document.getElementById('onBotJavaDiv').style.height = window.innerHeight - 50 + "px";
-});
-
-window.addEventListener('mousemove', function (event) {
-	if (mouseClicked != 0) {
-		if (mouseClicked != 2) {
-			xScreenSize += event.movementX * .8;
-			var xScreenSizeLimit = Math.min(document.body.clientWidth - 10, Math.max(10, xScreenSize));
-			document.getElementById('leftScreen').style.width = xScreenSizeLimit + "px";
-			document.getElementById('rightScreen').style.width = (document.body.clientWidth - xScreenSizeLimit) + "px";
-			Blockly.svgResize(Blockly.mainWorkspace);
-		}
-		if (mouseClicked != 1) {
-			yScreenSize += event.movementY * .8;
-			var yScreenSizeLimit = Math.min(window.innerHeight - 70, Math.max(10, yScreenSize));
-			document.getElementById('controlPanel').style.height = yScreenSizeLimit + "px";
-			document.getElementById('tabOptions').style.height = (yScreenSizeLimit - 82) + "px";
-			document.getElementById('fieldView').style.height = ((window.innerHeight - 60) - yScreenSizeLimit) + "px";
-		}
-		event.preventDefault();
-	}
 });
 
 //Scroll Features for Lists
@@ -151,6 +335,7 @@ function displayPopUp(show) {
 var currStep = 0;
 var savedProgram;
 var savedSelection;
+var wasUsingBlocks;
 function runHowTo() {
 	if (currStep > 14) {
 		stopHowTo();
@@ -159,6 +344,8 @@ function runHowTo() {
 	document.getElementById('howToOverlay').style.clipPath = "None";
 	document.getElementById('howToText').style.opacity = "0";
     if (currStep == 0) {
+		wasUsingBlocks = isUsingBlocks;
+		switchToBlocks();
 		document.getElementById('howToText').style.display = "inherit";
 		document.getElementById('howToIntro').style.animation = "popUpClose .5s ease forwards";
 		document.getElementById('textSelection').children[1].click();
@@ -176,7 +363,6 @@ function runHowTo() {
 		
 		document.getElementById('howToText').children[2].children[1].disabled = false;
 		document.getElementById('howToText').children[2].children[0].style.display = "none";
-		document.getElementById("telemetryText").innerText = "-Telemetry Output-"
 	}
 	var timer;
 	switch (currStep) {
@@ -193,6 +379,7 @@ function runHowTo() {
 	case 3:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 0% 100%, 0% 40px, 50% 40px, 50% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 0%)";
 		resetField();
+		document.getElementById("telemetryText").innerText = "-Telemetry Output-"
 		break;
 	case 4:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 255px 100%, 255px 85px, 49.5% 85px, 49.5% 250px, 255px 250px, 255px 100%, 100% 100%, 100% 0%)";
@@ -212,7 +399,7 @@ function runHowTo() {
 		break;
 	case 8:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 195px 100%, 195px 40px, 50% 40px, 50% 100%, 195px 100%, 195px 100%, 100% 100%, 100% 0%)";
-		document.getElementById("telemetryText").innerText = "Field Reset"
+		document.getElementById("telemetryText").innerText = "-Telemetry Output-"
 		break;
 	case 9:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 50% 100%, 50% 52.5%, 100% 52.5%, 100% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 0%)";
@@ -220,6 +407,7 @@ function runHowTo() {
 	case 10:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 0% 100%, 0% 40px, 50% 40px, 50% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 0%)";
 		resetField();
+		document.getElementById("telemetryText").innerText = "-Telemetry Output-"
 		break;
 	case 11:
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 50% 100%, 50% 52.5%, 100% 52.5%, 100% 100%, 0% 100%, 0% 100%, 100% 100%, 100% 0%)";
@@ -244,6 +432,7 @@ function runHowTo() {
 			document.getElementById('howToText').style.right = "10%";
 			document.getElementById('howToText').style.left = "auto";
 			document.getElementById('howToText').style.top = "20%";
+			document.getElementById("telemetryText").innerText = "-Telemetry Output-"
 			break;
 		case 1:
 			document.getElementById('howToText').children[1].innerText = "These buttons here control your robot on the field.\n\nGo ahead and click initialize then start to run an example program!";
@@ -416,6 +605,8 @@ function stopHowTo() {
 	Blockly.mainWorkspace.clear();
 	Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, savedProgram);
 	document.getElementById("telemetryText").innerText = "-Telemetry Output-"
+	if (!wasUsingBlocks)
+		switchToOnBotJava();
 	
 	setTimeout(() => {
 		document.getElementById('howToScreen').style.clipPath = "polygon(0% 0%, 0% 100%, 75% 100%, 75% 75%, 75% 75%, 75% 75%, 75% 75%, 75% 100%, 100% 100%, 100% 0%)";
@@ -424,6 +615,68 @@ function stopHowTo() {
 }
 
 //---Miscellaneous Functions---
+//Goes through program Modified Check First
+//0 - Back Button, 1 - New Program, 2 - Dropdown, 3 - Switch to Blocks, 4 - Switch to Java
+resultAfterModified = -1;
+nextLoadProgram = "";
+function checkModified(nextResult) {
+	if (nextResult == 2) {
+		nextLoadProgram = document.getElementById("programSelect").value;
+		document.getElementById("programSelect").value = isUsingBlocks ? currentProjectName : javaProjectName;
+	}
+	if (lastSaved) {
+		var currProgram = null;
+		var compareProg = lastSaved;
+		if (isUsingBlocks) {
+			const serializer = new XMLSerializer();
+			currProgram = serializer.serializeToString(Blockly.Xml.workspaceToDom(Blockly.mainWorkspace));
+			compareProg = serializer.serializeToString(compareProg);
+			document.getElementById("SaveReminderText").childNodes[0].textContent = 'Your Block Program';
+			document.getElementById("SaveReminderText").childNodes[2].textContent = '"' + currentProjectName + '"';
+		}
+		else {
+			document.getElementById("SaveReminderText").childNodes[0].textContent = 'Your Java Program';
+			document.getElementById("SaveReminderText").childNodes[2].textContent = '"' + javaProjectName + '"';
+			currProgram = editor.getValue();
+		}
+		if (currProgram != compareProg) {
+			overlay(true, 6);
+			resultAfterModified = nextResult;
+			return;
+		}
+	}
+	switch (nextResult) {
+		case 0: goBack(); break;
+		case 1: overlay(true, 4); break;
+		case 2: document.getElementById("programSelect").value = nextLoadProgram; loadProgram(); break;
+		case 3: switchToBlocks(); break;
+		case 4: switchToOnBotJava(); break;
+	}
+}
+
+//0 - Discard, 1 - Save, 2 - SaveAs, 3 - SavingAs
+function modifiedResult(decision) {
+	if (decision < 3)
+		overlay(false, 4);
+	if (decision == 1)
+		autoSave();
+	if (decision != 2) {
+		var nextResult = resultAfterModified;
+		setTimeout(function() {
+			switch (nextResult) {
+				case 0: goBack(); break;
+				case 1: overlay(true, 4); break;
+				case 2: document.getElementById("programSelect").value = nextLoadProgram; loadProgram(); break;
+				case 3: switchToBlocks(); break;
+				case 4: switchToOnBotJava(); break;
+			}
+		}, 500);
+	}
+	else {
+		setTimeout(function() { overlay(true, 0); }, 500);
+	}
+}
+
 //Overlay
 function overlay(show, activity) {
     if (show) {
@@ -454,6 +707,9 @@ function overlay(show, activity) {
 		case 5:
             document.getElementById('overlayName').innerHTML = "Rename Config";
 			break;
+		case 6:
+            document.getElementById('overlayName').innerHTML = "Save Reminder";
+			break;
         }
         for (var i = 0; i < document.getElementById('overlayType').children.length; i++)
             document.getElementById('overlayType').children[i].style.display = "none";
@@ -469,7 +725,17 @@ function overlay(show, activity) {
             overlayReturned = document.getElementById('changedVariableName').value;
 		else if (activity == 3)
 			renameConfig();
+		if (document.getElementById('overlayType').children[5].style.display == "inherit")
+			cancelConfig();
+		if (activity != 4)
+			resultAfterModified = -1;
     }
+}
+
+function cancelConfig() {
+	currentProjectName = document.getElementById("programSelect").value;
+	if (currentProjectName == "Load Program")
+		currentProjectName = "program";
 }
 
 //(re)loads dropdown of saved programs
@@ -699,6 +965,5 @@ function playVideo(videoType) {
         }
     } else
         link = 'https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz';
-    document.getElementById('tabOptions').children[3].src = link;
-    switchTab(document.getElementById('videoButton'), 3);
+	openTab(link);
 }
