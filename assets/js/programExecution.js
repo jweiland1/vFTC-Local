@@ -2,6 +2,8 @@
 var currentProjectName = "program";
 var javaProjectName = "program";
 
+var lastSaved = null;
+
 //---Sending Data to Unity---
 const abortedMsg = "aborted";
 localStorage.setItem('startMatch', false);
@@ -66,6 +68,10 @@ function switchToBlocks() {
     document.getElementById('blocklyDiv').hidden = false;
     document.getElementById('onBotJavaDiv').hidden = true;
     isUsingBlocks = true;
+	if (currentProjectName != "program")
+		lastSaved = Blockly.Xml.textToDom(localStorage.getItem("Program Name: " + currentProjectName))
+	else
+		lastSaved = null;
 	prepareUiToLoadProgram();
     if (Blockly.mainWorkspace)
         Blockly.svgResize(Blockly.mainWorkspace);
@@ -79,6 +85,10 @@ function switchToOnBotJava() {
     document.getElementById('blocklyDiv').hidden = true;
     document.getElementById('onBotJavaDiv').hidden = false;
     isUsingBlocks = false;
+	if (javaProjectName != "program")
+		lastSaved = localStorage.getItem("Java Program Name: " + javaProjectName);
+	else
+		lastSaved = null;
 	prepareUiToLoadProgram();
 }
 
@@ -92,7 +102,7 @@ function setUpOnBotJava(javaCode) {
         mode: "text/x-java",
         lineNumbers: true,
         theme: "darcula",
-        scrollbarStyle: null,
+        scrollbarStyle: "native",
         autocorrect: true,
         autoCloseBrackets: true,
     });
@@ -154,6 +164,7 @@ function sampleProgram(blockProgram) {
 				blocklyNaming(content, true);
             } else {
 				javaProjectName = "program";
+				lastSaved = null;
 				if (settingUp == 0)
 					switchToOnBotJava();
 				else
@@ -191,6 +202,7 @@ function uploadProgram(programName, content) {
         switchToOnBotJava();
 		programName = programName.substring(0, programName.length - fileType.length - 1);
 		javaProjectName = programName
+		lastSaved = javaNaming(content);
         setUpOnBotJava(javaNaming(content));
 		document.getElementById("telemetryText").innerText = 'Loaded new \"' + javaProjectName + '\" Program \n';
 		localStorage.setItem("Java Program Name: " + javaProjectName, content);
@@ -236,11 +248,16 @@ function loadBlocksXML(xmlString, sampleProg) {
 		settingUp -= 1;
 	Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(content), workspace);
 	resetProgramExecution();
+	//Checks for Changes Later
+	if (currentProjectName == 'program')
+		lastSaved = null;
+	else
+		lastSaved = Blockly.Xml.textToDom(content);
 	//Sets UI Values
 	if (currStep == 0)
 		if (currentProjectName != 'program')
 			document.getElementById("telemetryText").innerText = 'Loaded new \"' + currentProjectName + '\" Program \n';
-		else if (settingUp == 0)
+		else if (settingUp == 0 && currStep == 0)
 			document.getElementById("telemetryText").innerText = 'Loaded Sample Program \n';
 	if (!sampleProg)
 		localStorage.setItem("Program Name: " + currentProjectName, content);
@@ -251,6 +268,7 @@ function loadBlocksXML(xmlString, sampleProg) {
 function convertToJava() {
     var javaCode = generateJavaCode();
 	javaProjectName = "program";
+	lastSaved = null;
     switchToOnBotJava();
     setUpOnBotJava(configNaming(javaCode));
     overlay(false, 0);
@@ -272,9 +290,11 @@ function generateJavaCode() {
 
 //---Functionality of Middle Buttons---
 function saveProgram() {
+	modifiedResult(3);
 	if (isUsingBlocks) {
 		currentProjectName = document.getElementById('saveProgramName').value;
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		lastSaved = xml;
 		localStorage.setItem("Program Name: " + currentProjectName, Blockly.Xml.domToText(xml));
 		localStorage.setItem("Last Program", "Program Name: " + currentProjectName);
 		overlay(false, 0);
@@ -288,6 +308,7 @@ function saveProgram() {
 	}
 	else {
 		javaProjectName = document.getElementById('saveProgramName').value;
+		lastSaved = editor.getValue();
 		localStorage.setItem("Java Program Name: " + javaProjectName, editor.getValue());
 		localStorage.setItem("Last Program", "Java Program Name: " + javaProjectName);
 		overlay(false, 0);
@@ -306,6 +327,7 @@ function loadProgram() {
 			sampleProgram(true);
 		} else if (typeof (Storage) !== "undefined") {
 			var xml = Blockly.Xml.textToDom(localStorage.getItem(nameOfProject));
+			lastSaved = xml;
 			Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
 			resetProgramExecution();
 			if (settingUp == 0)
@@ -321,6 +343,7 @@ function loadProgram() {
 			sampleProgram(false);
 		} else if (typeof (Storage) !== "undefined") {
 			setUpOnBotJava(localStorage.getItem(nameOfProject));
+			lastSaved = localStorage.getItem(nameOfProject);
 			resetProgramExecution();
 			if (settingUp == 0)
 				document.getElementById("telemetryText").innerText = 'Loaded "' + javaProjectName + '" Program \n';
@@ -333,11 +356,13 @@ function autoSave() {
 	var programName = document.getElementById('programSelect').value;
 	if (isUsingBlocks) {
 		var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+		lastSaved = xml;
 		localStorage.setItem("Program Name: " + programName, Blockly.Xml.domToText(xml));
 		localStorage.setItem("Last Program", "Program Name: " + programName);
 	}
 	else {
 		localStorage.setItem("Java Program Name: " + programName, editor.getValue());
+		lastSaved = editor.getValue();
 		localStorage.setItem("Last Program", "Java Program Name: " + programName);
 	}
     document.getElementById("telemetryText").innerText = 'Saved "' + programName + '" Program \n';
@@ -347,12 +372,14 @@ function deleteProgram() {
     var programName = document.getElementById('programSelect').value;
 	if (isUsingBlocks) {
 		currentProjectName = "program";
+		lastSaved = null;
 		localStorage.removeItem("Program Name: " + programName);
 		document.getElementById("blockSelect").value = 'BasicAutoOpMode';
 		sampleProgram(true);
 	}
 	else {
 		javaProjectName = "program";
+		lastSaved = null;
 		localStorage.removeItem("Java Program Name: " + programName);
 		document.getElementById("javaSelect").value = 'BlankLinearOpMode';
 		sampleProgram(false);

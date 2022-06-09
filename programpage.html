@@ -275,25 +275,66 @@
       background-color: white;
       margin-left: 13.75px;
       margin-right: 13.75px;
-      transform: rotate(90deg);
       top: -3.5px;
       position: relative;
     }
 
-    #middleSlider {
-      min-width: 10px;
-      cursor: e-resize;
-    }
+	#tabDisplay {
+	  height: 100%;
+	  background-color: #242424;
+	  border: 3.5px solid #ff9800;
+	  padding: 3px;
+	  display: flex;
+	  flex-direction: column;
+	}
 
-    #rightSlider {
-      cursor: n-resize;
-    }
+	@keyframes tabReveal {
+		from {
+			visibility: hidden;
+			opacity: 0;
+			transform: translateY(50px);
+		}
 
-    #multiSlider {
-      cursor: move;
-    }
+		to {
+			visibility: visible;
+			opacity: 1;
+			transform: translateY(0px);
+		}
+	}
 
-    #scrollOverlay {
+	@keyframes tabHide {
+		from {
+			visibility: visible;
+			opacity: 1;
+			transform: translateY(0px);
+		}
+
+		to {
+			visibility: hidden;
+			opacity: 0;
+			transform: translateY(50px);
+		}
+	}
+
+	.middleGrabTabs {
+	  position: relative;
+	  left: 10px;
+	  height: 10px;
+	  cursor: ns-resize;
+	}
+
+	.sideGrabTabs {
+	  width: 10px;
+	  height: 100%;
+	  margin-top: 5px;
+	  padding-bottom: 8px;
+	  cursor: ew-resize;
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: space-between;
+	}
+
+    #resizeOverlay {
       visibility: hidden;
       position: absolute;
       top: 0px;
@@ -308,7 +349,7 @@
       position: absolute;
       top: 40px;
 	  background-color: #242424;
-	  z-index: 99;
+	  z-index: 95;
 	}
 
     .overlay {
@@ -486,22 +527,22 @@
 
   <div id="LoadingScreen"></div>
   <div style="display: flex; width: 100%; justify-content: space-between;">
-    <a onclick="goBack()" id="backButton"><i class="fa fa-chevron-left"></i></a>
+    <a onclick="checkModified(0)" id="backButton"><i class="fa fa-chevron-left"></i></a>
     <div style="min-width: 12.5px; display: inline-block;"></div>
     <div id="topMenu" style="white-space: nowrap; overflow: hidden; margin-top: 5px;">
       <div style="width: 12.5px; display: inline-block;"></div>
-      <button id='blocksBttn' class="button1 button1Selected" onclick="switchToBlocks()">Blocks</button>
+      <button id='blocksBttn' class="button1 button1Selected" onclick="checkModified(3)">Blocks</button>
       <div style="width: 10px; display: inline-block;"></div>
-      <button id='javaBttn' class="button1" onclick="switchToOnBotJava()">OnBotJava</button>
+      <button id='javaBttn' class="button1" onclick="checkModified(4)">OnBotJava</button>
 
       <div class="divider"></div>
 
-      <button class="button1" onclick="overlay(true, 4)">New Program</button>
+      <button class="button1" onclick="checkModified(1)">New Program</button>
       <div style="width: 10px; display: inline-block;"></div>
       <button id="saveAs" class="button1" onclick="overlay(true, 0)">Save as...</button>
       <div style="width: 10px; display: inline-block;"></div>
       <div class="dropdown dropdown-dark" style="display: inline-block; background-color: #FFFFFF;">
-        <select id="programSelect" class="dropdown-select" onchange="loadProgram()" style="width: 200px;">
+        <select id="programSelect" class="dropdown-select" onchange="checkModified(2)" style="width: 200px;">
           <option value="Load Program">-Load Program-</option>
         </select>
       </div>
@@ -543,7 +584,7 @@
       </div>
     </div>
 
-    <div id="middleSlider" style="width: 10px;"></div>
+    <div id="middleSlider" style="width: 10px; min-width: 10px; cursor: ew-resize;"></div>
 
     <div id="rightScreen" style="min-width: 10px; width: 50%; background-color: #242424;">
       <div id="controlPanel"
@@ -555,9 +596,6 @@
           <div style="display: inline-block;" onclick="switchTab(this, 1)" class="textNormal">Field</div>
           <div class="divider"></div>
           <div style="display: inline-block;" onclick="switchTab(this, 2)" class="textNormal">Lessons</div>
-          <div class="divider"></div>
-          <div id="videoButton" style="display: inline-block;" onclick="switchTab(this, 3)" class="textNormal">Video
-          </div>
           <div style="width: 20px; display: inline-block;"></div>
         </div>
         <div style="width:100%; height: 10px; background-color: #4B4B4B; margin-top: 15px; margin-bottom: 20px;"></div>
@@ -651,14 +689,12 @@
                 style="font-size:20px; white-space: nowrap; height: 29.2px;">Video Solution</button>
             </div>
           </div>
-          <iframe src='https://www.youtube.com/embed/HvywykxdrBU?list=PLszFVnnZcmarYReNB-qCSZLiu2l3Mvlvz' width="100%"
-            height="100%" frameBorder="0" style="display: none;"></iframe>
         </div>
       </div>
 
       <div id="multiSlider"
-        style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px);"></div>
-      <div id="rightSlider" style="height: 10px;"></div>
+        style="width: 15px; height: 15px; position:absolute; transform: translate(-12.5px, -2.5px); cursor: move;"></div>
+      <div id="rightSlider" style="height: 10px; cursor: ns-resize;"></div>
 
       <div id="fieldView" style="height: 50%; background-color: #231F20; border: 3.5px solid #ff9800">
         <iframe scrolling="no" src="./webgl/index.html" id="fieldViewiframe" width="100%" height="100%" frameBorder="0"
@@ -670,7 +706,43 @@
     </div>
   </div>
 
-  <div id="scrollOverlay"></div>
+	<div id="tabOverlay" style="position: absolute; z-index: 96; display: flex; visibility: hidden; opacity: 0;">
+		<!--Left Grabbables-->
+		<div id="leftGrabTab" class="sideGrabTabs" style="transform: translateX(5px);">
+			<div id="topLeftGrabTab" style="width: 15px; height: 15px; cursor: nwse-resize;"></div>
+			<div id="bottomLeftGrabTab" style="width: 15px; height: 15px; cursor: nesw-resize; transform: translateY(23px)"></div>
+		</div>
+		<!--Middle Grabbables-->
+		<div style="height: 100%; width: 100%;">
+			<div id="topGrabTab" class="middleGrabTabs" style="transform: translateY(5px);"></div>
+			<div id="tabDisplay">
+				<div style="display: flex; justify-content: space-between;">
+					<a onclick="closeTab()" id="backButton" style="margin-bottom:5px;"><i class="fa fa-chevron-left"></i></a>
+					<div id="tabMovable" style="flex: 1; cursor: move;"></div>
+					<a id="newTab" class="button1" onclick="closeTab()" style="padding: 5px; padding-top: 1.5px; height: 13px; font-size: 13px;" target="_blank">
+						New Tab <i class="fa fa-external-link-square" aria-hidden="true"></i></a>
+					<div style="width: 7.5px;"></div>
+					<a id="tabMaxRestore" class="button1" onclick="restoreMaximizeTab()" style="padding: 5px; padding-top: 1.5px; height: 13px; font-size: 13px;">
+						Maximize <i class="fa fa-window-maximize" aria-hidden="true"></i></a>
+				</div>
+				<div style="flex: 1;">
+					<div style="width: 100%; height: 100%; background-color: #242424;">
+						<div style="background-color: #000000; height: 100%">
+							<iframe id="tabIFrame" src='' width="100%" height="100%" frameBorder="0"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="bottomGrabTab" class="middleGrabTabs" style="transform: translateY(-5px);"></div>
+		</div>
+		<!--Bottom Grabbables-->
+		<div id="rightGrabTab" class="sideGrabTabs" style="transform: translateX(-5px);">
+			<div id="topRightGrabTab" style="width: 15px; height: 15px; cursor: nesw-resize;"></div>
+			<div id="bottomRightGrabTab" style="width: 15px; height: 15px; cursor: nwse-resize; transform: translateY(23px)"></div>
+		</div>
+	</div>
+
+  <div id="resizeOverlay"></div>
 
   <div id="programLoading">
 	<h1 id="loadingProgText" style="text-align: center; padding-top: 47.5%;">Loading Tools</h1>
@@ -787,7 +859,7 @@
             </div>
           </div>
         </div>
-		<div>
+		<div style="display: none;">
           <div id="configRenamer" style="height: 100px; overflow-y: scroll;">
             <h2 style="display:none; font-size:18.5px; padding-left:25px; padding-right:25px;">
               <div style="width:165px;"></div>
@@ -808,7 +880,17 @@
               style="font-size: 18.5px; margin-left: 145px; height: 30px; width: 90px;">Done</button>
 		  </div>
 		</div>
-		
+		<div style="display: none;">
+		  <h2 id="SaveReminderText" style="text-align: center; font-size: 22.5px;">Your Program<br>"Unnammed"<br>has Unsaved Changes!</h2>
+		  <div style="display:flex; margin-top:20px; justify-content: space-around;">
+            <button class="button1" onclick="modifiedResult(0)"
+              style="font-size: 18.5px; height: 30px; width: 90px;">Discard</button>
+            <button class="button1" onclick="modifiedResult(1)"
+              style="font-size: 18.5px; height: 30px; width: 90px;">Save</button>
+            <button class="button1" onclick="modifiedResult(2)"
+              style="font-size: 18.5px; height: 30px; width: 90px;">Save As</button>
+		  </div>
+		</div>
       </div>
     </div>
   </div>
