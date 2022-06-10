@@ -131,6 +131,11 @@
       localStorage.setItem('colorSensorReadings', "[[" + R + "," + G + "," + B + "," + Distance + "]]");
     }
 
+    function setDistanceSensorData(distance) {
+      // console.log("SET DIST SENSOR READINGSS: " + distance);
+      localStorage.setItem('distanceSensorReadings', "[[" + distance + "]]");
+    }
+
     //Old Code (Lean off of using this)
     function setFrontLeftEncoders(encoders) {
       frontLeftEncoder = encoders;

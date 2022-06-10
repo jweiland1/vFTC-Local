@@ -111,7 +111,7 @@ Blockly.FtcJava.ORDER_OVERRIDES = [
  * Initialise the database of variable names.
  * @param {!Blockly.Workspace} workspace Workspace to generate code from.
  */
-Blockly.FtcJava.init = function(workspace) {
+Blockly.FtcJava.init = function (workspace) {
   // Create a dictionary of definitions to be printed before the code.
   Blockly.FtcJava.definitions_ = Object.create(null);
   // Create a dictionary mapping desired function names in definitions_
@@ -157,7 +157,7 @@ Blockly.FtcJava.init = function(workspace) {
       var argumentSetterBlocks = [];
       for (var iArgument = 0; iArgument < procedureBlock.arguments_.length; iArgument++) {
         var argumentName = Blockly.FtcJava.variableDB_.getName(procedureBlock.arguments_[iArgument],
-            Blockly.Variables.NAME_TYPE);
+          Blockly.Variables.NAME_TYPE);
         argumentNames.push(argumentName);
         argumentTypes.push('');
         countUnknownTypes++;
@@ -255,7 +255,7 @@ Blockly.FtcJava.init = function(workspace) {
       }
       var variableName = Blockly.FtcJava.variableDB_.getName(variable.name, Blockly.Variables.NAME_TYPE);
       Blockly.FtcJava.variableScopes_[variableName] = (functionNames.length == 1)
-          ? functionNames[0] : Blockly.FtcJava.CLASS_SCOPE;
+        ? functionNames[0] : Blockly.FtcJava.CLASS_SCOPE;
       Blockly.FtcJava.variableGetterBlocks_[variableName] = variableGetterBlocks;
       Blockly.FtcJava.variableSetterBlocks_[variableName] = variableSetterBlocks;
       var variableType = variables[iVariable].type;
@@ -275,10 +275,10 @@ Blockly.FtcJava.init = function(workspace) {
         var argumentType = argumentTypes[iArgument];
         if (argumentType == '') {
           argumentType = Blockly.FtcJava.determineArgumentType_(
-              iArgument,
-              Blockly.FtcJava.procedureArgumentGetterBlocks_[functionName][iArgument],
-              Blockly.FtcJava.procedureArgumentSetterBlocks_[functionName][iArgument],
-              Blockly.FtcJava.procedureCallBlocks_[functionName]);
+            iArgument,
+            Blockly.FtcJava.procedureArgumentGetterBlocks_[functionName][iArgument],
+            Blockly.FtcJava.procedureArgumentSetterBlocks_[functionName][iArgument],
+            Blockly.FtcJava.procedureCallBlocks_[functionName]);
           if (argumentType != '') {
             argumentTypes[iArgument] = argumentType;
             countUnknownTypes--;
@@ -291,9 +291,9 @@ Blockly.FtcJava.init = function(workspace) {
         var returnType = Blockly.FtcJava.procedureReturnTypes_[functionName];
         if (returnType == '') {
           returnType = Blockly.FtcJava.determineProcedureReturnType_(
-              procedureBlock,
-              Blockly.FtcJava.blocksInProcedures_[functionName],
-              Blockly.FtcJava.procedureCallBlocks_[functionName]);
+            procedureBlock,
+            Blockly.FtcJava.blocksInProcedures_[functionName],
+            Blockly.FtcJava.procedureCallBlocks_[functionName]);
           if (returnType != '') {
             Blockly.FtcJava.procedureReturnTypes_[functionName] = returnType;
             countUnknownTypes--;
@@ -306,8 +306,8 @@ Blockly.FtcJava.init = function(workspace) {
       var variableType = Blockly.FtcJava.variableTypes_[variableName];
       if (variableType == '') {
         variableType = Blockly.FtcJava.determineVariableType_(
-            Blockly.FtcJava.variableGetterBlocks_[variableName],
-            Blockly.FtcJava.variableSetterBlocks_[variableName]);
+          Blockly.FtcJava.variableGetterBlocks_[variableName],
+          Blockly.FtcJava.variableSetterBlocks_[variableName]);
         if (variableType != '') {
           Blockly.FtcJava.variableTypes_[variableName] = variableType;
           countUnknownTypes--;
@@ -325,14 +325,14 @@ Blockly.FtcJava.init = function(workspace) {
 
   for (var variableName in Blockly.FtcJava.variableTypes_) {
     Blockly.FtcJava.addVariableDefinition_(variableName,
-        Blockly.FtcJava.variableTypes_[variableName],
-        Blockly.FtcJava.variableScopes_[variableName]);
+      Blockly.FtcJava.variableTypes_[variableName],
+      Blockly.FtcJava.variableScopes_[variableName]);
   }
 
   Blockly.FtcJava.generateImport_('LinearOpMode');
 };
 
-Blockly.FtcJava.blockUsesVariable = function(block, variable) {
+Blockly.FtcJava.blockUsesVariable = function (block, variable) {
   for (var i = 0, input; input = block.inputList[i]; i++) {
     for (var j = 0, field; field = input.fieldRow[j]; j++) {
       if (field.referencesVariables()) {
@@ -347,12 +347,12 @@ Blockly.FtcJava.blockUsesVariable = function(block, variable) {
 };
 
 
-Blockly.FtcJava.addVariableDefinition_ = function(variableName, variableType, scope) {
+Blockly.FtcJava.addVariableDefinition_ = function (variableName, variableType, scope) {
   var variableDefinition;
   if (variableType == '') {
     variableDefinition =
-        Blockly.FtcJava.INDENT + '// TODO: Enter the type for variable named ' + variableName + '\n' +
-        Blockly.FtcJava.INDENT + 'UNKNOWN_TYPE ' + variableName + ';';
+      Blockly.FtcJava.INDENT + '// TODO: Enter the type for variable named ' + variableName + '\n' +
+      Blockly.FtcJava.INDENT + 'UNKNOWN_TYPE ' + variableName + ';';
   } else {
     Blockly.FtcJava.generateImport_(variableType);
     variableDefinition = Blockly.FtcJava.INDENT + variableType + ' ' + variableName + ';';
@@ -367,14 +367,14 @@ Blockly.FtcJava.addVariableDefinition_ = function(variableName, variableType, sc
   variableDefinitions.push(variableDefinition);
 };
 
-Blockly.FtcJava.determineVariableType_ = function(getterBlocks, setterBlocks) {
+Blockly.FtcJava.determineVariableType_ = function (getterBlocks, setterBlocks) {
   var typesExpectedFromGetters = [];
   var typesUsedInSetters = [];
   Blockly.FtcJava.collectVariableTypes_(getterBlocks, setterBlocks, typesExpectedFromGetters, typesUsedInSetters);
   return Blockly.FtcJava.chooseBestType_(typesUsedInSetters, typesExpectedFromGetters);
 };
 
-Blockly.FtcJava.determineArgumentType_ = function(indexOfArg, getterBlocks, setterBlocks, callBlocks) {
+Blockly.FtcJava.determineArgumentType_ = function (indexOfArg, getterBlocks, setterBlocks, callBlocks) {
   var typesUsedInSetters = [];
   var typesExpectedFromGetters = [];
 
@@ -392,13 +392,13 @@ Blockly.FtcJava.determineArgumentType_ = function(indexOfArg, getterBlocks, sett
   return Blockly.FtcJava.chooseBestType_(typesUsedInSetters, typesExpectedFromGetters);
 }
 
-Blockly.FtcJava.collectVariableTypes_ = function(getterBlocks, setterBlocks, typesExpectedFromGetters, typesUsedInSetters) {
+Blockly.FtcJava.collectVariableTypes_ = function (getterBlocks, setterBlocks, typesExpectedFromGetters, typesUsedInSetters) {
   for (var iGetterBlock = 0, block; block = getterBlocks[iGetterBlock]; iGetterBlock++) {
     // Look at the block that this getter is plugged into.
     if (block.outputConnection && block.outputConnection.targetConnection) {
       var sourceBlock = block.outputConnection.targetConnection.getSourceBlock();
       var expectedType = Blockly.FtcJava.getExpectedType_(
-          sourceBlock, block.outputConnection.targetConnection);
+        sourceBlock, block.outputConnection.targetConnection);
       if (expectedType != '') {
         typesExpectedFromGetters.push(expectedType);
       }
@@ -413,7 +413,7 @@ Blockly.FtcJava.collectVariableTypes_ = function(getterBlocks, setterBlocks, typ
   }
 };
 
-Blockly.FtcJava.determineProcedureReturnType_ = function(procedureBlock, blocksInProcedure, callBlocks) {
+Blockly.FtcJava.determineProcedureReturnType_ = function (procedureBlock, blocksInProcedure, callBlocks) {
   var typesReturned = [];
   var typesExpectedByCallers = [];
 
@@ -441,7 +441,7 @@ Blockly.FtcJava.determineProcedureReturnType_ = function(procedureBlock, blocksI
     if (callBlock.outputConnection && callBlock.outputConnection.targetConnection) {
       var sourceBlock = callBlock.outputConnection.targetConnection.getSourceBlock();
       var expectedType = Blockly.FtcJava.getExpectedType_(
-          sourceBlock, callBlock.outputConnection.targetConnection);
+        sourceBlock, callBlock.outputConnection.targetConnection);
       if (expectedType != '') {
         typesExpectedByCallers.push(expectedType);
       }
@@ -451,7 +451,7 @@ Blockly.FtcJava.determineProcedureReturnType_ = function(procedureBlock, blocksI
   return Blockly.FtcJava.chooseBestType_(typesReturned, typesExpectedByCallers);
 }
 
-Blockly.FtcJava.chooseBestType_ = function(types, expectedTypes) {
+Blockly.FtcJava.chooseBestType_ = function (types, expectedTypes) {
   var bestType = '';
 
   // Check whether we only have one type.
@@ -511,7 +511,7 @@ Blockly.FtcJava.chooseBestType_ = function(types, expectedTypes) {
   return Blockly.FtcJava.convertBlocksTypeToFtcJavaType_(bestType);
 };
 
-Blockly.FtcJava.checkTypes_ = function(type, expectedType) {
+Blockly.FtcJava.checkTypes_ = function (type, expectedType) {
   if (type == expectedType) {
     return true;
   }
@@ -537,7 +537,7 @@ Blockly.FtcJava.checkTypes_ = function(type, expectedType) {
   return false;
 };
 
-Blockly.FtcJava.getOutputType_ = function(block) {
+Blockly.FtcJava.getOutputType_ = function (block) {
   if (block) {
     // If the block is a variable getter, see if we already know the type of that variable.
     if (block.type == 'variables_get') {
@@ -586,7 +586,7 @@ Blockly.FtcJava.getOutputType_ = function(block) {
 
     // Look at the connection check.
     if (block.outputConnection && block.outputConnection.check_ &&
-        block.outputConnection.check_.length == 1) {
+      block.outputConnection.check_.length == 1) {
       return Blockly.FtcJava.convertBlocksTypeToFtcJavaType_(block.outputConnection.check_[0]);
     }
   }
@@ -594,7 +594,7 @@ Blockly.FtcJava.getOutputType_ = function(block) {
   return '';
 };
 
-Blockly.FtcJava.getExpectedType_ = function(block, connection) {
+Blockly.FtcJava.getExpectedType_ = function (block, connection) {
   // Blockly allows Array or String to be used in lists_isEmpty, lists_length, text_isEmpty, and
   // text_length. That's just lovely.
   if (block.type == 'lists_isEmpty' || block.type == 'lists_length') {
@@ -682,7 +682,7 @@ Blockly.FtcJava.getExpectedType_ = function(block, connection) {
   return '';
 };
 
-Blockly.FtcJava.getTypeValue_ = function(type) {
+Blockly.FtcJava.getTypeValue_ = function (type) {
   switch (type) {
     case 'Number':
     case 'double':
@@ -714,14 +714,14 @@ Blockly.FtcJava.getTypeValue_ = function(type) {
   return 100;
 };
 
-Blockly.FtcJava.getVariableName_ = function(block) {
+Blockly.FtcJava.getVariableName_ = function (block) {
   if (block.type != 'variables_set' && block.type != 'variables_get') {
     throw 'Unexpected block in getVariableName_ - should be variables_set or variables_get';
   }
   return Blockly.FtcJava.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
 };
 
-Blockly.FtcJava.getArgumentIndex_ = function(rawVariableName, procedureBlock) {
+Blockly.FtcJava.getArgumentIndex_ = function (rawVariableName, procedureBlock) {
   if (!Blockly.FtcJava.isFunctionDefinitionBlock_(procedureBlock)) {
     throw 'Unexpected procedureBlock in getArgumentIndex_ - should be procedures_defreturn or procedures_defnoreturn';
   }
@@ -733,15 +733,15 @@ Blockly.FtcJava.getArgumentIndex_ = function(rawVariableName, procedureBlock) {
   return -1;
 };
 
-Blockly.FtcJava.isFunctionDefinitionBlock_ = function(block) {
+Blockly.FtcJava.isFunctionDefinitionBlock_ = function (block) {
   return block.type == 'procedures_defreturn'
-      || block.type == 'procedures_defnoreturn';
+    || block.type == 'procedures_defnoreturn';
 }
 
-Blockly.FtcJava.getFunctionName_ = function(block) {
+Blockly.FtcJava.getFunctionName_ = function (block) {
   if (!Blockly.FtcJava.isFunctionDefinitionBlock_(block) &&
-      block.type != 'procedures_callreturn' &&
-      block.type != 'procedures_callnoreturn') {
+    block.type != 'procedures_callreturn' &&
+    block.type != 'procedures_callnoreturn') {
     throw 'Unexpected block in getFunctionName_ - should be procedures_defnoreturn, procedures_defreturn, procedures_callreturn, or procedures_callnoreturn';
   }
   return Blockly.FtcJava.variableDB_.getName(block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
@@ -754,7 +754,7 @@ Blockly.FtcJava.getFunctionName_ = function(block) {
  *     For value blocks, an array containing the generated code and an
  *     operator order value.  Returns '' if block is null.
  */
-Blockly.FtcJava.blockToCode = function(block) {
+Blockly.FtcJava.blockToCode = function (block) {
   try {
     return Blockly.Generator.prototype.blockToCode.call(this, block);
   } catch (e) {
@@ -774,12 +774,12 @@ Blockly.FtcJava.blockToCode = function(block) {
  * @param {string} code Generated code.
  * @return {string} Completed code.
  */
-Blockly.FtcJava.finish = function(code) {
+Blockly.FtcJava.finish = function (code) {
   // FYI: We ignore code, which is not within a procedure definition.
 
   var packageName = 'org.firstinspires.ftc.teamcode';
   var completedCode =
-      'package ' + packageName + ';\n\n';
+    'package ' + packageName + ';\n\n';
 
   // The annotations for the class must be determined now, because getClassAnnotationsForFtcJava_()
   // will call generateImport_() for the annotation classes that are used.
@@ -811,7 +811,7 @@ Blockly.FtcJava.finish = function(code) {
   }
 
   completedCode += annotations +
-      'public class ' + Blockly.FtcJava.getClassNameForFtcJava_() + ' extends LinearOpMode {\n\n';
+    'public class ' + Blockly.FtcJava.getClassNameForFtcJava_() + ' extends LinearOpMode {\n\n';
   if (fieldDeclarations.length) {
     completedCode += fieldDeclarations.join('\n') + '\n\n';
   }
@@ -833,7 +833,7 @@ Blockly.FtcJava.finish = function(code) {
           if (position > -1) {
             position++; // length of '{'
             def = def.slice(0, position) + '\n' + fieldAssignments.join('\n') + '\n' +
-                def.slice(position);
+              def.slice(position);
           }
         }
         if (closingCode.length) {
@@ -844,7 +844,7 @@ Blockly.FtcJava.finish = function(code) {
             position--;
           }
           def = def.slice(0, position) + '\n\n' + closingCode.join('\n') +
-              def.slice(position);
+            def.slice(position);
         }
       }
       if (functionName in Blockly.FtcJava.variableDeclarationsByScope_) {
@@ -856,7 +856,7 @@ Blockly.FtcJava.finish = function(code) {
         if (position > -1) {
           position++; // length of '{'
           def = def.slice(0, position) + '\n' + variableDeclarations.join('\n') + '\n' +
-              def.slice(position);
+            def.slice(position);
         } else {
           throw 'function ' + functionName + ' has no opening brace?';
         }
@@ -894,7 +894,7 @@ Blockly.FtcJava.finish = function(code) {
  * @param {string} line Line of generated code.
  * @return {string} Legal line of code.
  */
-Blockly.FtcJava.scrubNakedValue = function(line) {
+Blockly.FtcJava.scrubNakedValue = function (line) {
   return line + ';\n';
 };
 
@@ -905,10 +905,10 @@ Blockly.FtcJava.scrubNakedValue = function(line) {
  * @return {string} Java string.
  * @private
  */
-Blockly.FtcJava.quote_ = function(string) {
+Blockly.FtcJava.quote_ = function (string) {
   string = string.replace(/\\/g, '\\\\')
-                 .replace(/\n/g, '\\\n')
-                 .replace(/"/g, '\\\"');
+    .replace(/\n/g, '\\\n')
+    .replace(/"/g, '\\\"');
   return '"' + string + '"';
 };
 
@@ -921,24 +921,24 @@ Blockly.FtcJava.quote_ = function(string) {
  * @return {string} Java code with comments and subsequent blocks added.
  * @private
  */
-Blockly.FtcJava.scrub_ = function(block, code) {
+Blockly.FtcJava.scrub_ = function (block, code) {
   var commentCode = '';
   // Only collect comments for blocks that aren't inline.
   if (!block.outputConnection || !block.outputConnection.targetConnection) {
     // Collect comment for this block.
     var comment = block.getCommentText();
-	
-	//VRS - Quick Fix (Looks like different Blockly versions)
-	if (!comment)
-	  comment = "";
-	
+
+    //VRS - Quick Fix (Looks like different Blockly versions)
+    if (!comment)
+      comment = "";
+
     comment = Blockly.utils.string.wrap(comment, Blockly.FtcJava.COMMENT_WRAP - 3);
     if (comment) {
       if (block.getProcedureDef) {
         // Use a comment block for function comments.
         commentCode += '/**\n' +
-                       Blockly.FtcJava.prefixLines(comment + '\n', ' * ') +
-                       ' */\n';
+          Blockly.FtcJava.prefixLines(comment + '\n', ' * ') +
+          ' */\n';
       } else {
         commentCode += Blockly.FtcJava.prefixLines(comment + '\n', '// ');
       }
@@ -969,7 +969,7 @@ Blockly.FtcJava.scrub_ = function(block, code) {
  * @param {number=} opt_order The highest order acting on this value.
  * @return {string|number}
  */
-Blockly.FtcJava.getAdjusted = function(block, atId, opt_order) {
+Blockly.FtcJava.getAdjusted = function (block, atId, opt_order) {
   var order = opt_order || Blockly.FtcJava.ORDER_NONE;
   var delta = block.workspace.options.oneBasedIndex ? -1 : 0;
   var defaultAtIndex = block.workspace.options.oneBasedIndex ? '1' : '0';
@@ -998,7 +998,7 @@ Blockly.FtcJava.getAdjusted = function(block, atId, opt_order) {
   return at;
 };
 
-Blockly.FtcJava.setClassNameForFtcJava_ = function(className) {
+Blockly.FtcJava.setClassNameForFtcJava_ = function (className) {
   if (!className)
     Blockly.FtcJava.classNameForFtcJava_ = null;
   else {
@@ -1008,11 +1008,11 @@ Blockly.FtcJava.setClassNameForFtcJava_ = function(className) {
   }
 }
 
-Blockly.FtcJava.getClassNameForFtcJava_ = function() {
+Blockly.FtcJava.getClassNameForFtcJava_ = function () {
   return (Blockly.FtcJava.classNameForFtcJava_ || 'MyLinearOpMode');
 };
 
-Blockly.FtcJava.getClassAnnotationsForFtcJava_ = function() {
+Blockly.FtcJava.getClassAnnotationsForFtcJava_ = function () {
   var annotations = '';
   var flavor;
   var flavorSelect = document.getElementById('project_flavor');
@@ -1047,7 +1047,7 @@ Blockly.FtcJava.getClassAnnotationsForFtcJava_ = function() {
   return annotations;
 };
 
-Blockly.FtcJava.convertBlocksTypeToFtcJavaType_ = function(type) {
+Blockly.FtcJava.convertBlocksTypeToFtcJavaType_ = function (type) {
   switch (type) {
     case 'Array':
       return 'List';
@@ -1059,17 +1059,17 @@ Blockly.FtcJava.convertBlocksTypeToFtcJavaType_ = function(type) {
   return type;
 };
 
-Blockly.FtcJava.isFtcJavaTypePrimitive_ = function(type) {
+Blockly.FtcJava.isFtcJavaTypePrimitive_ = function (type) {
   return type == 'boolean' || type == 'double' || type == 'float'
-      || type == 'long' || type == 'int' || type == 'short' || type == 'byte';
+    || type == 'long' || type == 'int' || type == 'short' || type == 'byte';
 }
 
-Blockly.FtcJava.generateImportForJavaClass_ = function(javaClassName) {
+Blockly.FtcJava.generateImportForJavaClass_ = function (javaClassName) {
   var importCode = 'import ' + javaClassName + ';';
   Blockly.FtcJava.definitions_['import_' + importCode] = importCode;
 }
 
-Blockly.FtcJava.generateImport_ = function(type) {
+Blockly.FtcJava.generateImport_ = function (type) {
   var importCode = null;
 
   // For inner classes, only import the outer class.
@@ -1095,7 +1095,7 @@ Blockly.FtcJava.generateImport_ = function(type) {
   return false;
 };
 
-Blockly.FtcJava.importDeclareAssign_ = function(block, identifierFieldName, javaType) {
+Blockly.FtcJava.importDeclareAssign_ = function (block, identifierFieldName, javaType) {
   var identifier = null;
   var identifierForFtcJava = null;
   var rvalue = null;
@@ -1194,20 +1194,20 @@ Blockly.FtcJava.importDeclareAssign_ = function(block, identifierFieldName, java
         throw 'Unexpected situation (identifierFieldName is \'' + identifierFieldName + '\').';
       }
       identifier = block.getFieldValue(identifierFieldName);
-	  
-	  //VRS - Convert to actual Electronic Names
-	  if (javaType == "DcMotor")
-		  identifier = robotConfig["motors"][parseInt(identifier.substring(identifier.length - 1))]["name"];
-	  if (javaType == "Servo" || javaType == "CRServo")
-		  identifier = robotConfig["servos"][parseInt(identifier.substring(identifier.length - 1))]["name"];
-	  if (javaType == "DistanceSensor")
-		  identifier = robotConfig["distSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
-	  if (javaType == "BNO055IMU")
-		  identifier = robotConfig["IMU"][parseInt(identifier.substring(identifier.length - 1))]["name"];
-	  if (javaType == "ColorSensor")
-		  identifier = robotConfig["colorSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
-	  if (javaType == "TouchSensor")
-		  identifier = robotConfig["touchSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+
+      //VRS - Convert to actual Electronic Names
+      if (javaType == "DcMotor")
+        identifier = robotConfig["motors"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+      if (javaType == "Servo" || javaType == "CRServo")
+        identifier = robotConfig["servos"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+      if (javaType == "DistanceSensor")
+        identifier = robotConfig["distanceSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+      if (javaType == "BNO055IMU")
+        identifier = robotConfig["IMU"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+      if (javaType == "ColorSensor")
+        identifier = robotConfig["colorSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
+      if (javaType == "TouchSensor")
+        identifier = robotConfig["touchSensor"][parseInt(identifier.substring(identifier.length - 1))]["name"];
 
       try {
         // getIdentifierForFtcJava is generated dynamically in
@@ -1235,10 +1235,10 @@ Blockly.FtcJava.importDeclareAssign_ = function(block, identifierFieldName, java
 
   Blockly.FtcJava.generateImport_(javaType);
   Blockly.FtcJava.definitions_['declare_field_' + identifier] =
-      'private ' + javaType + ' ' + identifierForFtcJava + ';';
+    'private ' + javaType + ' ' + identifierForFtcJava + ';';
 
   Blockly.FtcJava.definitions_['assign_field_' + identifier] =
-      identifierForFtcJava + ' = ' + rvalue + ';';
+    identifierForFtcJava + ' = ' + rvalue + ';';
 
   if (needsToBeClosed) {
     Blockly.FtcJava.definitions_['closing_code_' + identifier] = identifierForFtcJava + '.close();';
@@ -1247,14 +1247,14 @@ Blockly.FtcJava.importDeclareAssign_ = function(block, identifierFieldName, java
   return identifierForFtcJava;
 };
 
-Blockly.FtcJava.getOpModeNameForFtcJava_ = function() {
+Blockly.FtcJava.getOpModeNameForFtcJava_ = function () {
   return Blockly.FtcJava.getClassNameForFtcJava_() + ' (Blocks to Java)';
 };
 
-Blockly.FtcJava.makeFirstLetterLowerCase_ = function(text) {
+Blockly.FtcJava.makeFirstLetterLowerCase_ = function (text) {
   return text[0].toLowerCase() + text.substring(1);
 };
 
-Blockly.FtcJava.makeFirstLetterUpperCase_ = function(text) {
+Blockly.FtcJava.makeFirstLetterUpperCase_ = function (text) {
   return text[0].toUpperCase() + text.substring(1);
 };

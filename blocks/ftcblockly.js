@@ -281,7 +281,7 @@ let acceleration = {
 		return { "DistanceUnit": units || "CM", "XAccel": x || 0, "YAccel": y || 0, "ZAccel": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return `(${misc.formatNumber(variable["XAccel"],3)} ${misc.formatNumber(variable["YAccel"],3)} ${misc.formatNumber(variable["ZAccel"],3)})${variable["DistanceUnit"].toLowerCase()}/s^2` },
+	toText: function (variable) { return `(${misc.formatNumber(variable["XAccel"], 3)} ${misc.formatNumber(variable["YAccel"], 3)} ${misc.formatNumber(variable["ZAccel"], 3)})${variable["DistanceUnit"].toLowerCase()}/s^2` },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
@@ -359,7 +359,7 @@ let colorSensor = {
 		var conversion = convertDistUnits("CM", unit);
 		return robotConfig["colorSensor"][sensorNum]["Distance"] * conversion;
 	},
-	getNormalizedColors: function(sensorNum) {
+	getNormalizedColors: function (sensorNum) {
 		var sensorObj = robotConfig["colorSensor"][sensorNum];
 		var [r, g, b, a] = [sensorObj["Red"], sensorObj["Green"], sensorObj["Blue"], colorSensor.getProperty(sensorNum, "RawLightDetected")];
 		var magnitude = (r ** 2 + g ** 2 + b ** 2 + a ** 2) ** .5;
@@ -367,6 +367,20 @@ let colorSensor = {
 			magnitude = 1;
 		return '{"Red":' + (r / magnitude) + ',"Green":' + (g / magnitude) + ',"Blue":' + (b / magnitude) + ',"Alpha":' + (a / magnitude) + '}';
 	}
+}
+
+let distanceSensor = {
+	setProperty: function (sensorNum, property, value) {
+		robotConfig["distanceSensor"][sensorNum][property] = value;
+		return;
+	},
+	getProperty: function (sensorNum, property) {
+		return robotConfig["distanceSensor"][sensorNum][property];
+	},
+	getDistance: function (sensorNum, unit) {
+		var conversion = convertDistUnits("CM", unit);
+		return robotConfig["distanceSensor"][sensorNum]["Distance"] * conversion;
+	},
 }
 
 let colorUtil = {
@@ -493,7 +507,7 @@ let magneticFlux = {
 		return { "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return `(${misc.formatNumber(variable["X"]*1000,3)} ${misc.formatNumber(variable["Y"]*1000,3)} ${misc.formatNumber(variable["Z"]*1000,3)})mT`; }
+	toText: function (variable) { return `(${misc.formatNumber(variable["X"] * 1000, 3)} ${misc.formatNumber(variable["Y"] * 1000, 3)} ${misc.formatNumber(variable["Z"] * 1000, 3)})mT`; }
 }
 
 let orientation = {
@@ -501,7 +515,7 @@ let orientation = {
 		return { "AxesReference": refrence || "EXTRINSIC", "AxesOrder": order || "XYX", "AngleUnit": units || "DEGREES", "FirstAngle": x || 0, "SecondAngle": y || 0, "ThirdAngle": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { 
+	toText: function (variable) {
 		if (variable["AngleUnit"] == "DEGREES")
 			return `${variable["AxesReference"]} ${variable["AxesOrder"]} ${Math.round(variable["FirstAngle"])} ${Math.round(variable["SecondAngle"])} ${Math.round(variable["ThirdAngle"])}`;
 		else
@@ -541,7 +555,7 @@ let position = {
 		return { "DistanceUnit": units || "CM", "X": x || 0, "Y": y || 0, "Z": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return `(${misc.formatNumber(variable["X"],3)} ${misc.formatNumber(variable["Y"],3)} ${misc.formatNumber(variable["Z"],3)})${variable["DistanceUnit"].toLowerCase()}`; },
+	toText: function (variable) { return `(${misc.formatNumber(variable["X"], 3)} ${misc.formatNumber(variable["Y"], 3)} ${misc.formatNumber(variable["Z"], 3)})${variable["DistanceUnit"].toLowerCase()}`; },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
@@ -696,13 +710,13 @@ let vectorF = {
 	},
 	getIndex: function (variable, index) { return variable[index]; },
 	put: function (variable, index, value) { variable[index] = value; },
-	toText: function (variable) { 
+	toText: function (variable) {
 		let text = "{";
 		for (let i = 0; i < variable.length; i++) {
 			if (i > 0) text += " ";
 			text += misc.formatNumber(variable[i], 2);
 		}
-		return text + "}"; 
+		return text + "}";
 	},
 	normalized3D: function (variable) {
 		var newVar = [];
@@ -756,7 +770,7 @@ let velocity = {
 		return { "DistanceUnit": units || "CM", "XVeloc": x || 0, "YVeloc": y || 0, "ZVeloc": z || 0, "AcquisitionTime": time || 0 };
 	},
 	get: function (property, variable) { return variable[property]; },
-	toText: function (variable) { return `(${misc.formatNumber(variable["XVeloc"],3)} ${misc.formatNumber(variable["YVeloc"],3)} ${misc.formatNumber(variable["ZVeloc"],3)})${variable["DistanceUnit"].toLowerCase()}/s`; },
+	toText: function (variable) { return `(${misc.formatNumber(variable["XVeloc"], 3)} ${misc.formatNumber(variable["YVeloc"], 3)} ${misc.formatNumber(variable["ZVeloc"], 3)})${variable["DistanceUnit"].toLowerCase()}/s`; },
 	toDistanceUnit: function (variable, newUnit) {
 		let newVar = JSON.parse(JSON.stringify(variable));
 		if (variable["DistanceUnit"] == newUnit)
@@ -907,6 +921,16 @@ function variableUpdate() {
 	for (i = 0; i < robotConfig["colorSensor"].length; i++) {
 		for (j = 0; j < colorSensorReadings[i].length; j++) {
 			robotConfig["colorSensor"][i][orderOfColorSensorDataObjects[j]] = colorSensorReadings[i][j];
+		}
+	}
+
+	//Receives Distance Sensor Data
+	var distanceSensorReadings = JSON.parse(localStorage.getItem("distanceSensorReadings"));
+	var orderOfDistanceSensorObjects = ["Distance"] // add more, to match the block option
+	// ASSUMUNG FORMAT OF COLOR SENSORS: [sensor: ["alpha, etc..."], sensor2: [...], ...]
+	for (i = 0; i < robotConfig["distanceSensor"].length; i++) {
+		for (j = 0; j < distanceSensorReadings[i].length; j++) {
+			robotConfig["distanceSensor"][i][orderOfDistanceSensorObjects[j]] = distanceSensorReadings[i][j];
 		}
 	}
 	//Do it again
