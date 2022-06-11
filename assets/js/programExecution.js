@@ -69,7 +69,12 @@ function switchToBlocks() {
     document.getElementById('onBotJavaDiv').hidden = true;
     isUsingBlocks = true;
 	if (currentProjectName != "program")
-		lastSaved = Blockly.Xml.textToDom(localStorage.getItem("Program Name: " + currentProjectName))
+		try {
+			lastSaved = Blockly.Xml.textToDom(localStorage.getItem("Program Name: " + currentProjectName))
+		}
+		catch {
+			lastSaved = null;
+		}
 	else
 		lastSaved = null;
 	prepareUiToLoadProgram();
@@ -119,12 +124,12 @@ function convert2JS(callback) {
         // 'http://localhost:8080/students/convert-js' 
     convert_2js(tjs_url, javaString, (rowSource, finalResult)=>{
         console.log("===========> js code source start<============ \n" + finalResult)
-        if (finalResult.startsWith('parse error')) {
+        if (rowSource == "parse error") {
             //alert("JS convert failed.")
             localStorage.setItem('stopMatch', true);
-            document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + finalResult.split("|")[1];
+            document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + finalResult;
             resetProgramExecution();
-            callback("Fail")
+            throw finalResult;
         } else {
     
             // console.log("===========> js code start<============ \n" + result)
@@ -262,6 +267,7 @@ function loadBlocksXML(xmlString, sampleProg) {
 	if (!sampleProg)
 		localStorage.setItem("Program Name: " + currentProjectName, content);
 	prepareUiToLoadProgram();
+	setTimeout(function() { Blockly.mainWorkspace.trashcan.contents_ = []; }, 1);
 }
 
 //"Export to OnBotJava"
@@ -334,6 +340,7 @@ function loadProgram() {
 				document.getElementById("telemetryText").innerText = 'Loaded "' + currentProjectName + '" Program \n';
 			prepareUiToLoadProgram();
 		}
+		setTimeout(function() { Blockly.mainWorkspace.trashcan.contents_ = []; }, 1);
 	}
 	else {
 		var nameOfProject = "Java Program Name: " + document.getElementById("programSelect").value;
@@ -440,8 +447,7 @@ function initProgram(code) {
         if (!isUsingBlocks) {
             convert2JS((javaCode)=>{
                 console.log("Java Code: ", javaCode);
-                if (javaCode != "Fail")
-                    runProgram(javaCode);
+				runProgram(javaCode);
             });            
         }
 		else {
@@ -502,7 +508,16 @@ async function runProgram(code) {
     console.log("===========> js code start<============ \n" + code)
     console.log("===========> js code end <============")
     let AsyncFunctionCtor = Object.getPrototypeOf(async function () { }).constructor;
-    let program = new AsyncFunctionCtor(code);
+	let program;
+	try {
+		program = new AsyncFunctionCtor(code);
+	}
+	catch (err) {
+        localStorage.setItem('stopMatch', true);
+        document.getElementById("telemetryText").innerText = "<Java to Javascript Failed!>\n" + err;
+        resetProgramExecution();
+        throw err;
+	}
 
     //setup
     localStorage.setItem('startMatch', true);
