@@ -29,10 +29,10 @@
     ],
 
     #Step 3: Sensors
-    "distSensor": [
+    "distanceSensor": [
         {
             #This value will determine the name of the motor in the program
-            "name": "frontDistSensor",
+            "name": "frontDistanceSensor",
 
             #This value does nothing
             "type": "REV 2M"

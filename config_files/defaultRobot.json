@@ -51,29 +51,29 @@
 	],
 	"servos": [
 		{
-            "name": "left_hand",
-            "type": "180degrees"
-        },
+			"name": "left_hand",
+			"type": "180degrees"
+		},
 		{
-            "name": "right_hand",
-            "type": "180degrees"
-        },
+			"name": "right_hand",
+			"type": "180degrees"
+		},
 		{
-            "name": "fullservo",
-            "type": "continuous"
-        }
+			"name": "fullservo",
+			"type": "continuous"
+		}
 	],
-	"distSensor": [
+	"distanceSensor": [
 		{
-            "name": "frontDistSensor",
-            "type": "REV 2M"
-        }
+			"name": "frontDistanceSensor",
+			"type": "REV 2M"
+		}
 	],
 	"IMU": [
 		{
-            "name": "imu",
-            "type": "REV Control Hub"
-        }
+			"name": "imu",
+			"type": "REV Control Hub"
+		}
 	],
 	"colorSensor": [
 		{
@@ -83,8 +83,8 @@
 	],
 	"touchSensor": [
 		{
-            "name": "backTouchSensor",
-            "type": "REV Touch Sensor"
-        }
+			"name": "backTouchSensor",
+			"type": "REV Touch Sensor"
+		}
 	]
 }
